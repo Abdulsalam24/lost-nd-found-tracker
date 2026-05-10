@@ -1,0 +1,50 @@
+{
+  "name": "@lostfound/api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start:prod": "node dist/main",
+    "migration:run": "typeorm migration:run -d src/config/data-source.ts",
+    "seed": "ts-node src/seeds/seed.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.3.0",
+    "@nestjs/core": "^10.3.0",
+    "@nestjs/platform-express": "^10.3.0",
+    "@nestjs/typeorm": "^10.0.1",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/passport": "^10.0.3",
+    "@nestjs/schedule": "^4.0.0",
+    "@nestjs/config": "^3.1.1",
+    "@nestjs/throttler": "^5.1.2",
+    "typeorm": "^0.3.20",
+    "pg": "^8.11.3",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "bcrypt": "^5.1.1",
+    "sharp": "^0.33.2",
+    "@aws-sdk/client-s3": "^3.500.0",
+    "@aws-sdk/s3-request-presigner": "^3.500.0",
+    "@sendgrid/mail": "^8.1.0",
+    "class-validator": "^0.14.1",
+    "class-transformer": "^0.5.1",
+    "uuid": "^9.0.0",
+    "cookie-parser": "^1.4.6",
+    "reflect-metadata": "^0.2.1",
+    "@lostfound/shared": "*"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^10.3.0",
+    "@nestjs/testing": "^10.3.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/multer": "^1.4.11",
+    "@types/sharp": "^0.32.0",
+    "@types/cookie-parser": "^1.4.6",
+    "@types/uuid": "^9.0.7",
+    "typescript": "^5.4.0",
+    "ts-node": "^10.9.2"
+  }
+}

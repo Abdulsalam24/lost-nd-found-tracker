@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-cream text-ink antialiased;
+  }
+
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-coral;
+  }
+
+  ::selection {
+    background: rgba(201, 107, 85, 0.15);
+    color: #1a1a1a;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-bold text-cream tracking-wide uppercase transition-all hover:bg-ink-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-ink bg-transparent px-6 py-3 text-sm font-bold text-ink tracking-wide uppercase transition-all hover:bg-ink hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98];
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-red-50 border border-red-200 px-6 py-3 text-sm font-semibold text-red-600 transition-all hover:bg-red-100 focus-visible:outline disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-ink-muted transition-colors hover:text-ink hover:bg-cream-200;
+  }
+
+  .input-field {
+    @apply block w-full rounded-xl border border-cream-300 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-ghost focus:border-coral focus:ring-1 focus:ring-coral transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .label {
+    @apply block text-sm font-semibold text-ink-muted uppercase tracking-wider mb-1.5;
+  }
+
+  .card {
+    @apply rounded-2xl border border-cream-300 bg-white;
+  }
+
+  .card-hover {
+    @apply card transition-all hover:border-kraft hover:shadow-lg hover:shadow-kraft/10;
+  }
+
+  .error-text {
+    @apply mt-1.5 text-xs text-red-500;
+  }
+
+  .section-title {
+    @apply text-3xl font-bold tracking-tight text-ink sm:text-4xl;
+  }
+
+  .section-subtitle {
+    @apply text-ink-muted text-base sm:text-lg max-w-2xl;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide;
+  }
+
+  .badge-accent {
+    @apply badge bg-emerald-50 text-emerald-700 border border-emerald-200;
+  }
+
+  .badge-red {
+    @apply badge bg-coral-50 text-coral-dark border border-coral/20;
+  }
+
+  .badge-blue {
+    @apply badge bg-blue-50 text-blue-700 border border-blue-200;
+  }
+
+  .badge-amber {
+    @apply badge bg-amber-50 text-amber-700 border border-amber-200;
+  }
+
+  .badge-purple {
+    @apply badge bg-purple-50 text-purple-700 border border-purple-200;
+  }
+
+  .badge-gray {
+    @apply badge bg-cream-200 text-ink-muted border border-cream-300;
+  }
+
+  .divider {
+    @apply border-t border-cream-300 my-5;
+  }
+
+  .table-row {
+    @apply border-b border-cream-200 hover:bg-cream-50 transition-colors;
+  }
+
+  .table-header {
+    @apply text-left text-xs font-semibold uppercase tracking-wider text-ink-faint pb-3 border-b border-cream-300;
+  }
+}

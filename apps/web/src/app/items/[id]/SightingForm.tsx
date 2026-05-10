@@ -1,0 +1,102 @@
+"use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { api } from "@/lib/api";
+import { CAMPUS_LOCATIONS } from "@/lib/constants";
+
+const schema = z.object({
+  description: z.string().min(5, "Description must be at least 5 characters"),
+  location_id: z.string().optional(),
+  spotted_at: z.string().min(1, "Select the date and time"),
+});
+
+type FormData = z.infer<typeof schema>;
+
+export function SightingForm({ itemId }: { itemId: string }) {
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data: FormData) => {
+    setError("");
+    setSuccess(false);
+    try {
+      await api.post(`/items/${itemId}/sightings`, {
+        ...data,
+        item_report_id: itemId,
+      });
+      setSuccess(true);
+      reset();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to submit sighting");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4" noValidate>
+      {success && (
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700" role="alert">
+          Sighting reported successfully!
+        </div>
+      )}
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600" role="alert">
+          {error}
+        </div>
+      )}
+
+      <div>
+        <label htmlFor="sighting-desc" className="label">What did you see?</label>
+        <textarea
+          id="sighting-desc"
+          rows={3}
+          className="input-field"
+          placeholder="Describe where and when you saw this item..."
+          {...register("description")}
+          aria-invalid={errors.description ? "true" : undefined}
+          aria-describedby={errors.description ? "sight-desc-error" : undefined}
+        />
+        {errors.description && <p id="sight-desc-error" className="error-text">{errors.description.message}</p>}
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="sighting-location" className="label">Location (optional)</label>
+          <select id="sighting-location" className="input-field" {...register("location_id")}>
+            <option value="">Select location</option>
+            {CAMPUS_LOCATIONS.map((loc) => (
+              <option key={loc.id} value={loc.id}>{loc.name}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="sighting-date" className="label">When spotted</label>
+          <input
+            id="sighting-date"
+            type="datetime-local"
+            className="input-field"
+            {...register("spotted_at")}
+            aria-invalid={errors.spotted_at ? "true" : undefined}
+            aria-describedby={errors.spotted_at ? "sight-date-error" : undefined}
+          />
+          {errors.spotted_at && <p id="sight-date-error" className="error-text">{errors.spotted_at.message}</p>}
+        </div>
+      </div>
+
+      <button type="submit" className="btn-primary text-sm" disabled={isSubmitting}>
+        {isSubmitting ? "Submitting..." : "Report Sighting"}
+      </button>
+    </form>
+  );
+}
