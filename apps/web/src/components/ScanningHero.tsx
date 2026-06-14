@@ -23,7 +23,7 @@ interface Props {
   items?: ItemCard[];
 }
 
-const FALLBACK_CARDS = [
+const FALLBACK_CARDS: ItemCard[] = [
   { id: "1", title: "Student ID Card", type: "LOST", location_id: "Senate Building" },
   { id: "2", title: "Backpack", type: "LOST", location_id: "Main Library" },
   { id: "3", title: "Calculator", type: "FOUND", location_id: "Faculty of Science" },
