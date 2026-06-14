@@ -12,7 +12,17 @@ export class UsersController {
 
   @Get('me')
   async getProfile(@CurrentUser() user: User) {
-    return this.usersService.findById(user.id);
+    const profile = await this.usersService.findById(user.id);
+    const { password_hash, deleted_at, ...safe } = profile;
+    return {
+      ...safe,
+      points: (profile.detective_points ?? 0) + (profile.trivia_points ?? 0),
+      bank_name: profile.bank_name,
+      account_number: profile.account_number,
+      account_name: profile.account_name,
+      phone: profile.phone,
+      avatar_url: profile.avatar_url,
+    };
   }
 
   @Patch('me')

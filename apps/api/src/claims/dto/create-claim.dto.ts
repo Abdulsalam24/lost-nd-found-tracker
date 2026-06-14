@@ -5,10 +5,14 @@ export class CreateClaimDto {
   item_report_id!: string;
 
   @IsString()
-  @MinLength(20)
+  @MinLength(10)
   evidence_description!: string;
 
   @IsOptional()
   @IsUUID()
   image_asset_id?: string;
+
+  @IsOptional()
+  @IsString()
+  evidence_image_url?: string;
 }

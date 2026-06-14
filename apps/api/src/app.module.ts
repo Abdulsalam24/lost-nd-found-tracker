@@ -19,6 +19,8 @@ import { DetectiveModule } from './games/detective/detective.module';
 import { GhostHuntModule } from './games/ghost-hunt/ghost-hunt.module';
 import { TriviaModule } from './games/trivia/trivia.module';
 import { CronModule } from './cron/cron.module';
+import { ChatModule } from './chat/chat.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -55,6 +57,8 @@ import { CronModule } from './cron/cron.module';
     GhostHuntModule,
     TriviaModule,
     CronModule,
+    ChatModule,
+    FeedbackModule,
   ],
 })
 export class AppModule {}

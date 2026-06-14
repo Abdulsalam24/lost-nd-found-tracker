@@ -2,7 +2,6 @@ import {
   IsEnum,
   IsString,
   IsOptional,
-  IsUUID,
   IsDateString,
   MinLength,
   MaxLength,
@@ -26,8 +25,9 @@ export class CreateItemDto {
   @MaxLength(2000)
   description!: string;
 
-  @IsUUID()
-  location_id!: string;
+  @IsString()
+  @MinLength(1)
+  location_name!: string;
 
   @IsDateString()
   date_of_event!: string;
@@ -35,4 +35,8 @@ export class CreateItemDto {
   @IsOptional()
   @IsString()
   serial_number?: string;
+
+  @IsOptional()
+  @IsString()
+  image_url?: string;
 }

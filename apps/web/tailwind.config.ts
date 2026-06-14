@@ -5,54 +5,81 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
+        bg: {
+          DEFAULT: "var(--color-bg, #0a0f0a)",
+          card: "var(--color-bg-card, #111611)",
+          elevated: "var(--color-bg-elevated, #161b16)",
+          hover: "var(--color-bg-hover, #1c221c)",
+        },
+        grid: {
+          DEFAULT: "#1a2e1a",
+        },
+        accent: {
+          DEFAULT: "var(--color-accent, #34d399)",
+          light: "var(--color-accent-light, #6ee7b7)",
+          dark: "#059669",
+          muted: "#34d39940",
+          glow: "#34d39920",
+        },
+        text: {
+          DEFAULT: "var(--color-text, #f0fdf4)",
+          secondary: "var(--color-text-secondary, #9ca3af)",
+          muted: "var(--color-text-muted, #6b7280)",
+          ghost: "var(--color-text-ghost, #4b5563)",
+        },
+        border: {
+          DEFAULT: "var(--color-border, #1f2e1f)",
+          light: "var(--color-border-light, #2a3d2a)",
+          card: "var(--color-border-card, #1a2a1a)",
+        },
         cream: {
-          DEFAULT: "#f5f1eb",
-          50: "#faf8f5",
-          100: "#f5f1eb",
-          200: "#ebe4d8",
-          300: "#e0d5c5",
-          400: "#d4c4ad",
-        },
-        kraft: {
-          DEFAULT: "#c4a882",
-          light: "#d4bd9c",
-          dark: "#a8895e",
-        },
-        coral: {
-          DEFAULT: "#c96b55",
-          light: "#d88a78",
-          dark: "#a85540",
-          50: "#fdf0ed",
-          100: "#f9d9d1",
+          DEFAULT: "var(--color-bg, #0a0f0a)",
+          50: "var(--color-bg-card, #111611)",
+          100: "var(--color-bg-elevated, #161b16)",
+          200: "var(--color-bg-hover, #1c221c)",
+          300: "#1f2e1f",
+          400: "#2a3d2a",
         },
         ink: {
-          DEFAULT: "#1a1a1a",
-          light: "#2d2d2d",
-          muted: "#6b6358",
-          faint: "#9a9084",
-          ghost: "#b8afa4",
+          DEFAULT: "var(--color-text, #f0fdf4)",
+          light: "#e2e8f0",
+          muted: "var(--color-text-muted, #9ca3af)",
+          faint: "#6b7280",
+          ghost: "#4b5563",
+        },
+        coral: {
+          DEFAULT: "var(--color-accent, #34d399)",
+          light: "var(--color-accent-light, #6ee7b7)",
+          dark: "#059669",
+          50: "#0a2a1a",
+          100: "#0d3320",
         },
         surface: {
-          DEFAULT: "#f5f1eb",
-          white: "#ffffff",
-          warm: "#faf8f5",
-          card: "#ffffff",
+          DEFAULT: "var(--color-bg, #0a0f0a)",
+          white: "var(--color-bg-card, #111611)",
+          warm: "var(--color-bg-elevated, #161b16)",
+          card: "var(--color-bg-card, #111611)",
         },
       },
       fontFamily: {
-        sans: ["DM Sans", "system-ui", "sans-serif"],
-        display: ["DM Sans", "system-ui", "sans-serif"],
-        script: ["Playfair Display", "Georgia", "serif"],
+        sans: ["Sora", "system-ui", "sans-serif"],
       },
       borderColor: {
-        DEFAULT: "#e0d5c5",
+        DEFAULT: "var(--color-border, #1f2e1f)",
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-out",
         "slide-up": "slideUp 0.5s ease-out",
+        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "spin-slow": "spin 8s linear infinite",
+        "float": "float 6s ease-in-out infinite",
+        "float-delayed": "float 6s ease-in-out 2s infinite",
+        "float-slow": "float 8s ease-in-out 1s infinite",
+        "scan-line": "scanLine 3s ease-in-out infinite",
       },
       keyframes: {
         fadeIn: {
@@ -62,6 +89,30 @@ const config: Config = {
         slideUp: {
           "0%": { opacity: "0", transform: "translateY(20px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-12px)" },
+        },
+        scanLine: {
+          "0%, 100%": { transform: "translateY(-50%)", opacity: "0.3" },
+          "50%": { transform: "translateY(50%)", opacity: "0.8" },
+        },
+        radarPulse: {
+          "0%": { transform: "scale(1)", opacity: "0.6" },
+          "100%": { transform: "scale(8)", opacity: "0" },
+        },
+        heroFloat: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        gridDrift: {
+          "0%": { backgroundPosition: "0 0, 0 0" },
+          "100%": { backgroundPosition: "48px 48px, 48px 48px" },
+        },
+        gridDriftCoarse: {
+          "0%": { backgroundPosition: "0 0, 0 0" },
+          "100%": { backgroundPosition: "192px 192px, 192px 192px" },
         },
       },
     },

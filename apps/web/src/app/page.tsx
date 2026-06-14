@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { serverFetch } from "@/lib/api";
-import { ItemCard } from "@/components/ItemCard";
-import { GameCard } from "@/components/GameCard";
+import { FloatingItems } from "@/components/FloatingItems";
+import { ScanningHero } from "@/components/ScanningHero";
 
 interface ItemResponse {
   id: string;
@@ -22,7 +22,7 @@ interface StatsResponse {
 
 async function getRecentItems(): Promise<ItemResponse[]> {
   try {
-    const res = await serverFetch<{ data: ItemResponse[] }>("/items?type=FOUND&limit=8&sort=created_at:desc");
+    const res = await serverFetch<{ data: ItemResponse[] }>("/items?limit=12&sort=created_at:desc");
     return res.data ?? [];
   } catch {
     return [];
@@ -41,94 +41,132 @@ export default async function HomePage() {
   const [items, stats] = await Promise.all([getRecentItems(), getStats()]);
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="relative">
       {/* Hero */}
-      <section className="relative px-4 py-20 sm:py-32 bg-ink">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-kraft-light">Established 2020</p>
-          <div className="mx-auto my-4 w-12 border-t border-kraft/40" />
-          <h1 className="text-4xl font-bold uppercase tracking-[0.08em] text-cream sm:text-6xl lg:text-7xl">
-            Lost &<br />Found
-          </h1>
-          <div className="mx-auto my-4 w-12 border-t border-kraft/40" />
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-kraft-light">Campus Provisions</p>
-          <p className="mx-auto mt-4 max-w-xl font-script italic text-kraft-light text-lg">
-            Helping you find what matters
-          </p>
-
-          <div className="mx-auto mt-10 max-w-lg">
-            <form action="/items" method="get">
-              <label htmlFor="hero-search" className="sr-only">Search items</label>
-              <div className="flex gap-3">
-                <input
-                  id="hero-search"
-                  name="q"
-                  type="search"
-                  placeholder="Search for lost or found items..."
-                  className="flex-1 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-cream placeholder:text-cream/50 focus:border-coral focus:ring-1 focus:ring-coral transition-all"
-                  aria-label="Search for lost or found items"
-                />
-                <button type="submit" className="rounded-full bg-coral px-6 py-3 text-sm font-bold uppercase tracking-wider text-cream transition-all hover:bg-coral-dark">
-                  Search
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Link href="/items/report-lost" className="rounded-full bg-cream px-8 py-3 text-sm font-bold uppercase tracking-wider text-ink transition-all hover:bg-cream-200">
-              Report Lost Item
-            </Link>
-            <Link href="/items/report-found" className="rounded-full border-2 border-cream/30 px-8 py-3 text-sm font-bold uppercase tracking-wider text-cream transition-all hover:border-cream hover:bg-cream/10">
-              Report Found Item
-            </Link>
-          </div>
+      <section className="relative flex min-h-screen flex-col items-center justify-center px-4">
+        {/* Counter pill */}
+        <div className="mb-6 flex items-center gap-2 rounded-full border border-border-light bg-bg-card/80 px-5 py-2 backdrop-blur-sm">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+          </span>
+          <span className="text-sm text-text-secondary">
+            {stats.total_items ?? 0} items reported on campus
+          </span>
         </div>
+
+        {/* Main heading */}
+        <h1 className="max-w-3xl text-center text-4xl font-bold leading-tight text-text sm:text-5xl lg:text-6xl">
+          Finding what you&apos;ve lost...
+        </h1>
+
+        {/* Subtitle */}
+        <p className="mt-4 text-center text-sm tracking-[0.3em] uppercase text-text-ghost">
+          &mdash; Campus &mdash; Community &mdash; Recovery &mdash;
+        </p>
+
+        {/* Scanning animation */}
+        <ScanningHero items={items} />
+
+        {/* Floating item cards */}
+        <FloatingItems items={items} />
+
       </section>
+
+      {/* CTA buttons */}
+      <div className="relative z-20 flex flex-col items-center gap-4 pb-16 sm:flex-row sm:justify-center">
+        <Link href="/items/report-lost" className="btn-primary px-8 py-3">
+          Report Lost Item
+        </Link>
+        <Link href="/items/report-found" className="btn-secondary px-8 py-3">
+          Report Found Item
+        </Link>
+      </div>
 
       {/* Stats */}
-      <section className="mx-auto max-w-5xl px-4 py-16">
+      <section className="relative z-10 mx-auto max-w-5xl px-4 py-20">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div className="card rounded-2xl p-8 text-center">
-            <p className="text-4xl font-bold text-ink">{stats.total_items ?? "_"}</p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-ink-faint">Total Items Reported</p>
+            <p className="text-4xl font-bold text-text">{stats.total_items ?? "_"}</p>
+            <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Total Reported</p>
           </div>
           <div className="card rounded-2xl p-8 text-center">
-            <p className="text-4xl font-bold text-ink">{stats.total_recovered ?? "_"}</p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-ink-faint">Items Recovered</p>
+            <p className="text-4xl font-bold text-text">{stats.total_recovered ?? "_"}</p>
+            <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Recovered</p>
           </div>
           <div className="card rounded-2xl p-8 text-center">
-            <p className="text-4xl font-bold text-coral">{`${stats.recovery_rate ?? 0}%`}</p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-ink-faint">Recovery Rate</p>
+            <p className="text-4xl font-bold text-accent">{`${stats.recovery_rate ?? 0}%`}</p>
+            <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Recovery Rate</p>
           </div>
         </div>
       </section>
 
-      <div className="mx-auto max-w-7xl border-t border-cream-300" />
+      <div className="mx-auto max-w-7xl border-t border-border" />
 
       {/* Recently Found Items */}
-      <section className="mx-auto max-w-7xl px-4 py-16">
+      <section className="relative z-10 mx-auto max-w-7xl px-4 py-20">
         <div className="flex items-center justify-between">
-          <h2 className="section-title">Recently Found Items</h2>
-          <Link href="/items?type=FOUND" className="text-sm font-semibold uppercase tracking-wider text-coral hover:underline">
+          <h2 className="section-title">Recently Found</h2>
+          <Link href="/items?type=FOUND" className="text-sm font-semibold text-accent hover:text-accent-light transition-colors">
             View all
           </Link>
         </div>
         {items.length > 0 ? (
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {items.map((item) => (
-              <ItemCard key={item.id} {...item} />
+              <Link key={item.id} href={`/items/${item.id}`} className="card-hover group overflow-hidden">
+                <div className="aspect-[4/3] overflow-hidden bg-bg-elevated">
+                  {item.image_url ? (
+                    <img
+                      src={item.image_url}
+                      alt={item.title ?? "_"}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <svg className="h-12 w-12 text-text-ghost" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                <div className="p-4">
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className={`text-xs font-bold uppercase tracking-wider ${item.type === "LOST" ? "text-red-400" : "text-accent"}`}>
+                      {item.type ?? "_"}
+                    </span>
+                    <span className="badge-gray text-[10px]">{item.category ?? "_"}</span>
+                  </div>
+                  <h3 className="text-sm font-semibold text-text transition-colors group-hover:text-accent line-clamp-1">
+                    {item.title ?? "_"}
+                  </h3>
+                  <p className="mt-1 flex items-center gap-1 text-xs text-text-muted">
+                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {item.location_id ?? "_"}
+                  </p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="badge-accent text-[10px]">{item.status ?? "_"}</span>
+                    <time className="text-xs text-text-ghost" dateTime={item.date_of_event}>
+                      {item.date_of_event ? new Date(item.date_of_event).toLocaleDateString() : "_"}
+                    </time>
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
         ) : (
-          <p className="mt-8 text-center text-ink-muted">No items found yet. Be the first to report!</p>
+          <p className="mt-8 text-center text-text-muted">No items found yet. Be the first to report!</p>
         )}
       </section>
 
-      <div className="mx-auto max-w-7xl border-t border-cream-300" />
+      <div className="mx-auto max-w-7xl border-t border-border" />
 
       {/* Games Teaser */}
-      <section className="mx-auto max-w-5xl px-4 py-16">
+      <section className="relative z-10 mx-auto max-w-5xl px-4 py-20">
         <div className="text-center">
           <h2 className="section-title">Campus Games Hub</h2>
           <p className="section-subtitle mx-auto mt-2">
@@ -136,38 +174,23 @@ export default async function HomePage() {
           </p>
         </div>
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
-          <GameCard
+          <GameTeaser
             title="Detective Mode"
             description="Match lost items with found reports"
             href="/games/detective"
-            icon={
-              <svg className="h-10 w-10 text-coral" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            }
-            color="bg-cream-200"
+            icon="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
           />
-          <GameCard
+          <GameTeaser
             title="Ghost Items"
             description="Find items that were never claimed"
-            href="/games/ghost"
-            icon={
-              <svg className="h-10 w-10 text-coral" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            }
-            color="bg-cream-200"
+            href="/games/ghost-hunt"
+            icon="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
-          <GameCard
+          <GameTeaser
             title="Campus Quiz"
             description="Test your knowledge of campus locations"
-            href="/games/quiz"
-            icon={
-              <svg className="h-10 w-10 text-coral" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-            }
-            color="bg-cream-200"
+            href="/games/trivia"
+            icon="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
           />
         </div>
         <div className="mt-8 text-center">
@@ -177,5 +200,26 @@ export default async function HomePage() {
         </div>
       </section>
     </div>
+  );
+}
+
+function GameTeaser({ title, description, href, icon }: { title: string; description: string; href: string; icon: string }) {
+  return (
+    <Link href={href} className="card-hover group flex flex-col overflow-hidden">
+      <div className="flex h-36 items-center justify-center bg-bg-elevated">
+        <svg className="h-10 w-10 text-accent transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />
+        </svg>
+      </div>
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="text-lg font-semibold text-text">{title}</h3>
+        <p className="mt-1 flex-1 text-sm text-text-muted">{description}</p>
+        <div className="mt-4">
+          <span className="text-sm font-semibold text-accent group-hover:text-accent-light transition-colors">
+            Play Now &rarr;
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 }

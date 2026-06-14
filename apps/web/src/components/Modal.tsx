@@ -40,17 +40,17 @@ export function Modal({
   return (
     <dialog
       ref={dialogRef}
-      className="w-full max-w-lg animate-[fadeIn_0.2s_ease-out] rounded-2xl border border-cream-300 bg-white p-0 shadow-2xl backdrop:bg-ink/40 backdrop:backdrop-blur-sm"
+      className="w-full max-w-lg animate-[fadeIn_0.2s_ease-out] rounded-2xl border border-border-light bg-bg-card p-0 shadow-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm"
       aria-labelledby="modal-title"
     >
-      <div className="flex items-center justify-between border-b border-cream-300 px-6 py-4">
-        <h2 id="modal-title" className="text-lg font-bold text-ink">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
+        <h2 id="modal-title" className="text-lg font-bold text-text">
           {title ?? "_"}
         </h2>
         <button
           type="button"
           onClick={onClose}
-          className="rounded-xl p-1.5 text-ink-faint transition-colors hover:bg-cream-200 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral"
+          className="rounded-xl p-1.5 text-text-muted transition-colors hover:bg-bg-hover hover:text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           aria-label="Close"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">

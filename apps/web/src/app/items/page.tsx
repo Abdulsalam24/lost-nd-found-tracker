@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Suspense } from "react";
 import { serverFetch } from "@/lib/api";
 import { ItemCard } from "@/components/ItemCard";

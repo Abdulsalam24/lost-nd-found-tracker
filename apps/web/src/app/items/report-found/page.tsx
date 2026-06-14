@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useCallback, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { ImageUpload } from "@/components/ImageUpload";
 import { ITEM_CATEGORIES, CAMPUS_LOCATIONS } from "@/lib/constants";
 import Link from "next/link";
@@ -14,24 +15,40 @@ const schema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   category: z.string().min(1, "Select a category"),
-  location_id: z.string().min(1, "Select a location"),
+  location_name: z.string().min(1, "Select a location"),
   date_of_event: z.string().min(1, "Select the date"),
   serial_number: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
 
+const DRAFT_KEY = "report-found-draft";
+
 export default function ReportFoundPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const { user } = useAuth();
   const [error, setError] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (!error) return;
+    const t = setTimeout(() => setError(""), 5000);
+    return () => clearTimeout(t);
+  }, [error]);
+
+  const savedDraft = typeof window !== "undefined"
+    ? (() => { try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "{}"); } catch { return {}; } })()
+    : {};
 
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: savedDraft,
   });
 
   const handleFileSelect = useCallback((file: File) => {
@@ -39,17 +56,26 @@ export default function ReportFoundPage() {
   }, []);
 
   const onSubmit = async (data: FormData) => {
+    if (!user) {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(getValues()));
+      router.push(`/auth/login?redirect=${pathname}`);
+      return;
+    }
+
     setError("");
+    if (!imageFile) {
+      setError("Please upload an image of the item");
+      return;
+    }
     try {
-      const payload = { ...data, type: "FOUND" as const };
+      const formData = new FormData();
+      formData.append("file", imageFile);
+      const { url } = await api.upload<{ url: string }>("/items/upload", formData);
+
+      const payload = { ...data, type: "FOUND" as const, image_url: url };
       const item = await api.post<{ id: string }>("/items", payload);
 
-      if (imageFile && item.id) {
-        const formData = new FormData();
-        formData.append("file", imageFile);
-        await api.upload(`/items/${item.id}/image`, formData);
-      }
-
+      sessionStorage.removeItem(DRAFT_KEY);
       router.push(`/items/${item.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to submit report");
@@ -74,12 +100,6 @@ export default function ReportFoundPage() {
           <p className="section-subtitle mt-1">
             Help someone get their item back by reporting what you found.
           </p>
-
-          {error && (
-            <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600" role="alert">
-              {error}
-            </div>
-          )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-5" noValidate>
             <div>
@@ -129,20 +149,20 @@ export default function ReportFoundPage() {
               </div>
 
               <div>
-                <label htmlFor="location_id" className="label">Where Found</label>
+                <label htmlFor="location_name" className="label">Where Found</label>
                 <select
-                  id="location_id"
+                  id="location_name"
                   className="input-field"
-                  {...register("location_id")}
-                  aria-invalid={errors.location_id ? "true" : undefined}
-                  aria-describedby={errors.location_id ? "loc-error" : undefined}
+                  {...register("location_name")}
+                  aria-invalid={errors.location_name ? "true" : undefined}
+                  aria-describedby={errors.location_name ? "loc-error" : undefined}
                 >
                   <option value="">Select location</option>
                   {CAMPUS_LOCATIONS.map((loc) => (
-                    <option key={loc.id} value={loc.id}>{loc.name}</option>
+                    <option key={loc.id} value={loc.name}>{loc.name}</option>
                   ))}
                 </select>
-                {errors.location_id && <p id="loc-error" className="error-text">{errors.location_id.message}</p>}
+                {errors.location_name && <p id="loc-error" className="error-text">{errors.location_name.message}</p>}
               </div>
             </div>
 
@@ -173,7 +193,7 @@ export default function ReportFoundPage() {
             </div>
 
             <div>
-              <label className="label">Image (optional)</label>
+              <label className="label">Image</label>
               <ImageUpload onFileSelect={handleFileSelect} />
             </div>
 
@@ -187,6 +207,22 @@ export default function ReportFoundPage() {
           </form>
         </div>
       </div>
+
+      {error && (
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 animate-slide-up">
+          <div className="flex items-center gap-3 rounded-xl border border-red-800/50 bg-red-950/90 px-4 py-3 shadow-lg backdrop-blur-sm">
+            <svg className="h-5 w-5 flex-shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-sm font-medium text-red-200">{error}</p>
+            <button type="button" onClick={() => setError("")} className="ml-2 text-red-400 hover:text-red-300">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

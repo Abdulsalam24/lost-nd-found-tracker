@@ -44,6 +44,27 @@ export class User {
   @Column({ default: 0 })
   trivia_points!: number;
 
+  @Column({ type: 'varchar', nullable: true })
+  bank_name!: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  account_number!: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  account_name!: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  phone!: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  avatar_url!: string | null;
+
+  @Column({ type: 'varchar', length: 6, nullable: true })
+  otp_code!: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  otp_expires_at!: Date | null;
+
   @CreateDateColumn()
   created_at!: Date;
 

@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
-import { ITEM_CATEGORIES, ITEM_STATUSES, CAMPUS_LOCATIONS } from "@/lib/constants";
+import { useCallback, useEffect, useState } from "react";
+import { ITEM_CATEGORIES, ITEM_STATUSES } from "@/lib/constants";
+import { api } from "@/lib/api";
 
 const TYPE_OPTIONS = [
   { value: "", label: "All" },
@@ -10,9 +11,19 @@ const TYPE_OPTIONS = [
   { value: "FOUND", label: "Found" },
 ];
 
+interface LocationOption {
+  id: string;
+  name: string;
+}
+
 export function SearchFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [locations, setLocations] = useState<LocationOption[]>([]);
+
+  useEffect(() => {
+    api.get<LocationOption[]>("/items/locations").then(setLocations).catch(() => {});
+  }, []);
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -99,7 +110,7 @@ export function SearchFilters() {
             onChange={(e) => updateParam("location", e.target.value)}
           >
             <option value="">All Locations</option>
-            {CAMPUS_LOCATIONS.map((loc) => (
+            {locations.map((loc) => (
               <option key={loc.id} value={loc.id}>
                 {loc.name}
               </option>

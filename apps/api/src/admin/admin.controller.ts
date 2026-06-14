@@ -2,9 +2,13 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
+  Delete,
   Body,
+  Param,
   Query,
   UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -39,6 +43,19 @@ export class AdminController {
     );
   }
 
+  @Get('claims')
+  async getClaims(
+    @Query('status') status?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getClaims(
+      status,
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 50,
+    );
+  }
+
   @Get('audit-logs')
   async getAuditLogs(
     @Query('page') page?: string,
@@ -48,6 +65,20 @@ export class AdminController {
       page ? parseInt(page, 10) : 1,
       limit ? parseInt(limit, 10) : 50,
     );
+  }
+
+  @Patch('items/:id/status')
+  async updateItemStatus(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('status') status: string,
+  ) {
+    return this.adminService.updateItemStatus(id, status);
+  }
+
+  @Delete('items/:id')
+  async deleteItem(@Param('id', ParseUUIDPipe) id: string) {
+    await this.adminService.deleteItem(id);
+    return { message: 'Item deleted' };
   }
 
   @Post('games/ghost-hunt')

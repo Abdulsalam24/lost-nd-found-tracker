@@ -40,6 +40,9 @@ export class Claim {
   @JoinColumn({ name: 'image_asset_id' })
   image_asset!: ImageAsset | null;
 
+  @Column({ type: 'varchar', nullable: true })
+  evidence_image_url!: string | null;
+
   @Column({ type: 'enum', enum: ClaimStatus, default: ClaimStatus.PENDING })
   status!: ClaimStatus;
 

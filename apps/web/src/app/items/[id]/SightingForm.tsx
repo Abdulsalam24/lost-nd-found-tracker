@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api } from "@/lib/api";
-import { CAMPUS_LOCATIONS } from "@/lib/constants";
+import { useAuth } from "@/lib/auth";
 
 const schema = z.object({
   description: z.string().min(5, "Description must be at least 5 characters"),
@@ -15,9 +15,22 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export function SightingForm({ itemId }: { itemId: string }) {
+interface LocationOption {
+  id: string;
+  name: string;
+}
+
+export function SightingForm({ itemId, reporterId }: { itemId: string; reporterId: string }) {
+  const { user } = useAuth();
+
+  if (user?.id === reporterId) return null;
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [locations, setLocations] = useState<LocationOption[]>([]);
+
+  useEffect(() => {
+    api.get<LocationOption[]>("/items/locations").then(setLocations).catch(() => {});
+  }, []);
 
   const {
     register,
@@ -75,7 +88,7 @@ export function SightingForm({ itemId }: { itemId: string }) {
           <label htmlFor="sighting-location" className="label">Location (optional)</label>
           <select id="sighting-location" className="input-field" {...register("location_id")}>
             <option value="">Select location</option>
-            {CAMPUS_LOCATIONS.map((loc) => (
+            {locations.map((loc) => (
               <option key={loc.id} value={loc.id}>{loc.name}</option>
             ))}
           </select>

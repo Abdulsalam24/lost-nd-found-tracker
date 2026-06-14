@@ -10,4 +10,24 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   faculty?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  bank_name?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  account_number?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  account_name?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  phone?: string;
 }

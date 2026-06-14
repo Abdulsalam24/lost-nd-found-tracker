@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ItemReport } from './entities/item-report.entity';
+import { Location } from './entities/location.entity';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { QueryItemsDto } from './dto/query-items.dto';
@@ -20,9 +21,15 @@ export class ItemsService {
   constructor(
     @InjectRepository(ItemReport)
     private itemsRepo: Repository<ItemReport>,
+    @InjectRepository(Location)
+    private locationRepo: Repository<Location>,
     private searchService: SearchService,
     private auditService: AuditService,
   ) {}
+
+  async findAllLocations(): Promise<Location[]> {
+    return this.locationRepo.find({ order: { name: 'ASC' } });
+  }
 
   async findAll(query: QueryItemsDto): Promise<PaginatedResponse<ItemReport>> {
     const page = query.page ?? 1;
@@ -73,8 +80,17 @@ export class ItemsService {
   }
 
   async create(dto: CreateItemDto, user: User): Promise<ItemReport> {
+    let location = await this.locationRepo.findOne({ where: { name: dto.location_name } });
+    if (!location) {
+      location = await this.locationRepo.save(
+        this.locationRepo.create({ name: dto.location_name, building: dto.location_name, faculty: 'General', description: '' }),
+      );
+    }
+
+    const { location_name, ...rest } = dto;
     const item = this.itemsRepo.create({
-      ...dto,
+      ...rest,
+      location_id: location.id,
       reporter_id: user.id,
     });
 

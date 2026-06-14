@@ -89,7 +89,7 @@ export function ClaimButton({ itemId, itemStatus }: { itemId: string; itemStatus
 
       <Modal open={open} onClose={() => setOpen(false)} title="Claim This Item">
         {error && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600" role="alert">
+          <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400" role="alert">
             {error}
           </div>
         )}
@@ -118,7 +118,7 @@ export function ClaimButton({ itemId, itemStatus }: { itemId: string; itemStatus
               accept="image/*"
               capture="environment"
               onChange={handleImageChange}
-              className="input-field file:mr-3 file:rounded-full file:border-0 file:bg-coral-50 file:px-3 file:py-1 file:text-xs file:font-medium file:text-coral hover:file:bg-coral-100"
+              className="input-field file:mr-3 file:rounded-full file:border-0 file:bg-accent/10 file:px-3 file:py-1 file:text-xs file:font-medium file:text-accent hover:file:bg-accent/20"
             />
           </div>
 

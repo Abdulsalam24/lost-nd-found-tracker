@@ -3,106 +3,200 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --grid: 140 60% 20%;
+    --grid-fine-opacity: 0.55;
+    --grid-coarse-opacity: 0.35;
+    --vignette-color: 140 60% 4%;
+  }
+
+  .light {
+    --grid: 30 20% 60%;
+    --grid-fine-opacity: 0.3;
+    --grid-coarse-opacity: 0.2;
+    --vignette-color: 30 20% 95%;
+  }
+
   html {
+    color-scheme: dark;
+  }
+
+  html.light {
     color-scheme: light;
   }
 
   body {
-    @apply bg-cream text-ink antialiased;
+    @apply bg-bg text-text antialiased;
+    font-family: "Sora", system-ui, sans-serif;
   }
 
   *:focus-visible {
-    @apply outline-2 outline-offset-2 outline-coral;
+    @apply outline-2 outline-offset-2 outline-accent;
   }
 
   ::selection {
-    background: rgba(201, 107, 85, 0.15);
-    color: #1a1a1a;
+    background: rgba(52, 211, 153, 0.2);
+    color: #f0fdf4;
   }
+
+  .light ::selection {
+    background: rgba(5, 150, 105, 0.15);
+    color: #1a2e1a;
+  }
+}
+
+/* Grid background overlay */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(hsl(var(--grid) / var(--grid-fine-opacity)) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--grid) / var(--grid-fine-opacity)) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: gridDrift 20s linear infinite;
+}
+
+.grid-bg-coarse {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(hsl(var(--grid) / var(--grid-coarse-opacity)) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--grid) / var(--grid-coarse-opacity)) 1px, transparent 1px);
+  background-size: 192px 192px;
+  animation: gridDriftCoarse 80s linear infinite;
+}
+
+.grid-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 0%, transparent 35%, hsl(var(--vignette-color) / 0.85) 100%);
+}
+
+@keyframes gridDrift {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 48px 48px, 48px 48px; }
+}
+
+@keyframes gridDriftCoarse {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 192px 192px, 192px 192px; }
+}
+
+@keyframes radarPulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(8); opacity: 0; }
+}
+
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-bold text-cream tracking-wide uppercase transition-all hover:bg-ink-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-bg tracking-wide transition-all hover:bg-accent-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98];
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-ink bg-transparent px-6 py-3 text-sm font-bold text-ink tracking-wide uppercase transition-all hover:bg-ink hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-border-light bg-transparent px-6 py-3 text-sm font-semibold text-text tracking-wide transition-all hover:bg-bg-hover hover:border-accent hover:border-opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98];
   }
 
   .btn-danger {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-red-50 border border-red-200 px-6 py-3 text-sm font-semibold text-red-600 transition-all hover:bg-red-100 focus-visible:outline disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-red-950/50 border border-red-800/50 px-6 py-3 text-sm font-semibold text-red-400 transition-all hover:bg-red-900/30 focus-visible:outline disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-ink-muted transition-colors hover:text-ink hover:bg-cream-200;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-text hover:bg-bg-hover;
   }
 
   .input-field {
-    @apply block w-full rounded-xl border border-cream-300 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-ghost focus:border-coral focus:ring-1 focus:ring-coral transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply block w-full rounded-xl border border-border bg-bg-card px-4 py-3 text-sm text-text placeholder:text-text-ghost focus:border-accent focus:ring-1 focus:ring-accent transition-all disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .label {
-    @apply block text-sm font-semibold text-ink-muted uppercase tracking-wider mb-1.5;
+    @apply block text-sm font-semibold text-text-secondary tracking-wider mb-1.5;
   }
 
   .card {
-    @apply rounded-2xl border border-cream-300 bg-white;
+    @apply rounded-2xl border border-border-card bg-bg-card backdrop-blur-sm;
   }
 
   .card-hover {
-    @apply card transition-all hover:border-kraft hover:shadow-lg hover:shadow-kraft/10;
+    @apply card transition-all hover:border-[#34d3994d] hover:shadow-lg hover:shadow-[#34d3990d];
   }
 
   .error-text {
-    @apply mt-1.5 text-xs text-red-500;
+    @apply mt-1.5 text-xs text-red-400;
   }
 
   .section-title {
-    @apply text-3xl font-bold tracking-tight text-ink sm:text-4xl;
+    @apply text-3xl font-bold tracking-tight text-text sm:text-4xl;
   }
 
   .section-subtitle {
-    @apply text-ink-muted text-base sm:text-lg max-w-2xl;
+    @apply text-text-secondary text-base sm:text-lg max-w-2xl;
   }
 
   .badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide;
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold tracking-wide;
   }
 
   .badge-accent {
-    @apply badge bg-emerald-50 text-emerald-700 border border-emerald-200;
+    @apply badge bg-[#34d3991a] text-accent border border-[#34d39933];
   }
 
   .badge-red {
-    @apply badge bg-coral-50 text-coral-dark border border-coral/20;
+    @apply badge bg-red-950/50 text-red-400 border border-red-800/30;
   }
 
   .badge-blue {
-    @apply badge bg-blue-50 text-blue-700 border border-blue-200;
+    @apply badge bg-blue-950/50 text-blue-400 border border-blue-800/30;
   }
 
   .badge-amber {
-    @apply badge bg-amber-50 text-amber-700 border border-amber-200;
+    @apply badge bg-amber-950/50 text-amber-400 border border-amber-800/30;
   }
 
   .badge-purple {
-    @apply badge bg-purple-50 text-purple-700 border border-purple-200;
+    @apply badge bg-purple-950/50 text-purple-400 border border-purple-800/30;
   }
 
   .badge-gray {
-    @apply badge bg-cream-200 text-ink-muted border border-cream-300;
+    @apply badge bg-bg-elevated text-text-muted border border-border;
   }
 
   .divider {
-    @apply border-t border-cream-300 my-5;
+    @apply border-t border-border my-5;
   }
 
   .table-row {
-    @apply border-b border-cream-200 hover:bg-cream-50 transition-colors;
+    @apply border-b border-border hover:bg-bg-hover transition-colors;
   }
 
   .table-header {
-    @apply text-left text-xs font-semibold uppercase tracking-wider text-ink-faint pb-3 border-b border-cream-300;
+    @apply text-left text-xs font-semibold uppercase tracking-wider text-text-muted pb-3 border-b border-border;
   }
+}
+
+/* Light mode color overrides */
+.light {
+  --color-bg: #f5f0e8;
+  --color-bg-card: #ffffff;
+  --color-bg-elevated: #f0ebe3;
+  --color-bg-hover: #e8e3db;
+  --color-text: #1a2e1a;
+  --color-text-secondary: #5a6b5a;
+  --color-text-muted: #7a8b7a;
+  --color-text-ghost: #9ca89c;
+  --color-border: #d4cfc7;
+  --color-border-light: #c4bfb7;
+  --color-border-card: #ddd8d0;
+  --color-accent: #059669;
+  --color-accent-light: #34d399;
 }

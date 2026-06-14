@@ -1,21 +1,15 @@
 import type { Metadata } from "next";
-import { DM_Sans, Playfair_Display } from "next/font/google";
+import { Sora } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/lib/AuthProvider";
+import { ThemeProvider } from "@/lib/ThemeProvider";
 import "./globals.css";
 
-const dmSans = DM_Sans({
+const sora = Sora({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
-  weight: ["400", "500", "600", "700"],
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  weight: ["400", "600"],
-  style: ["normal", "italic"],
+  variable: "--font-sora",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -25,13 +19,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${playfair.variable}`}>
+    <html lang="en" className={sora.variable}>
       <body className="font-sans flex min-h-screen flex-col">
-        <AuthProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </AuthProvider>
+        <div className="grid-bg" aria-hidden="true" />
+        <div className="grid-bg-coarse" aria-hidden="true" />
+        <div className="grid-vignette" aria-hidden="true" />
+        <ThemeProvider>
+          <AuthProvider>
+            <Navbar />
+            <main className="relative z-10 flex-1">{children}</main>
+            <Footer />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

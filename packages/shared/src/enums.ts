@@ -16,6 +16,7 @@ export enum ItemCategory {
   STATIONERY = 'STATIONERY',
   BAGS = 'BAGS',
   KEYS = 'KEYS',
+  COURSE_FORM = 'COURSE_FORM',
   OTHER = 'OTHER',
 }
 

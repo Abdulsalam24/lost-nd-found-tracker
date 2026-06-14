@@ -1,7 +1,24 @@
 import Link from "next/link";
 import { GameCard } from "@/components/GameCard";
+import { serverFetch } from "@/lib/api";
 
-export default function GamesPage() {
+interface LeaderboardEntry {
+  user_id: string;
+  name: string | null;
+  total_points: number;
+}
+
+async function getTriviaLeaderboard(): Promise<LeaderboardEntry[]> {
+  try {
+    return await serverFetch<LeaderboardEntry[]>("/games/trivia/leaderboard");
+  } catch {
+    return [];
+  }
+}
+
+export default async function GamesPage() {
+  const leaderboard = await getTriviaLeaderboard();
+
   return (
     <div className="min-h-screen bg-cream">
       <div className="mx-auto max-w-5xl px-4 py-8">
@@ -49,8 +66,87 @@ export default function GamesPage() {
           />
         </div>
 
+        {/* Trivia Leaderboard */}
+        {leaderboard.length > 0 && (
+          <div className="mt-12">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-text">Trivia Leaderboard</h2>
+                <p className="mt-1 text-xs text-text-muted">Top players across all trivia challenges</p>
+              </div>
+              <Link href="/games/trivia" className="text-sm font-medium text-accent hover:underline">
+                Play now
+              </Link>
+            </div>
+
+            {/* Champion */}
+            {leaderboard[0] && (
+              <div className="mt-4 card overflow-hidden border border-yellow-500/20">
+                <div className="bg-gradient-to-r from-yellow-500/10 via-yellow-500/5 to-transparent px-5 py-4">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-yellow-500/15 text-3xl">
+                      👑
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] font-semibold uppercase tracking-widest text-yellow-500/70">Current Champion</p>
+                      <p className="mt-0.5 text-lg font-bold text-text truncate">
+                        {leaderboard[0].name || leaderboard[0].user_id.slice(0, 8)}
+                      </p>
+                      {!leaderboard[0].name && (
+                        <p className="text-[10px] text-text-ghost">Anonymous player</p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-yellow-400">{leaderboard[0].total_points}</p>
+                      <p className="text-[10px] text-text-muted">points</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Rest */}
+            {leaderboard.length > 1 && (
+              <div className="mt-3 space-y-2">
+                {leaderboard.slice(1, 10).map((entry, i) => {
+                  const rank = i + 2;
+                  const displayName = entry.name || entry.user_id.slice(0, 8);
+
+                  return (
+                    <div
+                      key={entry.user_id}
+                      className={`card flex items-center gap-4 p-4 ${rank <= 3 ? "border border-border-light" : ""}`}
+                    >
+                      {rank === 2 ? (
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center text-xl">🥈</span>
+                      ) : rank === 3 ? (
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center text-xl">🥉</span>
+                      ) : (
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bg-elevated text-sm font-bold text-text-muted">
+                          {rank}
+                        </span>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className={`font-semibold truncate ${rank <= 3 ? "text-text" : "text-text-secondary"}`}>
+                          {displayName}
+                        </p>
+                        {!entry.name && (
+                          <p className="text-[10px] text-text-ghost">Anonymous player</p>
+                        )}
+                      </div>
+                      <span className={`text-sm font-bold ${rank <= 3 ? "text-accent" : "text-text-muted"}`}>
+                        {entry.total_points} pts
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="mt-8 text-center">
-          <Link href="/games/hall-of-fame" className="text-sm font-semibold text-coral hover:text-coral-dark">
+          <Link href="/games/hall-of-fame" className="text-sm font-semibold text-accent hover:underline">
             View Hall of Fame &rarr;
           </Link>
         </div>

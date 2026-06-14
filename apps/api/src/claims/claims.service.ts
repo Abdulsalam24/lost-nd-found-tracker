@@ -3,13 +3,14 @@ import {
   NotFoundException,
   ConflictException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Claim } from './entities/claim.entity';
 import { ItemReport } from '../items/entities/item-report.entity';
 import { CreateClaimDto } from './dto/create-claim.dto';
-import { ClaimStatus, ItemStatus } from '@lostfound/shared';
+import { ClaimStatus, ItemStatus, UserRole } from '@lostfound/shared';
 import { User } from '../users/entities/user.entity';
 import { AuditService } from '../audit/audit.service';
 import { NotificationsService } from '../notifications/notifications.service';
@@ -90,18 +91,32 @@ export class ClaimsService {
     });
   }
 
-  async approve(claimId: string, admin: User): Promise<Claim> {
-    return this.reviewClaim(claimId, ClaimStatus.APPROVED, admin);
+  async findClaimsForItem(itemId: string, reporterId: string): Promise<Claim[]> {
+    const item = await this.itemsRepo.findOne({ where: { id: itemId } });
+    if (!item) throw new NotFoundException('Item not found');
+    if (item.reporter_id !== reporterId) {
+      throw new ForbiddenException('Not your item');
+    }
+
+    return this.claimsRepo.find({
+      where: { item_report_id: itemId },
+      relations: ['claimant'],
+      order: { created_at: 'DESC' },
+    });
   }
 
-  async reject(claimId: string, admin: User): Promise<Claim> {
-    return this.reviewClaim(claimId, ClaimStatus.REJECTED, admin);
+  async approve(claimId: string, reviewer: User): Promise<Claim> {
+    return this.reviewClaim(claimId, ClaimStatus.APPROVED, reviewer);
+  }
+
+  async reject(claimId: string, reviewer: User): Promise<Claim> {
+    return this.reviewClaim(claimId, ClaimStatus.REJECTED, reviewer);
   }
 
   private async reviewClaim(
     claimId: string,
     status: ClaimStatus,
-    admin: User,
+    reviewer: User,
   ): Promise<Claim> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -130,8 +145,15 @@ export class ClaimsService {
         throw new NotFoundException('Item not found');
       }
 
+      // Allow reporter of the item OR admin to review
+      const isReporter = item.reporter_id === reviewer.id;
+      const isAdmin = reviewer.role === UserRole.ADMIN;
+      if (!isReporter && !isAdmin) {
+        throw new ForbiddenException('Only the item reporter or an admin can review claims');
+      }
+
       claim.status = status;
-      claim.reviewed_by = admin.id;
+      claim.reviewed_by = reviewer.id;
       claim.reviewed_at = new Date();
       await queryRunner.manager.save(claim);
 
@@ -156,7 +178,7 @@ export class ClaimsService {
         await queryRunner.manager
           .createQueryBuilder()
           .update(Claim)
-          .set({ status: ClaimStatus.REJECTED, reviewed_by: admin.id, reviewed_at: new Date() })
+          .set({ status: ClaimStatus.REJECTED, reviewed_by: reviewer.id, reviewed_at: new Date() })
           .where('item_report_id = :itemId AND id != :claimId AND status = :pending', {
             itemId: item.id,
             claimId: claim.id,
@@ -168,7 +190,7 @@ export class ClaimsService {
       await queryRunner.commitTransaction();
 
       await this.auditService.log({
-        actor_id: admin.id,
+        actor_id: reviewer.id,
         action_type: status === ClaimStatus.APPROVED ? 'CLAIM_APPROVED' : 'CLAIM_REJECTED',
         target_id: claimId,
         target_type: 'Claim',

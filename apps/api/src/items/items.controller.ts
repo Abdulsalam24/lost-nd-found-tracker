@@ -8,8 +8,16 @@ import {
   Param,
   Query,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
   ParseUUIDPipe,
+  BadRequestException,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname, join } from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { mkdirSync } from 'fs';
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
@@ -18,9 +26,17 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 
+const uploadsDir = join(__dirname, '..', '..', 'uploads');
+mkdirSync(uploadsDir, { recursive: true });
+
 @Controller('items')
 export class ItemsController {
   constructor(private itemsService: ItemsService) {}
+
+  @Get('locations')
+  async getLocations() {
+    return this.itemsService.findAllLocations();
+  }
 
   @Get()
   async findAll(@Query() query: QueryItemsDto) {
@@ -30,6 +46,35 @@ export class ItemsController {
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.itemsService.findById(id);
+  }
+
+  @Post('upload')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: uploadsDir,
+        filename: (_req, file, cb) => {
+          const name = `${uuidv4()}${extname(file.originalname)}`;
+          cb(null, name);
+        },
+      }),
+      limits: { fileSize: 5 * 1024 * 1024 },
+      fileFilter: (_req, file, cb) => {
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype)) {
+          cb(new BadRequestException('Only JPG, PNG, and WEBP images are allowed') as any, false);
+          return;
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded');
+    }
+    const url = `http://localhost:3002/uploads/${file.filename}`;
+    return { url };
   }
 
   @Post()

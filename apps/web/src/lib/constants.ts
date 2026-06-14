@@ -56,6 +56,7 @@ export const ITEM_CATEGORIES = [
   { value: "STATIONERY", label: "Stationery" },
   { value: "BAGS", label: "Bags" },
   { value: "KEYS", label: "Keys" },
+  { value: "COURSE_FORM", label: "Course Form" },
   { value: "OTHER", label: "Other" },
 ] as const;
 

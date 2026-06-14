@@ -53,6 +53,9 @@ export class ItemReport {
   @Column({ type: 'varchar', nullable: true })
   serial_number!: string | null;
 
+  @Column({ type: 'varchar', nullable: true })
+  image_url!: string | null;
+
   @Column({ type: 'enum', enum: ItemStatus, default: ItemStatus.ACTIVE })
   status!: ItemStatus;
 

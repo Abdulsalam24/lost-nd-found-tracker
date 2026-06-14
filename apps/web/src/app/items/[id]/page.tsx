@@ -4,8 +4,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { CategoryBadge } from "@/components/CategoryBadge";
 import { Timeline } from "@/components/Timeline";
 import { ItemCard } from "@/components/ItemCard";
-import { SightingForm } from "./SightingForm";
-import { ClaimButton } from "./ClaimButton";
+import { ItemActions } from "./ItemActions";
 import Link from "next/link";
 
 interface ItemDetail {
@@ -18,18 +17,11 @@ interface ItemDetail {
   date_of_event: string;
   serial_number?: string;
   status: string;
-  reported_by: string;
+  reporter_id: string;
+  reporter?: { id: string; name: string; phone?: string | null };
   image_url?: string;
   created_at: string;
   updated_at: string;
-}
-
-interface Sighting {
-  id: string;
-  description: string;
-  location_id?: string;
-  spotted_at: string;
-  created_at: string;
 }
 
 interface MatchingItem {
@@ -48,15 +40,6 @@ async function getItem(id: string): Promise<ItemDetail | null> {
     return await serverFetch<ItemDetail>(`/items/${id}`);
   } catch {
     return null;
-  }
-}
-
-async function getSightings(id: string): Promise<Sighting[]> {
-  try {
-    const res = await serverFetch<{ data: Sighting[] }>(`/items/${id}/sightings`);
-    return res.data ?? [];
-  } catch {
-    return [];
   }
 }
 
@@ -95,9 +78,8 @@ function buildTimeline(item: ItemDetail) {
 }
 
 export default async function ItemDetailPage({ params }: { params: { id: string } }) {
-  const [item, sightings, matches] = await Promise.all([
+  const [item, matches] = await Promise.all([
     getItem(params.id),
-    getSightings(params.id),
     getMatches(params.id),
   ]);
 
@@ -175,33 +157,6 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
               </div>
             </div>
 
-            <div className="card p-6">
-              <h2 className="text-lg font-bold text-ink">Sightings</h2>
-              {sightings.length > 0 ? (
-                <ul className="mt-4 space-y-3" role="list">
-                  {sightings.map((s) => (
-                    <li key={s.id} className="rounded-lg bg-cream-100 border border-cream-300 p-4">
-                      <p className="text-sm text-ink-muted">{s.description ?? "_"}</p>
-                      <div className="mt-2 flex gap-4 text-xs text-ink-faint">
-                        {s.location_id && <span>Location: {s.location_id}</span>}
-                        <time dateTime={s.spotted_at}>
-                          Spotted: {s.spotted_at ? new Date(s.spotted_at).toLocaleString() : "_"}
-                        </time>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="mt-3 text-sm text-ink-faint">No sightings reported yet.</p>
-              )}
-
-              <div className="divider" />
-
-              <h3 className="text-base font-bold text-ink">Submit a Sighting</h3>
-              <p className="text-xs text-ink-faint mt-1">No account needed to report a sighting.</p>
-              <SightingForm itemId={item.id} />
-            </div>
-
             {matches.length > 0 && (
               <section>
                 <h2 className="text-lg font-bold text-ink mb-4">Potential Matches</h2>
@@ -222,7 +177,7 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
               </div>
             </div>
 
-            <ClaimButton itemId={item.id} itemStatus={item.status} />
+            <ItemActions itemId={item.id} itemStatus={item.status} reportedBy={item.reporter_id} itemTitle={item.title} reporterPhone={item.reporter?.phone} />
           </aside>
         </div>
       </div>

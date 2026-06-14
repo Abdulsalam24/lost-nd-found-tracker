@@ -13,6 +13,23 @@ const SERVER_API_BASE =
   process.env.NEXT_PUBLIC_API_URL ??
   "http://localhost:3002";
 
+let memoryToken: string | null = null;
+
+export function setToken(token: string | null) {
+  memoryToken = token;
+  if (token) {
+    Cookies.set("access_token", token, { expires: 7 });
+  } else {
+    Cookies.remove("access_token");
+  }
+}
+
+export function getToken(): string | undefined {
+  if (memoryToken) return memoryToken;
+  if (typeof window !== "undefined") return Cookies.get("access_token");
+  return undefined;
+}
+
 interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
 }
@@ -25,13 +42,14 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     ...((customHeaders as Record<string, string>) ?? {}),
   };
 
-  const token = Cookies.get("access_token");
+  const token = getToken();
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
   const res = await fetch(`${CLIENT_API_BASE}${endpoint}`, {
     headers,
+    credentials: "include",
     body: body ? JSON.stringify(body) : undefined,
     ...rest,
   });
@@ -53,8 +71,8 @@ export const api = {
   delete: <T>(endpoint: string, init?: RequestInit) => request<T>(endpoint, { method: "DELETE", ...init }),
 
   upload: async <T>(endpoint: string, formData: FormData): Promise<T> => {
-    const token = Cookies.get("access_token");
     const headers: Record<string, string> = {};
+    const token = getToken();
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
@@ -62,6 +80,7 @@ export const api = {
     const res = await fetch(`${CLIENT_API_BASE}${endpoint}`, {
       method: "POST",
       headers,
+      credentials: "include",
       body: formData,
     });
 
@@ -76,7 +95,7 @@ export const api = {
 
 export function serverFetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
   return fetch(`${SERVER_API_BASE}${endpoint}`, {
-    next: { revalidate: 60 },
+    cache: "no-store",
     ...options,
   }).then((res) => {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ItemReport } from '../items/entities/item-report.entity';
@@ -52,6 +52,50 @@ export class AdminService {
 
     return {
       data,
+      total,
+      page,
+      limit,
+      total_pages: Math.ceil(total / limit),
+    };
+  }
+
+  async updateItemStatus(id: string, status: string) {
+    const item = await this.itemsRepo.findOne({ where: { id } });
+    if (!item) throw new NotFoundException('Item not found');
+    item.status = status as ItemStatus;
+    return this.itemsRepo.save(item);
+  }
+
+  async deleteItem(id: string) {
+    const item = await this.itemsRepo.findOne({ where: { id } });
+    if (!item) throw new NotFoundException('Item not found');
+    await this.itemsRepo.remove(item);
+  }
+
+  async getClaims(status?: string, page = 1, limit = 50) {
+    const where: any = {};
+    if (status) where.status = status;
+
+    const [data, total] = await this.claimsRepo.findAndCount({
+      where,
+      relations: ['claimant', 'item_report'],
+      order: { created_at: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      data: data.map((c) => ({
+        id: c.id,
+        item_report_id: c.item_report_id,
+        item_title: c.item_report?.title ?? null,
+        claimant_id: c.claimant_id,
+        claimant_name: c.claimant?.name ?? null,
+        evidence_description: c.evidence_description,
+        evidence_image_url: (c as any).evidence_image_url ?? null,
+        status: c.status,
+        created_at: c.created_at,
+      })),
       total,
       page,
       limit,
