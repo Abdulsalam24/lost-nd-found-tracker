@@ -94,11 +94,19 @@ export const api = {
 };
 
 export function serverFetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+
   return fetch(`${SERVER_API_BASE}${endpoint}`, {
     cache: "no-store",
+    signal: controller.signal,
     ...options,
   }).then((res) => {
+    clearTimeout(timeout);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
+  }).catch((err) => {
+    clearTimeout(timeout);
+    throw err;
   });
 }

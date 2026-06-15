@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { serverFetch } from "@/lib/api";
 import { FloatingItems } from "@/components/FloatingItems";
