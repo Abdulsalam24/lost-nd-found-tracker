@@ -35,7 +35,7 @@ import { FeedbackModule } from './feedback/feedback.module';
         type: 'postgres' as const,
         url: config.get<string>('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: config.get<string>('NODE_ENV') !== 'production',
+        synchronize: true,
         logging: config.get<string>('NODE_ENV') !== 'production',
       }),
     }),
