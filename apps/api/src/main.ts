@@ -10,8 +10,13 @@ export async function startApp(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const config = app.get(ConfigService);
 
+  const allowedOrigins = [
+    'http://localhost:3001',
+    config.get<string>('APP_URL', ''),
+  ].filter(Boolean);
+
   app.enableCors({
-    origin: config.get<string>('APP_URL', 'http://localhost:3001'),
+    origin: allowedOrigins,
     credentials: true,
   });
 
