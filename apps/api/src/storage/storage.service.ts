@@ -13,7 +13,6 @@ import {
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 import { createHash } from 'crypto';
 import { writeFile, mkdir, unlink } from 'fs/promises';
@@ -77,29 +76,16 @@ export class StorageService {
 
     const checksum = createHash('sha256').update(file.buffer).digest('hex');
 
-    const thumbnail = await sharp(file.buffer)
-      .resize(300, 300, { fit: 'inside' })
-      .toBuffer();
-
     if (this.useLocal) {
       const dir = join(this.uploadsDir, 'items', itemReportId);
       await mkdir(dir, { recursive: true });
       await writeFile(join(this.uploadsDir, objectKey), file.buffer);
-      await writeFile(join(this.uploadsDir, thumbnailKey), thumbnail);
     } else {
       await this.s3!.send(
         new PutObjectCommand({
           Bucket: this.bucket,
           Key: objectKey,
           Body: file.buffer,
-          ContentType: file.mimetype,
-        }),
-      );
-      await this.s3!.send(
-        new PutObjectCommand({
-          Bucket: this.bucket,
-          Key: thumbnailKey,
-          Body: thumbnail,
           ContentType: file.mimetype,
         }),
       );
