@@ -36,6 +36,7 @@ import { FeedbackModule } from './feedback/feedback.module';
         url: config.get<string>('DATABASE_URL'),
         autoLoadEntities: true,
         synchronize: true,
+        dropSchema: true,
         logging: config.get<string>('NODE_ENV') !== 'production',
       }),
     }),
