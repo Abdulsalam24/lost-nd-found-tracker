@@ -136,7 +136,6 @@ async function runSeed(): Promise<void> {
     url: process.env.DATABASE_URL,
     entities: [User, UserBadge, Location, ItemReport, ImageAsset, Claim, Sighting, AuditLog, Notification, DetectiveGuess, GhostHunt, TriviaQuestion, TriviaAnswer],
     synchronize: true,
-    dropSchema: true,
   });
 
   await dataSource.initialize();
