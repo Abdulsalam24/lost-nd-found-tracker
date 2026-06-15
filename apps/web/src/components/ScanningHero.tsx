@@ -57,8 +57,8 @@ export function ScanningHero({ items = [] }: Props) {
   const [phase, setPhase] = useState<"scanning" | "found">("scanning");
   const [visibleCards, setVisibleCards] = useState<number[]>([]);
 
-  const cards = useMemo(() => {
-    const source = items.length > 0 ? items : FALLBACK_CARDS;
+  const cards = useMemo((): ItemCard[] => {
+    const source: ItemCard[] = items.length > 0 ? items : FALLBACK_CARDS;
     const shuffled = [...source].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, DESKTOP_POSITIONS.length);
   }, [items]);

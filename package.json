@@ -7,6 +7,7 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=apps/api\" \"npm run dev --workspace=apps/web\"",
+    "build": "concurrently \"npm run build --workspace=apps/api\" \"npm run build --workspace=apps/web\"",
     "lint": "eslint . --ext .ts,.tsx",
     "migration:run": "npm run migration:run --workspace=apps/api",
     "seed": "npm run seed --workspace=apps/api"
