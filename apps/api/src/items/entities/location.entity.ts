@@ -8,10 +8,10 @@ export class Location {
   @Column()
   name!: string;
 
-  @Column()
+  @Column({ default: '' })
   building!: string;
 
-  @Column()
+  @Column({ default: '' })
   faculty!: string;
 
   @Column({ type: 'text', default: '' })
