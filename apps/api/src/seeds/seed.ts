@@ -15,7 +15,7 @@ import { DetectiveGuess } from '../games/detective/entities/detective-guess.enti
 import { GhostHunt } from '../games/ghost-hunt/entities/ghost-hunt.entity';
 import { TriviaQuestion } from '../games/trivia/entities/trivia-question.entity';
 import { TriviaAnswer } from '../games/trivia/entities/trivia-answer.entity';
-import { UserRole, TriviaType } from '@lostfound/shared';
+import { UserRole, TriviaType, ItemType, ItemCategory } from '@lostfound/shared';
 
 config({ path: resolve(__dirname, '../../../../.env') });
 
@@ -130,6 +130,50 @@ const STATIC_TRIVIA_POOL = [
   },
 ];
 
+const SEED_USERS = [
+  { name: 'Aisha Bello', faculty: 'Faculty of Science' },
+  { name: 'Tunde Olaiya', faculty: 'Faculty of Engineering' },
+  { name: 'Fatima Abdullahi', faculty: 'Faculty of Arts' },
+  { name: 'Chinedu Okafor', faculty: 'Faculty of Law' },
+  { name: 'Mariam Yusuf', faculty: 'Faculty of Education' },
+  { name: 'Ibrahim Suleiman', faculty: 'Faculty of Management Sciences' },
+  { name: 'Blessing Eze', faculty: 'Faculty of Social Sciences' },
+  { name: 'Yusuf Garba', faculty: 'Faculty of Agriculture' },
+  { name: 'Khadijah Musa', faculty: 'Faculty of Life Sciences' },
+  { name: 'Emeka Nwosu', faculty: 'Faculty of Physical Sciences' },
+  { name: 'Halima Danjuma', faculty: 'Faculty of Pharmaceutical Sciences' },
+  { name: 'David Okonkwo', faculty: 'Faculty of Veterinary Medicine' },
+  { name: 'Zainab Ahmed', faculty: 'College of Health Sciences' },
+  { name: 'Samuel Adeyemi', faculty: 'Faculty of Engineering' },
+  { name: 'Rukayat Lawal', faculty: 'Faculty of Science' },
+  { name: 'Peter Obi', faculty: 'Faculty of Arts' },
+  { name: 'Amina Bakare', faculty: 'Faculty of Education' },
+  { name: 'John Adekunle', faculty: 'Faculty of Law' },
+  { name: 'Hafsat Idris', faculty: 'Faculty of Management Sciences' },
+  { name: 'Victor Ogundele', faculty: 'Faculty of Social Sciences' },
+];
+
+const SEED_ITEMS = [
+  { title: 'Samsung Galaxy A54', description: 'Black Samsung phone with cracked screen protector, last seen at the library charging area around 2pm.', category: ItemCategory.ELECTRONICS, type: ItemType.LOST, userIndex: 0, locationName: 'Main Library' },
+  { title: 'Student ID Card - Aisha Bello', description: 'UniLorin student ID card with blue lanyard attached. Name visible on the front.', category: ItemCategory.ID_CARDS, type: ItemType.LOST, userIndex: 0, locationName: 'Senate Building' },
+  { title: 'Blue Jansport Backpack', description: 'Navy blue Jansport backpack containing engineering textbooks and a calculator. Has a small tear on the side pocket.', category: ItemCategory.BAGS, type: ItemType.LOST, userIndex: 1, locationName: 'Faculty of Engineering' },
+  { title: 'Scientific Calculator (Casio fx-991)', description: 'Found a Casio scientific calculator on a desk in the CBT center after the morning exam session.', category: ItemCategory.ELECTRONICS, type: ItemType.FOUND, userIndex: 2, locationName: 'CBT Center' },
+  { title: 'Course Registration Form', description: 'Printed course registration form for 300 level Law found near the photocopier.', category: ItemCategory.COURSE_FORM, type: ItemType.FOUND, userIndex: 3, locationName: 'Faculty of Law' },
+  { title: 'iPhone 13 Pro Max', description: 'Gold iPhone 13 Pro Max in a clear case. Was using it at SUB and left it on the table.', category: ItemCategory.ELECTRONICS, type: ItemType.LOST, userIndex: 4, locationName: 'SUB Building' },
+  { title: 'Prescription Glasses', description: 'Black frame prescription glasses in a brown leather case. Lost somewhere between the hostel and faculty.', category: ItemCategory.OTHER, type: ItemType.LOST, userIndex: 5, locationName: 'Hostel Area' },
+  { title: 'Bunch of Keys (4 keys)', description: 'Found a bunch of 4 keys on a silver keyring with a small torch near the stadium entrance.', category: ItemCategory.KEYS, type: ItemType.FOUND, userIndex: 6, locationName: 'Unilorin Stadium' },
+  { title: 'HP Laptop Charger', description: 'Black HP laptop charger with blue tip. Left it plugged in at the library and forgot to pick it up.', category: ItemCategory.ELECTRONICS, type: ItemType.LOST, userIndex: 7, locationName: 'Main Library' },
+  { title: 'White Lab Coat', description: 'White lab coat with name tag "K. Musa" on the breast pocket. Size medium.', category: ItemCategory.CLOTHING, type: ItemType.LOST, userIndex: 8, locationName: 'Faculty of Science' },
+  { title: 'Foundation of Law Textbook', description: 'Found a copy of "Foundations of Nigerian Law" textbook on a bench outside the moot court.', category: ItemCategory.BOOKS, type: ItemType.FOUND, userIndex: 9, locationName: 'Faculty of Law' },
+  { title: 'ATM Card (Access Bank)', description: 'Lost my Access Bank ATM card somewhere around the cafeteria area during lunch break.', category: ItemCategory.OTHER, type: ItemType.LOST, userIndex: 10, locationName: 'SUB Building' },
+  { title: 'Stethoscope', description: 'Found a red Littmann stethoscope in the Health Center waiting area this morning.', category: ItemCategory.OTHER, type: ItemType.FOUND, userIndex: 11, locationName: 'University Health Center' },
+  { title: 'Exam Docket', description: 'Lost my exam docket for second semester 2025/2026. Might have fallen out of my folder.', category: ItemCategory.COURSE_FORM, type: ItemType.LOST, userIndex: 12, locationName: 'Senate Building' },
+  { title: 'Wireless Earbuds (AirPods)', description: 'White AirPods in charging case. Left them in the 200-level lecture hall after morning class.', category: ItemCategory.ELECTRONICS, type: ItemType.LOST, userIndex: 13, locationName: 'Faculty of Engineering' },
+  { title: 'Brown Leather Wallet', description: 'Found a brown leather wallet with some cash and a student ID near Gate A bus stop.', category: ItemCategory.OTHER, type: ItemType.FOUND, userIndex: 14, locationName: 'Gate A (Tanke)' },
+  { title: 'Umbrella (Black, Foldable)', description: 'Lost my black foldable umbrella at the Education faculty. It has a wooden handle.', category: ItemCategory.OTHER, type: ItemType.LOST, userIndex: 15, locationName: 'Faculty of Education' },
+  { title: 'Notebook with Handwritten Notes', description: 'A4 hardcover notebook with semester notes for MGS 301. Very important for exams.', category: ItemCategory.STATIONERY, type: ItemType.LOST, userIndex: 16, locationName: 'Faculty of Management Sciences' },
+];
+
 async function runSeed(): Promise<void> {
   const dataSource = new DataSource({
     type: 'postgres',
@@ -198,6 +242,57 @@ async function runSeed(): Promise<void> {
     console.log(`${questions.length} trivia questions seeded for week ${weekOf}`);
   } else {
     console.log('Trivia questions already seeded for this week');
+  }
+
+  // Seed test users
+  const itemRepo = dataSource.getRepository(ItemReport);
+  const existingUsers = await userRepo.count({ where: { role: UserRole.USER } });
+
+  if (existingUsers === 0) {
+    const savedUsers: User[] = [];
+    for (let i = 0; i < SEED_USERS.length; i++) {
+      const u = SEED_USERS[i];
+      const email = `abdulsalammohammed586686+${i + 1}@gmail.com`;
+      const passwordHash = await bcrypt.hash(u.name, 12);
+      const user = userRepo.create({
+        email,
+        password_hash: passwordHash,
+        name: u.name,
+        role: UserRole.USER,
+        faculty: u.faculty,
+        is_verified: true,
+      });
+      savedUsers.push(await userRepo.save(user));
+    }
+    console.log(`${savedUsers.length} test users seeded`);
+
+    // Seed items
+    const allLocations = await locationRepo.find();
+    const locationMap = new Map(allLocations.map((l) => [l.name, l.id]));
+
+    for (const item of SEED_ITEMS) {
+      const reporter = savedUsers[item.userIndex];
+      const locationId = locationMap.get(item.locationName);
+      if (!reporter || !locationId) continue;
+
+      const daysAgo = Math.floor(Math.random() * 14) + 1;
+      const dateOfEvent = new Date();
+      dateOfEvent.setDate(dateOfEvent.getDate() - daysAgo);
+
+      const report = itemRepo.create({
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        type: item.type,
+        reporter_id: reporter.id,
+        location_id: locationId,
+        date_of_event: dateOfEvent.toISOString().split('T')[0],
+      });
+      await itemRepo.save(report);
+    }
+    console.log(`${SEED_ITEMS.length} items seeded`);
+  } else {
+    console.log('Test users already seeded');
   }
 
   await dataSource.destroy();
