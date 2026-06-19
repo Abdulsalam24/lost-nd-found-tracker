@@ -35,21 +35,17 @@ const FALLBACK_CARDS: ItemCard[] = [
 ];
 
 const DESKTOP_POSITIONS = [
-  { x: -340, y: -130 },
-  { x: -300, y: 70 },
-  { x: -220, y: 210 },
-  { x: 0, y: -190 },
-  { x: 30, y: 190 },
-  { x: 340, y: -130 },
-  { x: 300, y: 70 },
-  { x: 220, y: 210 },
+  { x: -310, y: -80 },
+  { x: -260, y: 100 },
+  { x: 0, y: -140 },
+  { x: 310, y: -80 },
+  { x: 260, y: 100 },
 ];
 
 const MOBILE_POSITIONS = [
-  { x: -85, y: -150 },
-  { x: 85, y: -110 },
-  { x: -75, y: 130 },
-  { x: 85, y: 160 },
+  { x: -85, y: -110 },
+  { x: 85, y: -80 },
+  { x: -75, y: 100 },
 ];
 
 export function ScanningHero({ items = [] }: Props) {
@@ -87,12 +83,12 @@ export function ScanningHero({ items = [] }: Props) {
   }, [phase, cards]);
 
   return (
-    <div className="relative mt-12 flex flex-col items-center gap-6">
+    <div className="relative mt-8 flex flex-col items-center gap-4 mb-2">
       {/* Radar / Scanner area */}
-      <div className="relative h-[500px] w-full max-w-5xl sm:h-[620px] lg:h-[700px]">
+      <div className="relative h-[340px] w-full max-w-5xl sm:h-[400px] lg:h-[460px]">
         {/* Radar rings */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <div className="relative h-[350px] w-[350px] sm:h-[460px] sm:w-[460px]">
+          <div className="relative h-[280px] w-[280px] sm:h-[340px] sm:w-[340px]">
             <div className="absolute inset-0 rounded-full border border-accent/10" />
             <div className="absolute inset-[15%] rounded-full border border-accent/8" />
             <div className="absolute inset-[30%] rounded-full border border-accent/6" />
@@ -192,7 +188,7 @@ export function ScanningHero({ items = [] }: Props) {
 
         {/* Mobile: show cards around radar */}
         <div className="absolute inset-0 lg:hidden">
-          {cards.slice(0, 4).map((card, i) => {
+          {cards.slice(0, 3).map((card, i) => {
             const pos = MOBILE_POSITIONS[i];
             const isVisible = visibleCards.includes(i);
             return (

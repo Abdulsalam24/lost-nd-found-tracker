@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { FloatingItems } from "@/components/FloatingItems";
 import { ScanningHero } from "@/components/ScanningHero";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3002";
@@ -41,7 +40,7 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* Hero */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center px-4">
+      <section className="relative flex min-h-screen flex-col items-center px-4 pt-28 pb-8">
         {/* Counter pill */}
         <div className="mb-6 flex items-center gap-2 rounded-full border border-border-light bg-bg-card/80 px-5 py-2 backdrop-blur-sm">
           <span className="relative flex h-2 w-2">
@@ -66,20 +65,16 @@ export default function HomePage() {
         {/* Scanning animation */}
         <ScanningHero items={items} />
 
-        {/* Floating item cards */}
-        <FloatingItems items={items} />
-
+        {/* CTA buttons */}
+        <div className="relative z-20 mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+          <Link href="/items/report-lost" className="btn-primary px-8 py-3">
+            Report Lost Item
+          </Link>
+          <Link href="/items/report-found" className="btn-secondary px-8 py-3">
+            Report Found Item
+          </Link>
+        </div>
       </section>
-
-      {/* CTA buttons */}
-      <div className="relative z-20 flex flex-col items-center gap-4 pb-16 sm:flex-row sm:justify-center">
-        <Link href="/items/report-lost" className="btn-primary px-8 py-3">
-          Report Lost Item
-        </Link>
-        <Link href="/items/report-found" className="btn-secondary px-8 py-3">
-          Report Found Item
-        </Link>
-      </div>
 
       {/* Stats */}
       <section className="relative z-10 mx-auto max-w-5xl px-4 py-20">
