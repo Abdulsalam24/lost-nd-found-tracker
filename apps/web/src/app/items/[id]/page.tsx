@@ -5,6 +5,7 @@ import { CategoryBadge } from "@/components/CategoryBadge";
 import { Timeline } from "@/components/Timeline";
 import { ItemCard } from "@/components/ItemCard";
 import { ItemActions } from "./ItemActions";
+import { SightingForm } from "./SightingForm";
 import Link from "next/link";
 
 interface ItemDetail {
@@ -178,6 +179,14 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
             </div>
 
             <ItemActions itemId={item.id} itemStatus={item.status} reportedBy={item.reporter_id} itemTitle={item.title} reporterPhone={item.reporter?.phone} />
+
+            {item.type === "LOST" && item.status === "ACTIVE" && (
+              <div className="card p-6">
+                <h2 className="text-lg font-bold text-text">Spotted This Item?</h2>
+                <p className="mt-1 text-sm text-text-muted">Help the owner by reporting where you saw it.</p>
+                <SightingForm itemId={item.id} reporterId={item.reporter_id} />
+              </div>
+            )}
           </aside>
         </div>
       </div>

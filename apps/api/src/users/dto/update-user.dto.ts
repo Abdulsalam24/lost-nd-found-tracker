@@ -30,4 +30,9 @@ export class UpdateUserDto {
   @IsString()
   @MaxLength(20)
   phone?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  avatar_url?: string;
 }

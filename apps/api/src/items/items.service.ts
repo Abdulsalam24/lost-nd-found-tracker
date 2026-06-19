@@ -54,6 +54,11 @@ export class ItemsService {
     if (query.location_id) {
       qb.andWhere('item.location_id = :location_id', { location_id: query.location_id });
     }
+    if (query.search) {
+      qb.andWhere('(item.title ILIKE :search OR item.description ILIKE :search)', {
+        search: `%${query.search}%`,
+      });
+    }
 
     qb.orderBy('item.created_at', 'DESC').skip(skip).take(limit);
 

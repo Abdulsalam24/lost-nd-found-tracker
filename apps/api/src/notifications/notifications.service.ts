@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
 import { Notification } from './entities/notification.entity';
@@ -154,7 +154,7 @@ export class NotificationsService {
     reporterIds.add(newItem.reporter_id);
 
     const userIds = Array.from(reporterIds);
-    const users = await this.usersRepo.findByIds(userIds);
+    const users = await this.usersRepo.find({ where: { id: In(userIds) } });
 
     const sendPromises = users.map((user) =>
       this.createAndSend(user, 'POTENTIAL_MATCH', {

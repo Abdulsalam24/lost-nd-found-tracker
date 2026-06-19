@@ -6,10 +6,24 @@ const PROTECTED_PATHS = [
   "/items/report-found",
   "/claims",
   "/admin",
+  "/chat",
   "/games/detective",
   "/games/ghost-hunt",
   "/games/trivia",
 ];
+
+const ADMIN_PATHS = ["/admin"];
+
+function parseJwtPayload(token: string): Record<string, unknown> | null {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(atob(parts[1]));
+    return payload;
+  } catch {
+    return null;
+  }
+}
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -23,6 +37,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  const isAdmin = ADMIN_PATHS.some((path) => pathname.startsWith(path));
+  if (isAdmin && token) {
+    const payload = parseJwtPayload(token);
+    if (!payload || payload.role !== "admin") {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
@@ -32,6 +54,7 @@ export const config = {
     "/items/report-found",
     "/claims/:path*",
     "/admin/:path*",
+    "/chat/:path*",
     "/games/detective",
     "/games/ghost-hunt",
     "/games/trivia",

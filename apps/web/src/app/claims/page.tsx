@@ -53,8 +53,22 @@ export default function MyClaimsPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-text border-t-transparent" />
+      <div className="min-h-screen bg-cream">
+        <div className="mx-auto max-w-3xl px-4 py-12">
+          <div className="h-8 w-32 rounded bg-bg-elevated animate-pulse mb-6" />
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="card flex items-center gap-4 p-4 animate-pulse">
+                <div className="h-14 w-14 shrink-0 rounded-lg bg-bg-elevated" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 w-1/3 rounded bg-bg-elevated" />
+                  <div className="h-3 w-2/3 rounded bg-bg-elevated" />
+                </div>
+                <div className="h-6 w-16 rounded-full bg-bg-elevated" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

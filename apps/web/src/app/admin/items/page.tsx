@@ -21,6 +21,14 @@ interface Item {
   created_at: string;
 }
 
+interface PaginatedResponse {
+  data: Item[];
+  total: number;
+  page: number;
+  limit: number;
+  total_pages: number;
+}
+
 export default function AdminItemsPage() {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,19 +36,25 @@ export default function AdminItemsPage() {
   const [filterStatus, setFilterStatus] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<Item | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const fetchItems = useCallback(() => {
     setLoading(true);
     const params = new URLSearchParams();
     if (filterCategory) params.set("category", filterCategory);
     if (filterStatus) params.set("status", filterStatus);
-    params.set("limit", "50");
+    params.set("page", String(page));
+    params.set("limit", "20");
 
-    api.get<{ data: Item[] }>(`/admin/items?${params.toString()}`)
-      .then((res) => setItems(res.data ?? []))
+    api.get<PaginatedResponse>(`/admin/items?${params.toString()}`)
+      .then((res) => {
+        setItems(res.data ?? []);
+        setTotalPages(res.total_pages ?? 1);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [filterCategory, filterStatus]);
+  }, [filterCategory, filterStatus, page]);
 
   useEffect(() => {
     fetchItems();
@@ -103,6 +117,7 @@ export default function AdminItemsPage() {
       {loading ? (
         <LoadingSpinner />
       ) : items.length > 0 ? (
+        <>
         <div className="mt-6 card overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -174,6 +189,30 @@ export default function AdminItemsPage() {
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && (
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <button
+              type="button"
+              className="btn-secondary text-sm"
+              disabled={page <= 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              Previous
+            </button>
+            <span className="text-sm text-text-secondary">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              type="button"
+              className="btn-secondary text-sm"
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            >
+              Next
+            </button>
+          </div>
+        )}
+        </>
       ) : (
         <EmptyState title="No items" message="No items match your filters." />
       )}

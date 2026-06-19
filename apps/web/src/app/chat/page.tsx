@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
+import { SkeletonChatList } from "@/components/Skeleton";
 
 interface ConversationPreview {
   id: string;
@@ -85,9 +86,7 @@ function ChatList() {
 
       <div className="mt-8">
         {fetching ? (
-          <div className="flex justify-center py-12">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-ink border-t-transparent" />
-          </div>
+          <SkeletonChatList />
         ) : conversations.length === 0 ? (
           <div className="card p-12 text-center">
             <svg className="mx-auto h-12 w-12 text-ink-ghost" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -6,7 +6,7 @@ import { ItemCard } from "@/components/ItemCard";
 import { SearchFilters } from "@/components/SearchFilters";
 import { Pagination } from "@/components/Pagination";
 import { EmptyState } from "@/components/EmptyState";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { SkeletonItemGrid } from "@/components/Skeleton";
 import Link from "next/link";
 
 interface ItemResponse {
@@ -31,7 +31,7 @@ interface PaginatedItems {
 async function getItems(searchParams: Record<string, string | undefined>): Promise<PaginatedItems> {
   const params = new URLSearchParams();
   Object.entries(searchParams).forEach(([key, val]) => {
-    if (val) params.set(key, val);
+    if (val) params.set(key === "q" ? "search" : key, val);
   });
   if (!params.has("page")) params.set("page", "1");
   if (!params.has("limit")) params.set("limit", "12");
@@ -69,7 +69,7 @@ export default async function ItemsPage({
         </div>
 
         <div className="mt-8">
-          <Suspense fallback={<LoadingSpinner />}>
+          <Suspense fallback={<SkeletonItemGrid />}>
             <SearchFilters />
           </Suspense>
         </div>

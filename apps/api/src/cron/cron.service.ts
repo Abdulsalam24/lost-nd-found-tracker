@@ -26,13 +26,10 @@ export class CronService {
     private itemsRepo: Repository<ItemReport>,
   ) {}
 
-  // Monday 8am — generate trivia + reset detective
+  // Monday 8am — log start of new week
   @Cron('0 8 * * 1')
   async handleMondayMorning(): Promise<void> {
-    this.logger.log('Running Monday morning cron jobs');
-    await this.triviaService.generateWeeklyQuestions();
-    // Detective scores were computed Sunday night, just a log here
-    this.logger.log('Monday morning cron complete');
+    this.logger.log('New week started — trivia uses random pool, no generation needed');
   }
 
   // Sunday 11pm — compute detective scores

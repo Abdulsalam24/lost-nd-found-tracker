@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { StatusBadge } from "./StatusBadge";
 import { CategoryBadge } from "./CategoryBadge";
 
@@ -25,13 +26,14 @@ export function ItemCard({
 }: ItemCardProps) {
   return (
     <Link href={`/items/${id}`} className="card-hover group overflow-hidden">
-      <div className="aspect-[4/3] overflow-hidden bg-bg-elevated">
+      <div className="relative aspect-[4/3] overflow-hidden bg-bg-elevated">
         {image_url ? (
-          <img
+          <Image
             src={image_url}
             alt={title ?? "_"}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full items-center justify-center">

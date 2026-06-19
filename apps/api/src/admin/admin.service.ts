@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ItemReport } from '../items/entities/item-report.entity';
@@ -59,10 +59,13 @@ export class AdminService {
     };
   }
 
-  async updateItemStatus(id: string, status: string) {
+  async updateItemStatus(id: string, status: ItemStatus) {
+    if (!Object.values(ItemStatus).includes(status)) {
+      throw new BadRequestException(`Invalid status: ${status}. Must be one of: ${Object.values(ItemStatus).join(', ')}`);
+    }
     const item = await this.itemsRepo.findOne({ where: { id } });
     if (!item) throw new NotFoundException('Item not found');
-    item.status = status as ItemStatus;
+    item.status = status;
     return this.itemsRepo.save(item);
   }
 

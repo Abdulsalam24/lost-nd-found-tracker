@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/items", label: "Browse" },
   { href: "/stats", label: "Stats" },
+  { href: "/heatmap", label: "Heatmap" },
   { href: "/games", label: "Games" },
 ];
 

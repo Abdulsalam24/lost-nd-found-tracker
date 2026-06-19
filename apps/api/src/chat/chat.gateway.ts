@@ -14,7 +14,11 @@ import { ChatService } from './chat.service';
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: [
+      'http://localhost:3001',
+      process.env.APP_URL ?? '',
+    ].filter(Boolean),
+    credentials: true,
   },
   namespace: '/chat',
 })

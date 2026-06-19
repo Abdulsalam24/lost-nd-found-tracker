@@ -14,7 +14,7 @@ import { AdminService } from './admin.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '@lostfound/shared';
+import { UserRole, ItemStatus } from '@lostfound/shared';
 import { GhostHuntService } from '../games/ghost-hunt/ghost-hunt.service';
 import { CreateGhostHuntDto } from '../games/ghost-hunt/dto/create-ghost-hunt.dto';
 
@@ -70,7 +70,7 @@ export class AdminController {
   @Patch('items/:id/status')
   async updateItemStatus(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body('status') status: string,
+    @Body('status') status: ItemStatus,
   ) {
     return this.adminService.updateItemStatus(id, status);
   }

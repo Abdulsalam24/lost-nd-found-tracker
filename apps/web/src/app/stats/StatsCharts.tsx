@@ -1,12 +1,28 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import {
+  Chart,
+  DoughnutController,
+  BarController,
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
-declare global {
-  interface Window {
-    Chart: any;
-  }
-}
+Chart.register(
+  DoughnutController,
+  BarController,
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+);
 
 interface CategoryStat {
   category: string;
@@ -33,21 +49,22 @@ export function StatsCharts({ categoryStats, monthlyStats, recoveryRate }: Stats
   const pieRef = useRef<HTMLCanvasElement>(null);
   const barRef = useRef<HTMLCanvasElement>(null);
   const gaugeRef = useRef<HTMLCanvasElement>(null);
+  const chartsRef = useRef<Chart[]>([]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (typeof window.Chart === "undefined") return;
-      clearInterval(interval);
+    chartsRef.current.forEach((c) => c.destroy());
+    chartsRef.current = [];
 
-      const isDark = document.documentElement.classList.contains("dark") ||
-        !document.documentElement.classList.contains("light");
+    const isDark = document.documentElement.classList.contains("dark") ||
+      !document.documentElement.classList.contains("light");
 
-      const textColor = isDark ? "#9ca3af" : "#6b7280";
-      const gridColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
-      const borderColor = isDark ? "#1f2e1f" : "#e5e7eb";
+    const textColor = isDark ? "#9ca3af" : "#6b7280";
+    const gridColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
+    const borderColor = isDark ? "#1f2e1f" : "#e5e7eb";
 
-      if (pieRef.current && categoryStats.length > 0) {
-        new window.Chart(pieRef.current, {
+    if (pieRef.current && categoryStats.length > 0) {
+      chartsRef.current.push(
+        new Chart(pieRef.current, {
           type: "doughnut",
           data: {
             labels: categoryStats.map((c) => c.category),
@@ -68,11 +85,13 @@ export function StatsCharts({ categoryStats, monthlyStats, recoveryRate }: Stats
               },
             },
           },
-        });
-      }
+        }),
+      );
+    }
 
-      if (barRef.current && monthlyStats.length > 0) {
-        new window.Chart(barRef.current, {
+    if (barRef.current && monthlyStats.length > 0) {
+      chartsRef.current.push(
+        new Chart(barRef.current, {
           type: "bar",
           data: {
             labels: monthlyStats.map((m) => m.month),
@@ -103,11 +122,13 @@ export function StatsCharts({ categoryStats, monthlyStats, recoveryRate }: Stats
               },
             },
           },
-        });
-      }
+        }),
+      );
+    }
 
-      if (gaugeRef.current) {
-        new window.Chart(gaugeRef.current, {
+    if (gaugeRef.current) {
+      chartsRef.current.push(
+        new Chart(gaugeRef.current, {
           type: "doughnut",
           data: {
             labels: ["Recovered", "Remaining"],
@@ -127,11 +148,14 @@ export function StatsCharts({ categoryStats, monthlyStats, recoveryRate }: Stats
               tooltip: { enabled: false },
             },
           },
-        });
-      }
-    }, 100);
+        }),
+      );
+    }
 
-    return () => clearInterval(interval);
+    return () => {
+      chartsRef.current.forEach((c) => c.destroy());
+      chartsRef.current = [];
+    };
   }, [categoryStats, monthlyStats, recoveryRate]);
 
   return (

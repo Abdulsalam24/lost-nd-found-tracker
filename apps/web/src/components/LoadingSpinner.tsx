@@ -8,7 +8,7 @@ export function LoadingSpinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   return (
     <div className="flex items-center justify-center p-4" role="status">
       <svg
-        className={`animate-spin text-coral ${sizeClasses[size]}`}
+        className={`animate-spin text-accent ${sizeClasses[size]}`}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"

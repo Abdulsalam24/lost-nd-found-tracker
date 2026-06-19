@@ -39,8 +39,8 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
         href={buildHref(Math.max(1, currentPage - 1))}
         className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
           currentPage <= 1
-            ? "pointer-events-none text-cream-400"
-            : "bg-white border border-cream-300 text-ink hover:bg-cream-100"
+            ? "pointer-events-none text-text-ghost"
+            : "border border-border-light bg-bg-card text-text hover:bg-bg-hover"
         }`}
         aria-disabled={currentPage <= 1}
         aria-label="Previous page"
@@ -50,7 +50,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
 
       {pages.map((page, idx) =>
         page === "..." ? (
-          <span key={`ellipsis-${idx}`} className="px-2 text-ink-ghost">
+          <span key={`ellipsis-${idx}`} className="px-2 text-text-ghost">
             ...
           </span>
         ) : (
@@ -59,8 +59,8 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
             href={buildHref(page)}
             className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
               page === currentPage
-                ? "bg-ink text-cream"
-                : "bg-white border border-cream-300 text-ink hover:bg-cream-100"
+                ? "bg-accent text-bg"
+                : "border border-border-light bg-bg-card text-text hover:bg-bg-hover"
             }`}
             aria-current={page === currentPage ? "page" : undefined}
           >
@@ -73,8 +73,8 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
         href={buildHref(Math.min(totalPages, currentPage + 1))}
         className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
           currentPage >= totalPages
-            ? "pointer-events-none text-cream-400"
-            : "bg-white border border-cream-300 text-ink hover:bg-cream-100"
+            ? "pointer-events-none text-text-ghost"
+            : "border border-border-light bg-bg-card text-text hover:bg-bg-hover"
         }`}
         aria-disabled={currentPage >= totalPages}
         aria-label="Next page"

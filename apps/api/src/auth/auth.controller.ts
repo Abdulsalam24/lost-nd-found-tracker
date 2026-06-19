@@ -4,7 +4,6 @@ import {
   Body,
   Res,
   UseGuards,
-  Query,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -67,13 +66,6 @@ export class AuthController {
     return { message: 'Tokens refreshed' };
   }
 
-  @Post('verify-email')
-  @HttpCode(HttpStatus.OK)
-  async verifyEmail(@Query('token') token: string) {
-    await this.authService.verifyEmail(token);
-    return { message: 'Email verified successfully' };
-  }
-
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response) {
@@ -90,10 +82,11 @@ export class AuthController {
     const isProduction = process.env.NODE_ENV === 'production';
 
     res.cookie('access_token', accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: isProduction,
       sameSite: 'lax',
-      maxAge: 60 * 60 * 1000,
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.cookie('refresh_token', refreshToken, {

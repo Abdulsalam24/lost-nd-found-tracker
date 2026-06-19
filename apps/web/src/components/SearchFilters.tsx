@@ -43,7 +43,7 @@ export function SearchFilters() {
 
   return (
     <div className="card p-4">
-      <div className="mb-4 flex items-center gap-1 rounded-full bg-cream-200 p-1">
+      <div className="mb-4 flex items-center gap-1 rounded-full bg-bg-elevated p-1">
         {TYPE_OPTIONS.map((opt) => (
           <button
             key={opt.value}
@@ -51,8 +51,8 @@ export function SearchFilters() {
             onClick={() => updateParam("type", opt.value)}
             className={`flex-1 rounded-full px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-all ${
               currentType === opt.value
-                ? "bg-ink text-cream"
-                : "text-ink-muted hover:text-ink"
+                ? "bg-accent text-bg"
+                : "text-text-muted hover:text-text"
             }`}
           >
             {opt.label}

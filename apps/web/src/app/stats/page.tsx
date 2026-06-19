@@ -1,4 +1,3 @@
-import Script from "next/script";
 import { serverFetch } from "@/lib/api";
 import { StatsCharts } from "./StatsCharts";
 
@@ -55,9 +54,6 @@ export default async function StatsPage() {
   const activeItems = (stats.total_items ?? 0) - (stats.total_recovered ?? 0);
 
   return (
-    <>
-      <Script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" strategy="beforeInteractive" />
-
       <div className="min-h-screen bg-cream">
         <div className="mx-auto max-w-7xl px-4 py-8">
           <h1 className="section-title">Campus Statistics</h1>
@@ -150,6 +146,5 @@ export default async function StatsPage() {
           />
         </div>
       </div>
-    </>
   );
 }

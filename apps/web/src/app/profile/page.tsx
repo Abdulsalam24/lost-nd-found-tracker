@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
+import { SkeletonProfileForm } from "@/components/Skeleton";
 
 export default function ProfilePage() {
   const { user, loading, refreshUser } = useAuth();
@@ -58,8 +59,9 @@ export default function ProfilePage() {
 
   if (loading || !user) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-ink border-t-transparent" />
+      <div className="mx-auto max-w-3xl px-4 py-12">
+        <div className="h-8 w-40 rounded bg-bg-elevated animate-pulse mb-4" />
+        <SkeletonProfileForm />
       </div>
     );
   }

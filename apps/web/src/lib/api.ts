@@ -14,13 +14,15 @@ const SERVER_API_BASE =
   "http://localhost:3002";
 
 let memoryToken: string | null = null;
+let isRefreshing = false;
+let refreshPromise: Promise<boolean> | null = null;
 
 export function setToken(token: string | null) {
   memoryToken = token;
   if (token) {
-    Cookies.set("access_token", token, { expires: 7 });
+    Cookies.set("access_token", token, { expires: 7, path: "/" });
   } else {
-    Cookies.remove("access_token");
+    Cookies.remove("access_token", { path: "/" });
   }
 }
 
@@ -30,12 +32,43 @@ export function getToken(): string | undefined {
   return undefined;
 }
 
+async function tryRefreshToken(): Promise<boolean> {
+  if (isRefreshing && refreshPromise) return refreshPromise;
+
+  isRefreshing = true;
+  refreshPromise = fetch(`${CLIENT_API_BASE}/auth/refresh`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}),
+    },
+  })
+    .then(async (res) => {
+      if (!res.ok) return false;
+      const data = await res.json();
+      if (data.access_token) {
+        setToken(data.access_token);
+        return true;
+      }
+      return false;
+    })
+    .catch(() => false)
+    .finally(() => {
+      isRefreshing = false;
+      refreshPromise = null;
+    });
+
+  return refreshPromise;
+}
+
 interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
+  _retried?: boolean;
 }
 
 async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-  const { body, headers: customHeaders, ...rest } = options;
+  const { body, headers: customHeaders, _retried, ...rest } = options;
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -53,6 +86,14 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     body: body ? JSON.stringify(body) : undefined,
     ...rest,
   });
+
+  if (res.status === 401 && !_retried && getToken()) {
+    const refreshed = await tryRefreshToken();
+    if (refreshed) {
+      return request<T>(endpoint, { ...options, _retried: true });
+    }
+    setToken(null);
+  }
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: "Request failed" }));
@@ -83,6 +124,29 @@ export const api = {
       credentials: "include",
       body: formData,
     });
+
+    if (res.status === 401 && getToken()) {
+      const refreshed = await tryRefreshToken();
+      if (refreshed) {
+        const retryHeaders: Record<string, string> = {};
+        const newToken = getToken();
+        if (newToken) retryHeaders["Authorization"] = `Bearer ${newToken}`;
+
+        const retryRes = await fetch(`${CLIENT_API_BASE}${endpoint}`, {
+          method: "POST",
+          headers: retryHeaders,
+          credentials: "include",
+          body: formData,
+        });
+
+        if (!retryRes.ok) {
+          const error = await retryRes.json().catch(() => ({ message: "Upload failed" }));
+          throw new Error(error.message ?? `HTTP ${retryRes.status}`);
+        }
+        return retryRes.json();
+      }
+      setToken(null);
+    }
 
     if (!res.ok) {
       const error = await res.json().catch(() => ({ message: "Upload failed" }));

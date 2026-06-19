@@ -69,11 +69,14 @@ export class ItemsController {
       },
     }),
   )
-  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+  async uploadImage(
+    @UploadedFile() file: Express.Multer.File,
+  ) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
-    const url = `http://localhost:3002/uploads/${file.filename}`;
+    const apiBase = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? `http://localhost:${process.env.PORT ?? 3002}`;
+    const url = `${apiBase}/uploads/${file.filename}`;
     return { url };
   }
 

@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsUUID, IsInt, Min, Max } from 'class-validator';
+import { IsEnum, IsOptional, IsUUID, IsInt, IsString, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ItemType, ItemCategory, ItemStatus } from '@lostfound/shared';
 
@@ -18,6 +18,10 @@ export class QueryItemsDto {
   @IsOptional()
   @IsUUID()
   location_id?: string;
+
+  @IsOptional()
+  @IsString()
+  search?: string;
 
   @IsOptional()
   @Type(() => Number)
