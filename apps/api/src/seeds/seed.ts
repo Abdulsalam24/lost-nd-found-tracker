@@ -248,12 +248,24 @@ async function runSeed(): Promise<void> {
   const itemRepo = dataSource.getRepository(ItemReport);
   const existingUsers = await userRepo.count({ where: { role: UserRole.USER } });
 
-  if (existingUsers === 0) {
+  if (existingUsers < 20) {
+    // Clear existing test users and their items to re-seed
+    if (existingUsers > 0) {
+      const notifRepo = dataSource.getRepository(Notification);
+      const claimRepo = dataSource.getRepository(Claim);
+      const sightingRepo = dataSource.getRepository(Sighting);
+      await notifRepo.createQueryBuilder().delete().execute();
+      await sightingRepo.createQueryBuilder().delete().execute();
+      await claimRepo.createQueryBuilder().delete().execute();
+      await itemRepo.createQueryBuilder().delete().execute();
+      await userRepo.delete({ role: UserRole.USER });
+      console.log("Cleared existing test users and items");
+    }
     const savedUsers: User[] = [];
     for (let i = 0; i < SEED_USERS.length; i++) {
       const u = SEED_USERS[i];
       const email = `abdulsalammohammed586686+${i + 1}@gmail.com`;
-      const passwordHash = await bcrypt.hash(u.name, 12);
+      const passwordHash = await bcrypt.hash('123456789', 12);
       const user = userRepo.create({
         email,
         password_hash: passwordHash,
@@ -286,7 +298,7 @@ async function runSeed(): Promise<void> {
         type: item.type,
         reporter_id: reporter.id,
         location_id: locationId,
-        date_of_event: dateOfEvent.toISOString().split('T')[0],
+        date_of_event: dateOfEvent.toISOString().split("T")[0],
       });
       await itemRepo.save(report);
     }

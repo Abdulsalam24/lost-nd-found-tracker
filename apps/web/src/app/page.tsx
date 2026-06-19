@@ -1,9 +1,12 @@
-export const dynamic = "force-dynamic";
+"use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { serverFetch } from "@/lib/api";
+import axios from "axios";
 import { FloatingItems } from "@/components/FloatingItems";
 import { ScanningHero } from "@/components/ScanningHero";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3002";
 
 interface ItemResponse {
   id: string;
@@ -22,25 +25,18 @@ interface StatsResponse {
   recovery_rate: number;
 }
 
-async function getRecentItems(): Promise<ItemResponse[]> {
-  try {
-    const res = await serverFetch<{ data: ItemResponse[] }>("/items?limit=12&sort=created_at:desc");
-    return res.data ?? [];
-  } catch {
-    return [];
-  }
-}
+export default function HomePage() {
+  const [items, setItems] = useState<ItemResponse[]>([]);
+  const [stats, setStats] = useState<StatsResponse>({ total_items: 0, total_recovered: 0, recovery_rate: 0 });
 
-async function getStats(): Promise<StatsResponse> {
-  try {
-    return await serverFetch<StatsResponse>("/stats");
-  } catch {
-    return { total_items: 0, total_recovered: 0, recovery_rate: 0 };
-  }
-}
-
-export default async function HomePage() {
-  const [items, stats] = await Promise.all([getRecentItems(), getStats()]);
+  useEffect(() => {
+    axios.get<{ data: ItemResponse[] }>(`${API_BASE}/items?limit=12`)
+      .then((res) => setItems(res.data.data ?? []))
+      .catch(() => {});
+    axios.get<StatsResponse>(`${API_BASE}/stats`)
+      .then((res) => setStats(res.data))
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="relative">
