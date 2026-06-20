@@ -29,7 +29,7 @@ interface AuthResponse {
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   register: (data: { email: string; password: string; name: string; faculty: string }) => Promise<void>;
   verifyOtp: (email: string, otp: string) => Promise<void>;
   logout: () => void;
@@ -39,7 +39,7 @@ interface AuthContextValue {
 export const AuthContext = createContext<AuthContextValue>({
   user: null,
   loading: true,
-  login: async () => {},
+  login: async () => ({} as any),
   register: async () => {},
   verifyOtp: async () => {},
   logout: () => {},

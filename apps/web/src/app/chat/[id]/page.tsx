@@ -149,43 +149,29 @@ export default function ConversationPage() {
   const otherInitial = otherName.charAt(0).toUpperCase();
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col px-4 py-4" style={{ height: "calc(100vh - 80px)" }}>
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center gap-3 rounded-2xl border border-border-light bg-bg-card p-3 shadow-sm">
+      <div className="flex items-center gap-3 border-b border-border px-4 py-3">
         <Link
           href="/chat"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-bg-hover"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-bg-hover sm:hidden"
           aria-label="Back to chats"
         >
           <svg className="h-5 w-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </Link>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/15 text-xs font-bold text-accent">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/15 text-xs font-bold text-accent">
           {otherInitial}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-semibold text-text">{otherName}</p>
+          <p className="truncate text-sm font-semibold text-text">{otherName}</p>
           {conversation?.item_report && (
-            <Link
-              href={`/items/${conversation.item_report.id}`}
-              className="flex items-center gap-1 text-[11px] text-text-muted hover:text-accent transition-colors"
-            >
-              <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-              </svg>
-              <span className="truncate">{conversation.item_report.title ?? "_"}</span>
-            </Link>
+            <p className="truncate text-[11px] text-text-muted">
+              Re: {conversation.item_report.title ?? "_"}
+            </p>
           )}
         </div>
-        {conversation?.item_report && (
-          <Link
-            href={`/items/${conversation.item_report.id}`}
-            className="shrink-0 rounded-xl border border-border-light px-3 py-1.5 text-[11px] font-medium text-text-muted transition-colors hover:bg-bg-hover hover:text-text"
-          >
-            View Item
-          </Link>
-        )}
       </div>
 
       {/* Messages area */}
@@ -275,12 +261,12 @@ export default function ConversationPage() {
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSend} className="flex items-center gap-2 rounded-2xl border border-border-light bg-bg-card p-2 shadow-sm">
+      <form onSubmit={handleSend} className="flex items-center gap-3 border-t border-border px-4 py-3">
         <input
           ref={inputRef}
           type="text"
-          placeholder="Type a message..."
-          className="flex-1 bg-transparent px-3 py-2 text-xs text-text placeholder:text-text-ghost outline-none disabled:opacity-60"
+          placeholder={`Message ${otherName}...`}
+          className="flex-1 rounded-xl border border-border bg-bg-elevated px-4 py-2.5 text-sm text-text placeholder:text-text-ghost outline-none transition-all focus:border-accent/40"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           disabled={sending}
@@ -288,12 +274,12 @@ export default function ConversationPage() {
         <button
           type="submit"
           disabled={!newMessage.trim() || sending}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent text-bg transition-all hover:bg-accent-light disabled:opacity-30 disabled:cursor-not-allowed"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-dark text-white transition-all hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
         >
           {sending ? (
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-bg border-t-transparent" />
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
           ) : (
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
               <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
             </svg>
           )}

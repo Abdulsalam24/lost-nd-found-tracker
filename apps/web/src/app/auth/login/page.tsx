@@ -35,7 +35,7 @@ function LoginForm() {
   const { login } = useAuth();
   const [error, setError] = useState("");
 
-  const redirect = searchParams.get("redirect") ?? "/items";
+  const redirect = searchParams.get("redirect");
 
   const {
     register,
@@ -48,8 +48,12 @@ function LoginForm() {
   const onSubmit = async (data: FormData) => {
     setError("");
     try {
-      await login(data.email, data.password);
-      router.push(redirect);
+      const me = await login(data.email, data.password);
+      if (me.role === "admin") {
+        router.push(redirect ?? "/admin");
+      } else {
+        router.push(redirect ?? "/items");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     }

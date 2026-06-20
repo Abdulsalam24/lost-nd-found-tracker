@@ -13,6 +13,10 @@ const NAV_LINKS = [
   { href: "/games", label: "Games", icon: "M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
 ];
 
+const AUTH_NAV_LINKS = [
+  { href: "/chat", label: "Messages", icon: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" },
+];
+
 export function Navbar() {
   const { user, logout, loading } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -79,6 +83,19 @@ export function Navbar() {
           </ul>
 
           <div className="hidden items-center gap-3 md:flex">
+            {user && AUTH_NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+                  isActive(link.href)
+                    ? "bg-white/10 text-text"
+                    : "text-text-muted hover:bg-white/5 hover:text-text"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
             <button
               type="button"
               onClick={toggleTheme}
@@ -187,7 +204,8 @@ export function Navbar() {
         </nav>
       </header>
 
-      {/* Mobile bottom pill nav */}
+      {/* Mobile bottom pill nav — hidden on admin & chat */}
+      {!pathname.startsWith("/admin") && !pathname.startsWith("/chat") && (
       <nav
         className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 md:hidden"
         aria-label="Mobile navigation"
@@ -211,6 +229,7 @@ export function Navbar() {
           ))}
         </div>
       </nav>
+      )}
     </>
   );
 }
