@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
-import { SkeletonChatList } from "@/components/Skeleton";
+import { SkeletonChatList } from "@/components/ui/Skeleton";
 
 interface ConversationPreview {
   id: string;

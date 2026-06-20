@@ -53,7 +53,7 @@ export default function MyClaimsPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-cream">
+      <div className="min-h-screen">
         <div className="mx-auto max-w-3xl px-4 py-12">
           <div className="h-8 w-32 rounded bg-bg-elevated animate-pulse mb-6" />
           <div className="space-y-3">
@@ -74,7 +74,7 @@ export default function MyClaimsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="section-title">My Claims</h1>
         <p className="section-subtitle mt-1">Track the status of items you&apos;ve claimed</p>

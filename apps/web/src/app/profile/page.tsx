@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
-import { SkeletonProfileForm } from "@/components/Skeleton";
+import { SkeletonProfileForm } from "@/components/ui/Skeleton";
 
 export default function ProfilePage() {
   const { user, loading, refreshUser } = useAuth();

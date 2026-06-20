@@ -8,7 +8,7 @@ import { z } from "zod";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
-import { Modal } from "@/components/Modal";
+import { Modal } from "@/components/global/Modal";
 
 const claimSchema = z.object({
   evidence_description: z.string().min(10, "Provide at least 10 characters of evidence"),

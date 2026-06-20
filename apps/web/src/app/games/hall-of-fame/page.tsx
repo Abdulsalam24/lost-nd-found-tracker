@@ -1,5 +1,5 @@
 import { serverFetch } from "@/lib/api";
-import { EmptyState } from "@/components/EmptyState";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 interface LeaderboardEntry {
   user_name: string;
@@ -39,7 +39,7 @@ export default async function HallOfFamePage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-5xl px-4 py-8">
         <h1 className="section-title">Hall of Fame</h1>
         <p className="section-subtitle">All-time top players and badge holders.</p>

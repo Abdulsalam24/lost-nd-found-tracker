@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ItemCard } from "@/components/ItemCard";
+import { ItemCard } from "@/components/items/ItemCard";
+import { SkeletonCard } from "@/components/ui/Skeleton";
 
 interface ItemResponse {
   id: string;
@@ -16,9 +17,10 @@ interface ItemResponse {
 
 interface RecentItemsProps {
   items: ItemResponse[];
+  loading?: boolean;
 }
 
-export function RecentItems({ items }: RecentItemsProps) {
+export function RecentItems({ items, loading = false }: RecentItemsProps) {
   return (
     <section className="relative z-10 mx-auto max-w-5xl px-4 py-8 sm:py-14">
       <div className="flex items-center justify-between">
@@ -27,7 +29,13 @@ export function RecentItems({ items }: RecentItemsProps) {
           View all &rarr;
         </Link>
       </div>
-      {items.length > 0 ? (
+      {loading ? (
+        <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      ) : items.length > 0 ? (
         <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3 lg:grid-cols-4">
           {items.map((item) => (
             <ItemCard key={item.id} {...item} compact />

@@ -8,7 +8,7 @@ import { z } from "zod";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { uploadImage } from "@/lib/supabase";
-import { ImageUpload } from "@/components/ImageUpload";
+import { ImageUpload } from "@/components/items/ImageUpload";
 import { ITEM_CATEGORIES, CAMPUS_LOCATIONS } from "@/lib/constants";
 import Link from "next/link";
 
@@ -82,7 +82,7 @@ export default function ReportFoundPage() {
   };
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-2xl px-4 py-8">
         <Link
           href="/items"

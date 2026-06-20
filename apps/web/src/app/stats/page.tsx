@@ -54,7 +54,7 @@ export default async function StatsPage() {
   const activeItems = (stats.total_items ?? 0) - (stats.total_recovered ?? 0);
 
   return (
-      <div className="min-h-screen bg-cream">
+      <div className="min-h-screen">
         <div className="mx-auto max-w-7xl px-4 py-8">
           <h1 className="section-title">Campus Statistics</h1>
           <p className="section-subtitle">Lost and found data at a glance</p>

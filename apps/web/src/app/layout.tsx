@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { GridBackground } from "@/components/GridBackground";
+import { Navbar } from "@/components/global/Navbar";
+import { Footer } from "@/components/global/Footer";
+import { GridBackground } from "@/components/global/GridBackground";
 import { AuthProvider } from "@/lib/AuthProvider";
 import { ThemeProvider } from "@/lib/ThemeProvider";
 import "./globals.css";
@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthProvider>
             <GridBackground />
             <Navbar />
-            <main className="relative z-10 flex-1 pb-20 md:pb-0">{children}</main>
+            <main className="relative z-10 flex-1 pb-20 md:pb-0 pt-20">{children}</main>
             <Footer />
           </AuthProvider>
         </ThemeProvider>

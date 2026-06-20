@@ -2,8 +2,8 @@
 
 import { Suspense } from "react";
 import Link from "next/link";
-import { SearchFilters } from "@/components/SearchFilters";
-import { SkeletonItemGrid } from "@/components/Skeleton";
+import { SearchFilters } from "@/components/items/SearchFilters";
+import { SkeletonItemGrid } from "@/components/ui/Skeleton";
 import { ItemList } from "./ItemList";
 
 export default function ItemsPage() {

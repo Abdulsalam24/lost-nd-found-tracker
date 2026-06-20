@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GameCard } from "@/components/GameCard";
+import { GameCard } from "@/components/games/GameCard";
 import { serverFetch } from "@/lib/api";
 
 interface LeaderboardEntry {
@@ -20,7 +20,7 @@ export default async function GamesPage() {
   const leaderboard = await getTriviaLeaderboard();
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-5xl px-4 py-8">
         <h1 className="section-title">Campus Games</h1>
         <p className="section-subtitle">

@@ -5,8 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { StatusBadge } from "@/components/StatusBadge";
-import { Timeline } from "@/components/Timeline";
+import { StatusBadge } from "@/components/items/StatusBadge";
+import { Timeline } from "@/components/ui/Timeline";
 
 interface ClaimDetail {
   id: string;
@@ -82,7 +82,7 @@ export default function ClaimDetailPage() {
 
   if (error || !claim) {
     return (
-      <div className="min-h-screen bg-cream">
+      <div className="min-h-screen">
         <div className="mx-auto max-w-2xl px-4 py-16 text-center">
           <h1 className="text-xl font-bold text-text">Claim not found</h1>
           <p className="mt-2 text-xs text-text-muted">{error || "This claim doesn't exist or you don't have access."}</p>
@@ -95,7 +95,7 @@ export default function ClaimDetailPage() {
   const timeline = buildClaimTimeline(claim);
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-2xl px-4 py-8">
         <Link
           href={`/items/${claim.item_report_id}`}

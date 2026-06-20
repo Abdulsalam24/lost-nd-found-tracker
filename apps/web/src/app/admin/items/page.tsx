@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api";
-import { StatusBadge } from "@/components/StatusBadge";
-import { CategoryBadge } from "@/components/CategoryBadge";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { EmptyState } from "@/components/EmptyState";
+import { StatusBadge } from "@/components/items/StatusBadge";
+import { CategoryBadge } from "@/components/items/CategoryBadge";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { ITEM_CATEGORIES, ITEM_STATUSES } from "@/lib/constants";
 
 interface Item {

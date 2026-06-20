@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import Link from "next/link";
 
 interface TriviaQuestion {
@@ -97,7 +97,7 @@ export default function TriviaPage() {
 
   if (questions.length === 0) {
     return (
-      <div className="min-h-screen bg-cream">
+      <div className="min-h-screen">
         <div className="mx-auto max-w-2xl px-4 py-16 text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
             <svg className="h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -116,7 +116,7 @@ export default function TriviaPage() {
   if (showSummary) {
     const percentage = questions.length > 0 ? Math.round((correctCount / questions.length) * 100) : 0;
     return (
-      <div className="min-h-screen bg-cream">
+      <div className="min-h-screen">
         <div className="mx-auto max-w-2xl px-4 py-12">
           <div className="card p-8 text-center">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-accent/10">
@@ -172,7 +172,7 @@ export default function TriviaPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-2xl px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between">

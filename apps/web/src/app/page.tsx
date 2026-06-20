@@ -12,14 +12,13 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3002";
 export default function HomePage() {
   const [items, setItems] = useState<any[]>([]);
   const [stats, setStats] = useState({ total_items: 0, total_recovered: 0, recovery_rate: 0 });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`${API_BASE}/items?limit=8`)
-      .then((res) => setItems(res.data.data ?? []))
-      .catch(() => {});
-    axios.get(`${API_BASE}/stats`)
-      .then((res) => setStats(res.data))
-      .catch(() => {});
+    Promise.all([
+      axios.get(`${API_BASE}/items?limit=8`).then((res) => setItems(res.data.data ?? [])).catch(() => {}),
+      axios.get(`${API_BASE}/stats`).then((res) => setStats(res.data)).catch(() => {}),
+    ]).finally(() => setLoading(false));
   }, []);
 
   return (
@@ -30,7 +29,7 @@ export default function HomePage() {
         totalRecovered={stats.total_recovered}
         recoveryRate={stats.recovery_rate}
       />
-      <RecentItems items={items} />
+      <RecentItems items={items} loading={loading} />
       <div className="mx-auto max-w-6xl border-t border-border" />
       <GamesTeaser />
     </div>

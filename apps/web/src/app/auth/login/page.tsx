@@ -18,7 +18,7 @@ type FormData = z.infer<typeof schema>;
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-cream px-4 py-12">
+      <div className="flex min-h-screen items-center justify-center px-4 py-12">
         <div className="card w-full max-w-md rounded-2xl p-8 text-center">
           <p className="text-ink-muted">Loading...</p>
         </div>
@@ -56,7 +56,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-cream px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center px-4 py-12">
       <div className="card w-full max-w-md rounded-2xl p-6 sm:p-8">
         <h1 className="text-2xl font-bold text-ink">Welcome Back</h1>
         <p className="mt-1 text-xs text-ink-muted">Sign in to your UniLorin Lost & Found account</p>

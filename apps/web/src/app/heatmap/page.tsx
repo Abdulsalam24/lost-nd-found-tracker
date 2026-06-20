@@ -19,7 +19,7 @@ export default async function HeatmapPage() {
   const data = await getHeatmapData();
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-5xl px-4 py-8">
         <h1 className="section-title">Campus Heatmap</h1>
         <p className="section-subtitle">

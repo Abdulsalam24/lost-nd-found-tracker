@@ -4,10 +4,10 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api";
-import { ItemCard } from "@/components/ItemCard";
-import { SkeletonItemGrid } from "@/components/Skeleton";
-import { EmptyState } from "@/components/EmptyState";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { ItemCard } from "@/components/items/ItemCard";
+import { SkeletonItemGrid } from "@/components/ui/Skeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface ItemResponse {
   id: string;

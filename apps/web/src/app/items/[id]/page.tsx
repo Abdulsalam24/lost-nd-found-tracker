@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import { serverFetch } from "@/lib/api";
-import { StatusBadge } from "@/components/StatusBadge";
-import { CategoryBadge } from "@/components/CategoryBadge";
-import { Timeline } from "@/components/Timeline";
-import { ItemCard } from "@/components/ItemCard";
+import { StatusBadge } from "@/components/items/StatusBadge";
+import { CategoryBadge } from "@/components/items/CategoryBadge";
+import { Timeline } from "@/components/ui/Timeline";
+import { ItemCard } from "@/components/items/ItemCard";
 import { ItemActions } from "./ItemActions";
 import { SightingForm } from "./SightingForm";
 import Link from "next/link";
@@ -89,7 +89,7 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
   const timelineEvents = buildTimeline(item);
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-6xl px-4 py-8">
         <Link
           href="/items"

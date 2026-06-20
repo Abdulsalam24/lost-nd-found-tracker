@@ -1,5 +1,5 @@
 import { serverFetch } from "@/lib/api";
-import { EmptyState } from "@/components/EmptyState";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 interface FacultyEntry {
   faculty: string;
@@ -19,7 +19,7 @@ export default async function LeaderboardPage() {
   const maxCount = Math.max(...data.map((d) => d.count), 1);
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-4xl px-4 py-8">
         <h1 className="section-title">Faculty Leaderboard</h1>
         <p className="section-subtitle">

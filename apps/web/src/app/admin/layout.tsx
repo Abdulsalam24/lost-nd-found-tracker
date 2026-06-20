@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -30,7 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user || user.role !== "admin") return null;
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen">
       <div className="mx-auto flex max-w-7xl gap-6 px-4 py-8">
         <aside className="hidden w-56 shrink-0 md:block">
           <nav aria-label="Admin navigation" className="sticky top-8">
