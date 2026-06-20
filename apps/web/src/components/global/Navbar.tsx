@@ -441,9 +441,9 @@ export function Navbar() {
       </header>
 
       {/* Mobile bottom floating nav */}
-      {!pathname.startsWith("/admin") && (
+      {!pathname.startsWith("/admin") && !pathname.startsWith("/auth") && (
         <nav
-          className='fixed bottom-5 left-1/2 z-50 w-[calc(100%-2rem)] -translate-x-1/2 md:hidden'
+          className='fixed bottom-2 left-1/2 z-50 w-[calc(100%-2rem)] -translate-x-1/2 md:hidden'
           aria-label='Mobile navigation'
         >
           <div className='overflow-x-auto scrollbar-none rounded-full border border-border/40 bg-bg shadow-xl shadow-black/10 dark:border-white/10 dark:bg-[rgba(30,38,30,0.85)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_0.5px_0_rgba(255,255,255,0.1)] dark:backdrop-blur-xl'>
