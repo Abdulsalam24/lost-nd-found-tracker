@@ -10,9 +10,7 @@ interface HeatmapEntry {
   count: number;
 }
 
-// Real UniLorin campus coordinates (lat, lng)
 const LOCATION_COORDS: Record<string, [number, number]> = {
-  // Seeded location names (from seed.ts)
   "Main Library": [8.4799, 4.5418],
   "Senate Building": [8.4812, 4.5405],
   "Faculty of Science": [8.4785, 4.5445],
@@ -28,7 +26,6 @@ const LOCATION_COORDS: Record<string, [number, number]> = {
   "Hostel Area": [8.4740, 4.5385],
   "Gate A (Tanke)": [8.4835, 4.5380],
   "Faculty of Agriculture": [8.4750, 4.5475],
-  // Constants location names (from constants.ts)
   "University Library": [8.4799, 4.5418],
   "Faculty of Physical Sciences": [8.4785, 4.5445],
   "Faculty of Social Sciences": [8.4810, 4.5460],
@@ -56,6 +53,13 @@ const LOCATION_COORDS: Record<string, [number, number]> = {
 
 const CAMPUS_CENTER: [number, number] = [8.4790, 4.5425];
 
+function getHeatColor(ratio: number): string {
+  if (ratio > 0.75) return "#ef4444";
+  if (ratio > 0.5) return "#f97316";
+  if (ratio > 0.25) return "#fbbf24";
+  return "#3f8378";
+}
+
 export function HeatmapDisplay({ data }: { data: HeatmapEntry[] }) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -77,62 +81,44 @@ export function HeatmapDisplay({ data }: { data: HeatmapEntry[] }) {
 
     mapInstanceRef.current = map;
 
-    // Add heatmap data
-    const heatPoints: [number, number, number][] = [];
     const maxCount = Math.max(...data.map((d) => d.count), 1);
 
     data.forEach((entry) => {
       const coords = LOCATION_COORDS[entry.location_name];
       if (!coords) return;
-      const intensity = entry.count / maxCount;
-      // Add multiple points for higher counts to increase heat density
-      const repeats = Math.max(1, Math.ceil(entry.count / 2));
-      Array.from({ length: repeats }).forEach(() => {
-        heatPoints.push([coords[0], coords[1], intensity]);
-      });
-    });
 
-    if (heatPoints.length > 0) {
-      // @ts-expect-error leaflet.heat adds L.heatLayer
-      L.heatLayer(heatPoints, {
-        radius: 35,
-        blur: 25,
-        maxZoom: 18,
-        max: 1.0,
-        gradient: {
-          0.2: "#064e3b",
-          0.4: "#3f8378",
-          0.6: "#fbbf24",
-          0.8: "#f97316",
-          1.0: "#ef4444",
-        },
+      const ratio = entry.count / maxCount;
+      const color = getHeatColor(ratio);
+      const radius = 20 + ratio * 30;
+
+      // Glow circle (larger, translucent)
+      L.circle(coords, {
+        radius: radius * 3,
+        fillColor: color,
+        fillOpacity: 0.15,
+        stroke: false,
       }).addTo(map);
-    }
 
-    // Add markers with popups for each location
-    data.forEach((entry) => {
-      const coords = LOCATION_COORDS[entry.location_name];
-      if (!coords) return;
-
-      const marker = L.circleMarker(coords, {
-        radius: 6,
-        fillColor: "#3f8378",
-        color: "#065f46",
+      // Core circle
+      L.circleMarker(coords, {
+        radius: 8 + ratio * 8,
+        fillColor: color,
+        color: color,
         weight: 2,
-        opacity: 0.9,
-        fillOpacity: 0.8,
-      }).addTo(map);
-
-      marker.bindPopup(
-        `<div style="text-align:center;font-family:system-ui;">
-          <strong style="font-size:13px;">${entry.location_name}</strong><br/>
-          <span style="color:#3f8378;font-weight:600;font-size:14px;">${entry.count}</span>
-          <span style="color:#666;font-size:12px;"> item${entry.count !== 1 ? "s" : ""}</span>
-        </div>`,
-      );
+        opacity: 0.8,
+        fillOpacity: 0.6,
+      })
+        .addTo(map)
+        .bindPopup(
+          `<div style="text-align:center;font-family:Manrope,system-ui,sans-serif;padding:4px;">
+            <strong style="font-size:13px;color:#f0fdf4;">${entry.location_name}</strong><br/>
+            <span style="color:${color};font-weight:700;font-size:16px;">${entry.count}</span>
+            <span style="color:#9ca3af;font-size:12px;"> item${entry.count !== 1 ? "s" : ""}</span>
+          </div>`,
+          { className: "dark-popup" }
+        );
     });
 
-    // Fix map size after mount
     setTimeout(() => map.invalidateSize(), 100);
 
     return () => {
@@ -146,30 +132,30 @@ export function HeatmapDisplay({ data }: { data: HeatmapEntry[] }) {
       <div className="card overflow-hidden">
         <div
           ref={mapRef}
-          className="h-[500px] w-full sm:h-[600px]"
+          className="h-[350px] w-full sm:h-[500px] lg:h-[600px]"
           role="img"
           aria-label="Interactive heatmap of University of Ilorin campus showing item loss hotspots"
         />
       </div>
 
       {/* Legend */}
-      <div className="card px-6 py-4">
-        <div className="flex flex-wrap items-center gap-6 text-xs text-text-muted">
+      <div className="card px-4 py-3 sm:px-6 sm:py-4">
+        <div className="flex flex-wrap items-center gap-4 text-xs text-text-muted sm:gap-6">
           <span className="font-semibold text-text">Intensity:</span>
           <div className="flex items-center gap-1.5">
-            <div className="h-3 w-6 rounded-sm bg-emerald-900" />
+            <div className="h-3 w-6 rounded-sm" style={{ background: "#3f8378" }} />
             <span>Low</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="h-3 w-6 rounded-sm bg-emerald-500" />
+            <div className="h-3 w-6 rounded-sm" style={{ background: "#fbbf24" }} />
             <span>Medium</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="h-3 w-6 rounded-sm bg-amber-400" />
+            <div className="h-3 w-6 rounded-sm" style={{ background: "#f97316" }} />
             <span>High</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="h-3 w-6 rounded-sm bg-red-500" />
+            <div className="h-3 w-6 rounded-sm" style={{ background: "#ef4444" }} />
             <span>Very High</span>
           </div>
         </div>
@@ -178,26 +164,33 @@ export function HeatmapDisplay({ data }: { data: HeatmapEntry[] }) {
       {/* Location table */}
       {data.length > 0 && (
         <div className="card overflow-hidden">
-          <div className="px-6 py-4 border-b border-border">
+          <div className="px-4 py-3 border-b border-border sm:px-6 sm:py-4">
             <h3 className="text-sm font-bold text-text">Location Breakdown</h3>
           </div>
           <div className="divide-y divide-border">
             {[...data]
               .sort((a, b) => b.count - a.count)
-              .map((entry) => (
-                <div key={entry.location_id} className="flex items-center justify-between px-6 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10">
-                      <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
+              .map((entry) => {
+                const mc = Math.max(...data.map((d) => d.count), 1);
+                const ratio = entry.count / mc;
+                const color = getHeatColor(ratio);
+                return (
+                  <div key={entry.location_id} className="flex items-center justify-between px-4 py-2.5 sm:px-6 sm:py-3">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="flex h-7 w-7 items-center justify-center rounded-lg sm:h-8 sm:w-8"
+                        style={{ background: `${color}20` }}
+                      >
+                        <svg className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        </svg>
+                      </div>
+                      <span className="text-xs font-medium text-text">{entry.location_name}</span>
                     </div>
-                    <span className="text-xs font-medium text-text">{entry.location_name}</span>
+                    <span className="text-xs font-bold" style={{ color }}>{entry.count}</span>
                   </div>
-                  <span className="text-xs font-bold text-accent">{entry.count}</span>
-                </div>
-              ))}
+                );
+              })}
           </div>
         </div>
       )}

@@ -1,5 +1,12 @@
+export const dynamic = "force-dynamic";
+
+import dynamic_import from "next/dynamic";
 import { serverFetch } from "@/lib/api";
-import { HeatmapDisplay } from "@/features/heatmap/HeatmapDisplay";
+
+const HeatmapDisplay = dynamic_import(
+  () => import("@/features/heatmap/HeatmapDisplay").then((m) => m.HeatmapDisplay),
+  { ssr: false, loading: () => <div className="mt-6 h-[500px] animate-pulse rounded-2xl bg-bg-elevated" /> }
+);
 
 interface HeatmapEntry {
   location_id: string;

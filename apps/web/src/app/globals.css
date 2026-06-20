@@ -335,6 +335,22 @@
   }
 }
 
+/* Leaflet dark popup */
+.dark-popup .leaflet-popup-content-wrapper {
+  background: #111611;
+  color: #f0fdf4;
+  border: 1px solid #1f2e1f;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+.dark-popup .leaflet-popup-tip {
+  background: #111611;
+  border: 1px solid #1f2e1f;
+}
+.dark-popup .leaflet-popup-close-button {
+  color: #6b7280;
+}
+
 /* Utility: hide scrollbar */
 .scrollbar-none {
   -ms-overflow-style: none;
