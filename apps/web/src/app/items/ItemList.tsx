@@ -18,6 +18,7 @@ interface ItemResponse {
   location_id: string;
   date_of_event: string;
   image_url?: string;
+  reporter?: { id: string; name: string } | null;
 }
 
 interface PaginatedItems {
@@ -124,7 +125,7 @@ export function ItemList() {
 
   return (
     <>
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5">
         {items.map((item) => (
           <ItemCard key={item.id} {...item} />
         ))}

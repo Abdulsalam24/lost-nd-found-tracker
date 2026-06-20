@@ -10,6 +10,7 @@ interface ItemCardProps {
   location_id?: string;
   date_of_event?: string;
   image_url?: string;
+  reporter?: { id: string; name: string } | null;
   compact?: boolean;
 }
 
@@ -18,15 +19,15 @@ export function ItemCard({
   title,
   type,
   category,
-  status,
   location_id,
   date_of_event,
   image_url,
+  reporter,
   compact = false,
 }: ItemCardProps) {
   return (
     <Link href={`/items/${id}`} className="card-hover group overflow-hidden rounded-lg">
-      <div className="relative aspect-square overflow-hidden bg-bg-elevated">
+      <div className="relative aspect-[4/3] overflow-hidden bg-bg-elevated">
         {image_url ? (
           <Image
             src={image_url}
@@ -45,18 +46,21 @@ export function ItemCard({
         <span className={`absolute top-1.5 left-1.5 rounded-full px-1.5 py-px text-[7px] font-bold uppercase tracking-wide backdrop-blur-md sm:text-[8px] ${
           type === "LOST"
             ? "bg-red-500/80 text-white"
-            : "bg-accent/80 text-bg"
+            : "bg-emerald-500/80 text-white"
         }`}>
           {type ?? "_"}
         </span>
       </div>
-      <div className="p-2 sm:p-3">
+      <div className="p-2 sm:p-2.5">
         <h3 className="text-[10px] font-semibold text-text transition-colors group-hover:text-accent line-clamp-1 sm:text-[11px]">
           {title ?? "_"}
         </h3>
+        {reporter?.name && (
+          <p className="mt-0.5 text-[8px] text-text-muted sm:text-[9px]">by {reporter.name}</p>
+        )}
         <p className="mt-0.5 text-[8px] text-text-ghost sm:text-[9px]">{category ?? "_"}</p>
         {!compact && (location_id || date_of_event) && (
-          <div className="mt-1.5 flex items-center justify-between">
+          <div className="mt-1 flex items-center justify-between">
             {location_id && (
               <p className="flex items-center gap-0.5 text-[8px] text-text-muted sm:text-[9px]">
                 <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -67,7 +71,7 @@ export function ItemCard({
             )}
             {date_of_event && (
               <time className="text-[8px] text-text-ghost sm:text-[9px]" dateTime={date_of_event}>
-                {new Date(date_of_event).toLocaleDateString()}
+                {new Date(date_of_event).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
               </time>
             )}
           </div>
