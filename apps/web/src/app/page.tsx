@@ -90,34 +90,34 @@ export default function HomePage() {
       </section>
 
       {/* Recently Found Items */}
-      <section className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:py-16">
+      <section className="relative z-10 mx-auto max-w-5xl px-4 py-8 sm:py-14">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-text sm:text-2xl">Recently Found</h2>
-          <Link href="/items?type=FOUND" className="text-xs font-semibold text-accent hover:text-accent-light transition-colors">
+          <h2 className="text-lg font-bold text-text sm:text-xl">Recently Found</h2>
+          <Link href="/items?type=FOUND" className="text-[11px] font-semibold text-accent hover:text-accent-light transition-colors">
             View all &rarr;
           </Link>
         </div>
         {items.length > 0 ? (
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3 lg:grid-cols-4">
             {items.map((item) => (
-              <Link key={item.id} href={`/items/${item.id}`} className="card-hover group overflow-hidden rounded-xl">
-                <div className="relative aspect-square overflow-hidden bg-bg-elevated">
+              <Link key={item.id} href={`/items/${item.id}`} className="card-hover group overflow-hidden rounded-lg">
+                <div className="relative aspect-[4/5] overflow-hidden bg-bg-elevated">
                   {item.image_url ? (
                     <Image
                       src={item.image_url}
                       alt={item.title ?? "_"}
                       fill
-                      sizes="(max-width: 640px) 50vw, 25vw"
+                      sizes="(max-width: 640px) 33vw, 25vw"
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center">
-                      <svg className="h-8 w-8 text-text-ghost" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <svg className="h-6 w-6 text-text-ghost" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                     </div>
                   )}
-                  <span className={`absolute top-2 left-2 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide backdrop-blur-md ${
+                  <span className={`absolute top-1.5 left-1.5 rounded-full px-1.5 py-px text-[7px] font-bold uppercase tracking-wide backdrop-blur-md sm:text-[8px] ${
                     item.type === "LOST"
                       ? "bg-red-500/80 text-white"
                       : "bg-accent/80 text-bg"
@@ -125,16 +125,11 @@ export default function HomePage() {
                     {item.type ?? "_"}
                   </span>
                 </div>
-                <div className="p-2.5 sm:p-3">
-                  <h3 className="text-[11px] font-semibold text-text transition-colors group-hover:text-accent line-clamp-1 sm:text-xs">
+                <div className="p-2">
+                  <h3 className="text-[10px] font-semibold text-text transition-colors group-hover:text-accent line-clamp-1 sm:text-[11px]">
                     {item.title ?? "_"}
                   </h3>
-                  <div className="mt-1 flex items-center justify-between">
-                    <span className="text-[9px] text-text-ghost sm:text-[10px]">{item.category ?? "_"}</span>
-                    <time className="text-[9px] text-text-ghost sm:text-[10px]" dateTime={item.date_of_event}>
-                      {item.date_of_event ? new Date(item.date_of_event).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "_"}
-                    </time>
-                  </div>
+                  <p className="mt-0.5 text-[8px] text-text-ghost sm:text-[9px]">{item.category ?? "_"}</p>
                 </div>
               </Link>
             ))}
