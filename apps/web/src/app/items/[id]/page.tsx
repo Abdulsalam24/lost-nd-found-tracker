@@ -4,8 +4,8 @@ import { StatusBadge } from "@/components/items/StatusBadge";
 import { CategoryBadge } from "@/components/items/CategoryBadge";
 import { Timeline } from "@/components/ui/Timeline";
 import { ItemCard } from "@/components/items/ItemCard";
-import { ItemActions } from "./ItemActions";
-import { SightingForm } from "./SightingForm";
+import { ItemActions } from "@/features/items/detail/ItemActions";
+import { SightingForm } from "@/features/items/detail/SightingForm";
 import Link from "next/link";
 
 interface ItemDetail {

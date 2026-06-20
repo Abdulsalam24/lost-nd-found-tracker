@@ -1,5 +1,5 @@
 import { serverFetch } from "@/lib/api";
-import { StatsCharts } from "./StatsCharts";
+import { StatsCharts } from "@/features/stats/StatsCharts";
 
 interface StatsResponse {
   total_items: number;

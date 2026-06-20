@@ -1,5 +1,5 @@
 import { serverFetch } from "@/lib/api";
-import { HeatmapDisplay } from "./HeatmapDisplay";
+import { HeatmapDisplay } from "@/features/heatmap/HeatmapDisplay";
 
 interface HeatmapEntry {
   location_id: string;
