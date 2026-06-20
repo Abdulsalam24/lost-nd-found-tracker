@@ -80,19 +80,19 @@ export default function HomePage() {
       </section>
 
       {/* Stats */}
-      <section className="relative z-10 mx-auto max-w-4xl px-4 py-12">
-        <div className="card flex flex-col items-center divide-y divide-border sm:flex-row sm:divide-x sm:divide-y-0 rounded-2xl">
-          <div className="flex-1 px-6 py-5 text-center">
-            <p className="text-3xl font-bold text-text">{stats.total_items ?? "_"}</p>
-            <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-text-muted">Reported</p>
+      <section className="relative z-10 mx-auto max-w-lg px-4 py-6 sm:max-w-3xl sm:py-10">
+        <div className="card flex items-center divide-x divide-border rounded-xl sm:rounded-2xl">
+          <div className="flex-1 py-3 text-center sm:py-5">
+            <p className="text-lg font-bold text-text sm:text-3xl">{stats.total_items ?? "_"}</p>
+            <p className="mt-0.5 text-[8px] font-semibold uppercase tracking-wider text-text-muted sm:mt-1 sm:text-[10px]">Reported</p>
           </div>
-          <div className="flex-1 px-6 py-5 text-center">
-            <p className="text-3xl font-bold text-text">{stats.total_recovered ?? "_"}</p>
-            <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-text-muted">Recovered</p>
+          <div className="flex-1 py-3 text-center sm:py-5">
+            <p className="text-lg font-bold text-text sm:text-3xl">{stats.total_recovered ?? "_"}</p>
+            <p className="mt-0.5 text-[8px] font-semibold uppercase tracking-wider text-text-muted sm:mt-1 sm:text-[10px]">Recovered</p>
           </div>
-          <div className="flex-1 px-6 py-5 text-center">
-            <p className="text-3xl font-bold text-accent">{`${stats.recovery_rate ?? 0}%`}</p>
-            <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-text-muted">Recovery Rate</p>
+          <div className="flex-1 py-3 text-center sm:py-5">
+            <p className="text-lg font-bold text-accent sm:text-3xl">{`${stats.recovery_rate ?? 0}%`}</p>
+            <p className="mt-0.5 text-[8px] font-semibold uppercase tracking-wider text-text-muted sm:mt-1 sm:text-[10px]">Recovery Rate</p>
           </div>
         </div>
       </section>
