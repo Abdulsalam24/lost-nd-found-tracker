@@ -8,6 +8,7 @@ import { z } from "zod";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
+import { uploadImage } from "@/lib/upload";
 import { Modal } from "@/components/global/Modal";
 
 const claimSchema = z.object({
@@ -56,10 +57,7 @@ export function ItemActions({ itemId, itemStatus, reportedBy, itemTitle, reporte
     try {
       let evidence_image_url: string | undefined;
       if (imageFile) {
-        const formData = new FormData();
-        formData.append("file", imageFile);
-        const { url } = await api.upload<{ url: string }>("/items/upload", formData);
-        evidence_image_url = url;
+        evidence_image_url = await uploadImage(imageFile);
       }
 
       const claim = await api.post<{ id: string }>("/claims", {
