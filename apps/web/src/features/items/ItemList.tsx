@@ -125,7 +125,7 @@ export function ItemList() {
 
   return (
     <>
-      <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
           <ItemCard key={item.id} {...item} />
         ))}

@@ -59,6 +59,56 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Manrope";
+  src: url("../asset/fonts/manrope/Manrope-ExtraLight.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Manrope";
+  src: url("../asset/fonts/manrope/Manrope-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Manrope";
+  src: url("../asset/fonts/manrope/Manrope-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Manrope";
+  src: url("../asset/fonts/manrope/Manrope-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Manrope";
+  src: url("../asset/fonts/manrope/Manrope-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Manrope";
+  src: url("../asset/fonts/manrope/Manrope-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Manrope";
+  src: url("../asset/fonts/manrope/Manrope-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --grid: 140 60% 20%;
@@ -85,6 +135,10 @@
   body {
     background-color: #000;
     @apply text-xs text-text antialiased;
+    font-family: "Manrope", system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
     font-family: "Sora", system-ui, sans-serif;
   }
 
@@ -97,12 +151,12 @@
   }
 
   ::selection {
-    background: rgba(0, 70, 41, 0.3);
+    background: rgba(63, 131, 120, 0.3);
     color: #f0fdf4;
   }
 
   .light ::selection {
-    background: rgba(0, 70, 41, 0.2);
+    background: rgba(63, 131, 120, 0.2);
     color: #1a2e1a;
   }
 }
@@ -225,7 +279,7 @@
   }
 
   .card-hover {
-    @apply card transition-all hover:border-[#0046294d] hover:shadow-lg hover:shadow-[#0046290d];
+    @apply card transition-all hover:border-[#3f83784d] hover:shadow-lg hover:shadow-[#3f83780d];
   }
 
   .error-text {
@@ -245,7 +299,7 @@
   }
 
   .badge-accent {
-    @apply badge bg-[#0046291a] text-accent border border-[#00462933];
+    @apply badge bg-[#3f83781a] text-accent border border-[#3f837833];
   }
 
   .badge-red {
@@ -281,6 +335,15 @@
   }
 }
 
+/* Utility: hide scrollbar */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Light mode color overrides */
 .light {
   --color-bg: #f5f0e8;
@@ -294,6 +357,6 @@
   --color-border: #d4cfc7;
   --color-border-light: #c4bfb7;
   --color-border-card: #ddd8d0;
-  --color-accent: #004629;
-  --color-accent-light: #006b3f;
+  --color-accent: #3f8378;
+  --color-accent-light: #5a9e93;
 }

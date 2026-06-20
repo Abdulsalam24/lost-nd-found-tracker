@@ -9,29 +9,30 @@ import { ItemList } from "@/features/items/ItemList";
 export default function ItemsPage() {
   return (
     <div className="min-h-screen">
-      <div className="mx-auto max-w-7xl px-4 py-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        {/* Header */}
+        <div className="flex items-start justify-between">
           <div>
-            <h1 className="section-title">Browse Items</h1>
-            <p className="section-subtitle">Find lost items or report what you found on campus</p>
+            <h1 className="text-3xl font-bold tracking-tight text-text sm:text-4xl">Browse Items</h1>
+            <p className="mt-2 text-sm text-text-secondary">Find lost items or report what you found on campus.</p>
           </div>
-          <div className="flex gap-3">
-            <Link href="/items/report-lost" className="btn-primary text-xs">
-              Report Lost
-            </Link>
-            <Link href="/items/report-found" className="btn-secondary text-xs">
-              Report Found
-            </Link>
-          </div>
+          <Link href="/items/report-lost" className="btn-primary shrink-0 gap-1.5 text-xs">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Report Item
+          </Link>
         </div>
 
+        {/* Filters */}
         <div className="mt-8">
           <Suspense fallback={<SkeletonItemGrid />}>
             <SearchFilters />
           </Suspense>
         </div>
 
-        <Suspense fallback={<div className="mt-8"><SkeletonItemGrid /></div>}>
+        {/* Items grid */}
+        <Suspense fallback={<div className="mt-6"><SkeletonItemGrid /></div>}>
           <ItemList />
         </Suspense>
       </div>

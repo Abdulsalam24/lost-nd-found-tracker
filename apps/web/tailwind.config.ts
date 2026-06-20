@@ -20,12 +20,12 @@ const config: Config = {
           DEFAULT: "#1a2e1a",
         },
         accent: {
-          DEFAULT: "var(--color-accent, #00a86b)",
+          DEFAULT: "var(--color-accent, #3f8378)",
           light: "var(--color-accent-light, #33c48a)",
-          dark: "#004629",
-          muted: "#00462940",
-          glow: "#00462920",
-          brand: "#004629",
+          dark: "#3f8378",
+          muted: "#3f837840",
+          glow: "#3f837820",
+          brand: "#3f8378",
         },
         text: {
           DEFAULT: "var(--color-text, #f0fdf4)",
@@ -56,9 +56,9 @@ const config: Config = {
         coral: {
           DEFAULT: "var(--color-accent, #00a86b)",
           light: "var(--color-accent-light, #33c48a)",
-          dark: "#004629",
-          50: "#001a10",
-          100: "#002618",
+          dark: "#3f8378",
+          50: "#1a3733",
+          100: "#2b5a53",
         },
         surface: {
           DEFAULT: "var(--color-bg, #0a0f0a)",
@@ -68,7 +68,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["Sora", "system-ui", "sans-serif"],
+        sans: ["Manrope", "system-ui", "sans-serif"],
+        heading: ["Sora", "system-ui", "sans-serif"],
       },
       borderColor: {
         DEFAULT: "var(--color-border, #1f2e1f)",

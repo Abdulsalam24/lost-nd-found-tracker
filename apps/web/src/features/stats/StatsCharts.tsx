@@ -41,7 +41,7 @@ interface StatsChartsProps {
 }
 
 const CATEGORY_COLORS = [
-  "#004629", "#f87171", "#fbbf24", "#60a5fa",
+  "#3f8378", "#f87171", "#fbbf24", "#60a5fa",
   "#a78bfa", "#f97316", "#2dd4bf", "#fb923c",
 ];
 
@@ -98,7 +98,7 @@ export function StatsCharts({ categoryStats, monthlyStats, recoveryRate }: Stats
             datasets: [{
               label: "Items Reported",
               data: monthlyStats.map((m) => m.count),
-              backgroundColor: "#004629",
+              backgroundColor: "#3f8378",
               borderRadius: 6,
               borderSkipped: false,
             }],
@@ -134,7 +134,7 @@ export function StatsCharts({ categoryStats, monthlyStats, recoveryRate }: Stats
             labels: ["Recovered", "Remaining"],
             datasets: [{
               data: [recoveryRate, 100 - recoveryRate],
-              backgroundColor: ["#004629", isDark ? "#1f2e1f" : "#e5e7eb"],
+              backgroundColor: ["#3f8378", isDark ? "#1f2e1f" : "#e5e7eb"],
               borderWidth: 0,
             }],
           },
