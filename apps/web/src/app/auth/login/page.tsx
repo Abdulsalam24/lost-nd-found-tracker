@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,27 +16,10 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
-  return (
-    <Suspense fallback={
-      <div className="flex min-h-[95vh] items-center justify-center px-4 py-12">
-        <div className="card w-full max-w-md rounded-2xl p-8 text-center">
-          <p className="text-ink-muted">Loading...</p>
-        </div>
-      </div>
-    }>
-      <LoginForm />
-    </Suspense>
-  );
-}
-
-function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { login } = useAuth();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const redirect = searchParams.get("redirect");
 
   const {
     register,
@@ -50,8 +33,8 @@ function LoginForm() {
     setError("");
     try {
       const me = await login(data.email, data.password);
-      const dest = redirect ?? (me.role === "admin" ? "/admin" : "/items");
-      window.location.href = dest;
+      const dest = me.role === "admin" ? "/admin" : "/items";
+      router.push(dest);
     } catch (err) {
       const msg = (err as any)?.response?.data?.message;
       setError(msg ?? "Login failed");

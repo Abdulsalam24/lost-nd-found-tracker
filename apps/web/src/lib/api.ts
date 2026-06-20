@@ -4,8 +4,13 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3002";
 
 export function setToken(token: string | null) {
   if (typeof window === "undefined") return;
-  if (token) localStorage.setItem("token", token);
-  else localStorage.removeItem("token");
+  if (token) {
+    localStorage.setItem("token", token);
+    document.cookie = `access_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; samesite=lax`;
+  } else {
+    localStorage.removeItem("token");
+    document.cookie = "access_token=; path=/; max-age=0";
+  }
 }
 
 export function getToken(): string | null {
@@ -31,6 +36,7 @@ apiInstance.interceptors.response.use(
   (err) => {
     if (err?.response?.status === 401 && typeof window !== "undefined") {
       localStorage.removeItem("token");
+      document.cookie = "access_token=; path=/; max-age=0";
     }
     return Promise.reject(err);
   },

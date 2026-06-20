@@ -39,16 +39,14 @@ export function middleware(request: NextRequest) {
 
   if (isProtected) {
     if (!token) {
-      const loginUrl = new URL("/auth/login", request.url);
-      loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
+      return NextResponse.redirect(new URL("/auth/login", request.url));
     }
 
     const payload = parseJwtPayload(token);
 
     if (!payload || isTokenExpired(payload)) {
       const response = NextResponse.redirect(
-        new URL(`/auth/login?redirect=${pathname}`, request.url)
+        new URL("/auth/login", request.url)
       );
       response.cookies.delete("access_token");
       return response;
