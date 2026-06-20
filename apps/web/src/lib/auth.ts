@@ -30,7 +30,7 @@ interface AuthContextValue {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<User>;
-  register: (data: { email: string; password: string; name: string; faculty: string }) => Promise<void>;
+  register: (data: { email: string; password: string; name: string; faculty: string; phone?: string }) => Promise<void>;
   verifyOtp: (email: string, otp: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -61,6 +61,7 @@ export async function registerRequest(data: {
   password: string;
   name: string;
   faculty: string;
+  phone?: string;
 }): Promise<{ message: string; email: string }> {
   return api.post<{ message: string; email: string }>("/auth/register", data);
 }

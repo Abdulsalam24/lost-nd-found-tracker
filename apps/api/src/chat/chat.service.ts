@@ -126,15 +126,12 @@ export class ChatService {
   }
 
   async getUnreadCount(userId: string): Promise<number> {
-    return this.messageRepo.count({
-      where: {
-        is_read: false,
-        conversation: [
-          { initiator_id: userId },
-          { recipient_id: userId },
-        ],
-      },
-      relations: ['conversation'],
-    });
+    return this.messageRepo
+      .createQueryBuilder('msg')
+      .innerJoin('msg.conversation', 'conv')
+      .where('msg.is_read = false')
+      .andWhere('msg.sender_id != :userId', { userId })
+      .andWhere('(conv.initiator_id = :userId OR conv.recipient_id = :userId)', { userId })
+      .getCount();
   }
 }

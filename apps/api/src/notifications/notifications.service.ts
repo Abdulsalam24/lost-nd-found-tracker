@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Resend } from 'resend';
+import { BrevoClient } from '@getbrevo/brevo';
 import { Notification } from './entities/notification.entity';
 import { User } from '../users/entities/user.entity';
 import { ItemReport } from '../items/entities/item-report.entity';
@@ -14,8 +14,9 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class NotificationsService {
   private readonly logger = new Logger(NotificationsService.name);
-  private readonly resend: Resend | null;
+  private readonly brevoClient: BrevoClient | null;
   private readonly fromEmail: string;
+  private readonly fromName: string;
 
   constructor(
     @InjectRepository(Notification)
@@ -25,12 +26,10 @@ export class NotificationsService {
     private configService: ConfigService,
     private jwtService: JwtService,
   ) {
-    const apiKey = this.configService.get<string>('RESEND_API_KEY');
-    this.resend = apiKey ? new Resend(apiKey) : null;
-    this.fromEmail = this.configService.get<string>(
-      'RESEND_FROM_EMAIL',
-      'UniLorin Lost & Found <noreply@lostfound.unilorin.edu.ng>',
-    );
+    const apiKey = this.configService.get<string>('BREVO_API_KEY');
+    this.brevoClient = apiKey ? new BrevoClient({ apiKey }) : null;
+    this.fromEmail = this.configService.get<string>('BREVO_FROM_EMAIL', 'noreply@lostfound.unilorin.edu.ng');
+    this.fromName = this.configService.get<string>('BREVO_FROM_NAME', 'UniLorin Lost & Found');
   }
 
   async sendVerificationEmail(user: User): Promise<void> {
@@ -207,19 +206,19 @@ export class NotificationsService {
 
     const saved = await this.notificationsRepo.save(notification);
 
-    if (this.resend) {
+    if (this.brevoClient) {
       try {
-        const emailOpts: any = {
-          from: this.fromEmail,
-          to: user.email,
+        const emailOpts: Record<string, unknown> = {
+          sender: { email: this.fromEmail, name: this.fromName },
+          to: [{ email: user.email, name: user.name }],
           subject: (payload.subject as string) ?? 'Lost & Found Notification',
         };
         if (payload.html) {
-          emailOpts.html = payload.html as string;
+          emailOpts.htmlContent = payload.html as string;
         } else {
-          emailOpts.text = (payload.body as string) ?? '';
+          emailOpts.textContent = (payload.body as string) ?? '';
         }
-        await this.resend.emails.send(emailOpts);
+        await this.brevoClient.transactionalEmails.sendTransacEmail(emailOpts);
 
         await this.notificationsRepo.update(saved.id, {
           sent_at: new Date(),

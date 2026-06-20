@@ -45,6 +45,7 @@ export class AuthService {
       existing.password_hash = password_hash;
       existing.name = dto.name;
       existing.faculty = dto.faculty;
+      existing.phone = dto.phone ?? null;
       user = existing;
     } else {
       user = this.usersRepo.create({
@@ -52,6 +53,7 @@ export class AuthService {
         password_hash,
         name: dto.name,
         faculty: dto.faculty,
+        phone: dto.phone ?? null,
       });
     }
 
@@ -132,7 +134,13 @@ export class AuthService {
     }
 
     if (!user.is_verified) {
-      throw new UnauthorizedException('Please verify your email first');
+      const otp = this.generateOtp();
+      user.otp_code = otp;
+      user.otp_expires_at = new Date(Date.now() + 10 * 60 * 1000);
+      this.logger.log(`[OTP] ${dto.email} => ${otp}`);
+      await this.usersRepo.save(user);
+      await this.notificationsService.sendOtpEmail(user, otp);
+      throw new UnauthorizedException('Email not verified. A new OTP has been sent to your email.');
     }
 
     const valid = await bcrypt.compare(dto.password, user.password_hash);

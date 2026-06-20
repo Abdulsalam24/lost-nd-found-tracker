@@ -8,10 +8,11 @@ import { LeaderboardModule } from '../leaderboard/leaderboard.module';
 import { ItemsModule } from '../items/items.module';
 import { StorageModule } from '../storage/storage.module';
 import { ItemReport } from '../items/entities/item-report.entity';
+import { User } from '../users/entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ItemReport]),
+    TypeOrmModule.forFeature([ItemReport, User]),
     TriviaModule,
     DetectiveModule,
     StatsModule,

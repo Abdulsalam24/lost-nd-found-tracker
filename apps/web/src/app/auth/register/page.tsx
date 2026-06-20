@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState, useRef, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,7 @@ const schema = z.object({
   email: z.string().email("Enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   faculty: z.string().min(1, "Select a faculty"),
+  phone: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -22,7 +23,16 @@ type FormData = z.infer<typeof schema>;
 const OTP_LENGTH = 6;
 
 export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
+  );
+}
+
+function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { register: registerUser, verifyOtp } = useAuth();
   const [error, setError] = useState("");
   const [step, setStep] = useState<"form" | "otp">("form");
@@ -41,6 +51,16 @@ export default function RegisterPage() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+
+  // If redirected from login with ?verify=email, jump to OTP step
+  useEffect(() => {
+    const verifyEmail = searchParams.get("verify");
+    if (verifyEmail) {
+      setEmail(verifyEmail);
+      setStep("otp");
+      setResendCooldown(60);
+    }
+  }, [searchParams]);
 
   // Resend cooldown timer
   useEffect(() => {
@@ -286,6 +306,22 @@ export default function RegisterPage() {
               ))}
             </select>
             {errors.faculty && <p className="error-text">{errors.faculty.message}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="phone" className="label">
+              WhatsApp Number <span className="text-text-ghost font-normal">(optional)</span>
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              className="input-field"
+              placeholder="+234 801 234 5678"
+              {...register("phone")}
+            />
+            <p className="mt-1 text-[10px] text-text-ghost">
+              Adding your number lets people who find your lost item reach you instantly via WhatsApp.
+            </p>
           </div>
 
           <button type="submit" className="btn-primary w-full rounded-full py-3" disabled={isSubmitting}>

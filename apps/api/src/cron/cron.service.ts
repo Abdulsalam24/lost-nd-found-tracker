@@ -9,6 +9,7 @@ import { StorageService } from '../storage/storage.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan } from 'typeorm';
 import { ItemReport } from '../items/entities/item-report.entity';
+import { User } from '../users/entities/user.entity';
 import { ItemStatus } from '@lostfound/shared';
 
 @Injectable()
@@ -24,6 +25,8 @@ export class CronService {
     private storageService: StorageService,
     @InjectRepository(ItemReport)
     private itemsRepo: Repository<ItemReport>,
+    @InjectRepository(User)
+    private usersRepo: Repository<User>,
   ) {}
 
   // Monday 8am — log start of new week
@@ -78,5 +81,21 @@ export class CronService {
 
     await Promise.all(deletePromises);
     this.logger.log(`Retention cleanup done. Processed ${disposedItems.length} items.`);
+  }
+
+  // Daily at 3am — delete unverified users older than 24h
+  @Cron('0 3 * * *')
+  async purgeUnverifiedUsers(): Promise<void> {
+    const cutoff = new Date();
+    cutoff.setHours(cutoff.getHours() - 24);
+
+    const result = await this.usersRepo.delete({
+      is_verified: false,
+      created_at: LessThan(cutoff),
+    });
+
+    if (result.affected) {
+      this.logger.log(`Purged ${result.affected} stale unverified users`);
+    }
   }
 }

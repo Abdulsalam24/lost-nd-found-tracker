@@ -36,7 +36,12 @@ export default function LoginPage() {
       const dest = me.role === "admin" ? "/admin" : "/items";
       router.push(dest);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      const msg = err instanceof Error ? err.message : "Login failed";
+      if (msg.toLowerCase().includes("not verified")) {
+        router.push(`/auth/register?verify=${encodeURIComponent(data.email)}`);
+        return;
+      }
+      setError(msg);
     }
   };
 

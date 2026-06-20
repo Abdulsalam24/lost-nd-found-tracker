@@ -29,10 +29,7 @@ export function ItemActions({ itemId, itemStatus, reportedBy, itemTitle, reporte
   const { user } = useAuth();
   const router = useRouter();
   const [claimOpen, setClaimOpen] = useState(false);
-  const [chatOpen, setChatOpen] = useState(false);
   const [error, setError] = useState("");
-  const [chatMessage, setChatMessage] = useState("");
-  const [chatSending, setChatSending] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const {
@@ -73,27 +70,6 @@ export function ItemActions({ itemId, itemStatus, reportedBy, itemTitle, reporte
     }
   };
 
-  const onChatSubmit = async () => {
-    const content = chatMessage.trim();
-    if (!content || chatSending) return;
-
-    setChatSending(true);
-    setError("");
-    try {
-      const conv = await api.post<{ id: string }>("/chat/conversations", {
-        item_report_id: itemId,
-        recipient_id: reportedBy,
-        message: content,
-      });
-      setChatOpen(false);
-      router.push(`/chat/${conv.id}`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to start conversation");
-    } finally {
-      setChatSending(false);
-    }
-  };
-
   // Not logged in
   if (!user) {
     return (
@@ -126,19 +102,18 @@ export function ItemActions({ itemId, itemStatus, reportedBy, itemTitle, reporte
           Claim This Item
         </button>
         <div className="flex gap-2">
-          <button
-            type="button"
+          <Link
+            href={`/chat?item=${itemId}`}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-border-light bg-bg-elevated px-4 py-2.5 text-xs font-medium text-text transition-colors hover:bg-bg-hover"
-            onClick={() => setChatOpen(true)}
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
             Message
-          </button>
+          </Link>
           {reporterPhone && (
             <a
-              href={`https://wa.me/${reporterPhone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Hi, I'm reaching out about "${itemTitle}" on UniLorin Lost & Found.`)}`}
+              href={`https://wa.me/${reporterPhone.replace(/[^0-9]/g, "").replace(/^0/, "234")}?text=${encodeURIComponent(`Hi, I'm reaching out about "${itemTitle}" on UniLorin Lost & Found.`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5 text-xs font-medium text-emerald-400 transition-colors hover:bg-emerald-500/20"
@@ -206,44 +181,6 @@ export function ItemActions({ itemId, itemStatus, reportedBy, itemTitle, reporte
         </form>
       </Modal>
 
-      {/* Chat Modal */}
-      <Modal open={chatOpen} onClose={() => setChatOpen(false)} title={`Message about "${itemTitle}"`}>
-        {error && (
-          <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400" role="alert">
-            {error}
-          </div>
-        )}
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="chat-message" className="label">Your Message</label>
-            <textarea
-              id="chat-message"
-              rows={3}
-              className="input-field"
-              placeholder="Hi, I think I found your item..."
-              value={chatMessage}
-              onChange={(e) => setChatMessage(e.target.value)}
-            />
-          </div>
-          <div className="flex gap-3 justify-end pt-2">
-            <button
-              type="button"
-              className="btn-ghost text-xs"
-              onClick={() => setChatOpen(false)}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="btn-primary text-xs"
-              disabled={chatSending || !chatMessage.trim()}
-              onClick={onChatSubmit}
-            >
-              {chatSending ? "Sending..." : "Send Message"}
-            </button>
-          </div>
-        </div>
-      </Modal>
     </>
   );
 }

@@ -12,6 +12,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.500.0",
     "@aws-sdk/s3-request-presigner": "^3.500.0",
+    "@getbrevo/brevo": "^5.0.4",
     "@lostfound/shared": "*",
     "@nestjs/cli": "^10.3.0",
     "@nestjs/common": "^10.3.0",
@@ -39,7 +40,6 @@
     "passport-jwt": "^4.0.1",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.2.1",
-    "resend": "^6.12.4",
     "socket.io": "^4.8.3",
     "ts-node": "^10.9.2",
     "typeorm": "^0.3.20",

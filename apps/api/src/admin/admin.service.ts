@@ -20,7 +20,7 @@ export class AdminService {
   ) {}
 
   async getDashboard() {
-    const totalUsers = await this.usersRepo.count();
+    const totalUsers = await this.usersRepo.count({ where: { is_verified: true } });
     const totalItems = await this.itemsRepo.count();
     const activeItems = await this.itemsRepo.count({ where: { status: ItemStatus.ACTIVE } });
     const recoveredItems = await this.itemsRepo.count({ where: { status: ItemStatus.RECOVERED } });
@@ -52,8 +52,10 @@ export class AdminService {
       .skip((page - 1) * limit)
       .take(limit);
 
+    qb.where('user.is_verified = :verified', { verified: true });
+
     if (search) {
-      qb.where('user.name ILIKE :search OR user.email ILIKE :search', { search: `%${search}%` });
+      qb.andWhere('(user.name ILIKE :search OR user.email ILIKE :search)', { search: `%${search}%` });
     }
 
     const [data, total] = await qb.getManyAndCount();
