@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { uploadImage } from "@/lib/supabase";
+import { uploadImage } from "@/lib/upload";
 import { ImageUpload } from "@/components/items/ImageUpload";
 import { ITEM_CATEGORIES, CAMPUS_LOCATIONS } from "@/lib/constants";
 import Link from "next/link";

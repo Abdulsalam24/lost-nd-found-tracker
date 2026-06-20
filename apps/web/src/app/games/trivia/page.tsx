@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { TriviaLeaderboard } from "@/features/games/trivia/TriviaLeaderboard";
 import Link from "next/link";
@@ -26,7 +27,16 @@ interface LeaderboardEntry {
 
 const OPTION_LETTERS = ["A", "B", "C", "D"];
 
+const TRIVIA_RULES = [
+  { icon: "1", text: "Each week, 10 trivia questions about campus life are posted." },
+  { icon: "2", text: "Answer each question by selecting one of the four options." },
+  { icon: "3", text: "You earn points for each correct answer. No penalty for wrong answers." },
+  { icon: "4", text: "Once answered, you can't change your response — choose wisely!" },
+  { icon: "5", text: "Compete with other students on the weekly leaderboard." },
+];
+
 export default function TriviaPage() {
+  const { user, loading: authLoading } = useAuth();
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, { answer: string; result?: TriviaResult; alreadyAnswered?: boolean }>>({});
@@ -39,6 +49,10 @@ export default function TriviaPage() {
   const [toast, setToast] = useState("");
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     Promise.all([
       api.get<TriviaQuestion[]>("/games/trivia/current"),
       api.get<LeaderboardEntry[]>("/games/trivia/leaderboard"),
@@ -49,7 +63,7 @@ export default function TriviaPage() {
       })
       .catch(() => setError("Failed to load trivia"))
       .finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   const currentQuestion = questions[currentIndex];
   const answered = currentQuestion ? answers[currentQuestion.id] : undefined;
@@ -94,7 +108,42 @@ export default function TriviaPage() {
     if (currentIndex > 0) setCurrentIndex((i) => i - 1);
   };
 
-  if (loading) return <LoadingSpinner size="lg" />;
+  if (loading || authLoading) return <LoadingSpinner size="lg" />;
+
+  if (!user) {
+    return (
+      <div className="min-h-screen">
+        <div className="mx-auto max-w-2xl px-4 py-8">
+          <Link href="/games" className="flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Games
+          </Link>
+          <h1 className="mt-6 section-title">Trivia Challenge</h1>
+          <p className="section-subtitle mt-1">Test your campus knowledge</p>
+
+          <div className="mt-6 card p-5 space-y-3">
+            <h3 className="text-xs font-bold text-text">How to Play</h3>
+            {TRIVIA_RULES.map((rule) => (
+              <div key={rule.icon} className="flex items-start gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/10 text-xs font-bold text-accent">
+                  {rule.icon}
+                </span>
+                <p className="text-xs text-text-secondary">{rule.text}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 text-center">
+            <Link href="/auth/login?redirect=/games/trivia" className="btn-primary inline-flex text-xs">
+              Sign in to play
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (questions.length === 0) {
     return (

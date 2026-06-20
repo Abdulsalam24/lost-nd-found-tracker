@@ -12,7 +12,7 @@ const config: Config = {
       colors: {
         bg: {
           DEFAULT: "var(--color-bg, #0a0f0a)",
-          card: "var(--color-bg-card, #111611)",
+          card: "var(--color-bg-card, #141414)",
           elevated: "var(--color-bg-elevated, #161b16)",
           hover: "var(--color-bg-hover, #1c221c)",
         },
@@ -40,7 +40,7 @@ const config: Config = {
         },
         cream: {
           DEFAULT: "var(--color-bg, #0a0f0a)",
-          50: "var(--color-bg-card, #111611)",
+          50: "var(--color-bg-card, #141414)",
           100: "var(--color-bg-elevated, #161b16)",
           200: "var(--color-bg-hover, #1c221c)",
           300: "#1f2e1f",
@@ -62,9 +62,9 @@ const config: Config = {
         },
         surface: {
           DEFAULT: "var(--color-bg, #0a0f0a)",
-          white: "var(--color-bg-card, #111611)",
+          white: "var(--color-bg-card, #141414)",
           warm: "var(--color-bg-elevated, #161b16)",
-          card: "var(--color-bg-card, #111611)",
+          card: "var(--color-bg-card, #141414)",
         },
       },
       fontFamily: {
@@ -83,8 +83,15 @@ const config: Config = {
         "float-delayed": "float 6s ease-in-out 2s infinite",
         "float-slow": "float 8s ease-in-out 1s infinite",
         "scan-line": "scanLine 3s ease-in-out infinite",
+        "nav-bounce": "navBounce 0.4s ease-out",
       },
       keyframes: {
+        navBounce: {
+          "0%": { transform: "scale(1)" },
+          "40%": { transform: "scale(1.25)" },
+          "70%": { transform: "scale(0.95)" },
+          "100%": { transform: "scale(1)" },
+        },
         fadeIn: {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },

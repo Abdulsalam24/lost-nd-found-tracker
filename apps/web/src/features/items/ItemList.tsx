@@ -16,6 +16,7 @@ interface ItemResponse {
   category: string;
   status: string;
   location_id: string;
+  location?: { id: string; name: string } | null;
   date_of_event: string;
   image_url?: string;
   reporter?: { id: string; name: string } | null;
@@ -114,7 +115,7 @@ export function ItemList() {
           title="No items found"
           message="Try adjusting your filters or report a new item."
           action={
-            <Link href="/items/report-lost" className="btn-primary text-xs">
+            <Link href="/items/report" className="btn-primary text-xs">
               Report an Item
             </Link>
           }

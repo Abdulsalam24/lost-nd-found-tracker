@@ -10,7 +10,7 @@ export interface User {
   faculty: string;
   role: "user" | "admin";
   points: number;
-  badges: Array<{ type: string; name: string; description: string; earned_at: string }>;
+  badges: Array<{ badge_type: string; awarded_at: string }>;
   bank_name: string | null;
   account_number: string | null;
   account_name: string | null;

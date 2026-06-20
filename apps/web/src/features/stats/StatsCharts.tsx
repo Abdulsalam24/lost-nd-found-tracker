@@ -160,7 +160,7 @@ export function StatsCharts({ categoryStats, monthlyStats, recoveryRate }: Stats
 
   return (
     <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <div className="card p-6">
+      <div className="card p-4 sm:p-6">
         <h2 className="mb-1 text-base font-bold text-text">Items by Category</h2>
         <p className="mb-4 text-xs text-text-muted">Distribution of reported items</p>
         {categoryStats.length > 0 ? (
@@ -172,17 +172,19 @@ export function StatsCharts({ categoryStats, monthlyStats, recoveryRate }: Stats
         )}
       </div>
 
-      <div className="card p-6">
+      <div className="card p-4 sm:p-6">
         <h2 className="mb-1 text-base font-bold text-text">Monthly Reports</h2>
         <p className="mb-4 text-xs text-text-muted">Items reported over time</p>
         {monthlyStats.length > 0 ? (
-          <canvas ref={barRef} aria-label="Bar chart showing items reported per month" role="img" />
+          <div className="min-h-[200px]">
+            <canvas ref={barRef} aria-label="Bar chart showing items reported per month" role="img" />
+          </div>
         ) : (
           <p className="py-8 text-center text-xs text-text-ghost">No monthly data yet</p>
         )}
       </div>
 
-      <div className="card p-6 lg:col-span-2">
+      <div className="card p-4 sm:p-6 lg:col-span-2">
         <h2 className="mb-1 text-base font-bold text-text text-center">Recovery Rate</h2>
         <p className="mb-4 text-xs text-text-muted text-center">Percentage of items successfully returned</p>
         <div className="mx-auto max-w-[200px]">

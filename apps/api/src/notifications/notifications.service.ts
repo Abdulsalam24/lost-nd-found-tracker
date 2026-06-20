@@ -46,16 +46,16 @@ export class NotificationsService {
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#0a0f0a;font-family:'Sora',Helvetica,Arial,sans-serif;">
+<body style="margin:0;padding:0;background:#0a0f0a;font-family:'Manrope','Sora',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0f0a;padding:40px 0;">
     <tr><td align="center">
-      <table width="480" cellpadding="0" cellspacing="0" style="background:#111611;border:1px solid #1a2a1a;border-radius:16px;overflow:hidden;">
+      <table width="480" cellpadding="0" cellspacing="0" style="background:#141414;border:1px solid #1f2e1f;border-radius:16px;overflow:hidden;">
         <tr>
-          <td style="background:linear-gradient(135deg,#0d1f12 0%,#111611 100%);padding:32px 40px 24px;text-align:center;border-bottom:1px solid #1a2a1a;">
-            <div style="display:inline-block;background:#34d39915;border:1px solid #34d39930;border-radius:12px;padding:8px 16px;margin-bottom:16px;">
-              <span style="color:#34d399;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Welcome</span>
+          <td style="background:linear-gradient(135deg,#0a1410 0%,#141414 100%);padding:32px 40px 24px;text-align:center;border-bottom:1px solid #1f2e1f;">
+            <div style="display:inline-block;background:#3f837815;border:1px solid #3f837830;border-radius:12px;padding:8px 16px;margin-bottom:16px;">
+              <span style="color:#3f8378;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Welcome</span>
             </div>
-            <h1 style="margin:0;color:#f0fdf4;font-size:22px;font-weight:700;">Verify your email</h1>
+            <h1 style="margin:0;color:#f0fdf4;font-size:22px;font-weight:700;font-family:'Sora','Manrope',Helvetica,Arial,sans-serif;">Verify your email</h1>
           </td>
         </tr>
         <tr>
@@ -64,13 +64,13 @@ export class NotificationsService {
             <p style="margin:0 0 28px;color:#9ca3af;font-size:14px;line-height:1.6;">Thanks for signing up. Click the button below to verify your email address.</p>
             <table cellpadding="0" cellspacing="0" style="margin:0 auto 28px;">
               <tr>
-                <td style="background:#34d399;border-radius:10px;text-align:center;">
-                  <a href="${verifyUrl}" style="display:inline-block;padding:14px 32px;color:#0a0f0a;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:0.5px;">Verify Email</a>
+                <td style="background:#3f8378;border-radius:10px;text-align:center;">
+                  <a href="${verifyUrl}" style="display:inline-block;padding:14px 32px;color:#f0fdf4;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:0.5px;">Verify Email</a>
                 </td>
               </tr>
             </table>
             <p style="margin:0 0 24px;color:#6b7280;font-size:12px;text-align:center;line-height:1.5;">This link expires in 24 hours. If you didn't create an account, ignore this email.</p>
-            <div style="height:1px;background:#1a2a1a;margin:0 0 24px;"></div>
+            <div style="height:1px;background:#1f2e1f;margin:0 0 24px;"></div>
             <p style="margin:0;color:#4b5563;font-size:11px;text-align:center;line-height:1.5;">
               This is an automated message from<br>
               <strong style="color:#6b7280;">UniLorin Lost & Found</strong>
@@ -94,24 +94,24 @@ export class NotificationsService {
   async sendOtpEmail(user: User, otp: string): Promise<void> {
     const digits = otp.split('');
     const otpBoxes = digits.map((d) =>
-      `<td style="width:44px;height:52px;text-align:center;font-size:28px;font-weight:700;font-family:'Sora',Helvetica,Arial,sans-serif;color:#34d399;background:#0d1f12;border:2px solid #1a3a1a;border-radius:10px;letter-spacing:2px;">${d}</td>`
+      `<td style="width:44px;height:52px;text-align:center;font-size:28px;font-weight:700;font-family:'Manrope','Sora',Helvetica,Arial,sans-serif;color:#3f8378;background:#0a1410;border:2px solid #1f2e1f;border-radius:10px;letter-spacing:2px;">${d}</td>`
     ).join('<td style="width:8px;"></td>');
 
     const html = `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#0a0f0a;font-family:'Sora',Helvetica,Arial,sans-serif;">
+<body style="margin:0;padding:0;background:#0a0f0a;font-family:'Manrope','Sora',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0f0a;padding:40px 0;">
     <tr><td align="center">
-      <table width="480" cellpadding="0" cellspacing="0" style="background:#111611;border:1px solid #1a2a1a;border-radius:16px;overflow:hidden;">
+      <table width="480" cellpadding="0" cellspacing="0" style="background:#141414;border:1px solid #1f2e1f;border-radius:16px;overflow:hidden;">
         <!-- Header -->
         <tr>
-          <td style="background:linear-gradient(135deg,#0d1f12 0%,#111611 100%);padding:32px 40px 24px;text-align:center;border-bottom:1px solid #1a2a1a;">
-            <div style="display:inline-block;background:#34d39915;border:1px solid #34d39930;border-radius:12px;padding:8px 16px;margin-bottom:16px;">
-              <span style="color:#34d399;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Verification Code</span>
+          <td style="background:linear-gradient(135deg,#0a1410 0%,#141414 100%);padding:32px 40px 24px;text-align:center;border-bottom:1px solid #1f2e1f;">
+            <div style="display:inline-block;background:#3f837815;border:1px solid #3f837830;border-radius:12px;padding:8px 16px;margin-bottom:16px;">
+              <span style="color:#3f8378;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Verification Code</span>
             </div>
-            <h1 style="margin:0;color:#f0fdf4;font-size:22px;font-weight:700;">Confirm your identity</h1>
+            <h1 style="margin:0;color:#f0fdf4;font-size:22px;font-weight:700;font-family:'Sora','Manrope',Helvetica,Arial,sans-serif;">Confirm your identity</h1>
           </td>
         </tr>
         <!-- Body -->
@@ -125,7 +125,7 @@ export class NotificationsService {
             </table>
             <p style="margin:0 0 24px;color:#6b7280;font-size:12px;text-align:center;line-height:1.5;">If you didn't request this code, you can safely ignore this email.</p>
             <!-- Divider -->
-            <div style="height:1px;background:#1a2a1a;margin:0 0 24px;"></div>
+            <div style="height:1px;background:#1f2e1f;margin:0 0 24px;"></div>
             <p style="margin:0;color:#4b5563;font-size:11px;text-align:center;line-height:1.5;">
               This is an automated message from<br>
               <strong style="color:#6b7280;">UniLorin Lost & Found</strong>

@@ -30,6 +30,7 @@ export default function RegisterPage() {
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
   const [verifying, setVerifying] = useState(false);
   const [resending, setResending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -91,6 +92,16 @@ export default function RegisterPage() {
     }
   };
 
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, OTP_LENGTH);
+    if (!pasted) return;
+    const newOtp = Array(OTP_LENGTH).fill("");
+    pasted.split("").forEach((d, i) => { newOtp[i] = d; });
+    setOtp(newOtp);
+    inputRefs.current[Math.min(pasted.length, OTP_LENGTH - 1)]?.focus();
+  };
+
   const handleVerify = async () => {
     const code = otp.join("");
     if (code.length !== OTP_LENGTH) return;
@@ -134,7 +145,7 @@ export default function RegisterPage() {
 
   if (step === "otp") {
     return (
-      <div className="flex min-h-screen items-center justify-center px-4 py-12">
+      <div className="flex min-h-[95vh] items-center justify-center px-4 py-12">
         <div className="card w-full max-w-md rounded-2xl p-6 sm:p-8 text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent/10">
             <svg className="h-7 w-7 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -163,6 +174,7 @@ export default function RegisterPage() {
                 value={digit}
                 onChange={(e) => handleOtpChange(i, e.target.value)}
                 onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                onPaste={handleOtpPaste}
                 className="h-12 w-11 rounded-xl border border-border-light bg-bg-elevated text-center text-lg font-bold text-text transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                 disabled={verifying}
                 autoFocus={i === 0}
@@ -212,7 +224,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-12">
+    <div className="flex min-h-[95vh] items-center justify-center px-4 py-12">
       <div className="card w-full max-w-md rounded-2xl p-6 sm:p-8">
         <h1 className="text-2xl font-bold text-ink">Create Account</h1>
         <p className="mt-1 text-xs text-ink-muted">Join the UniLorin Lost & Found community</p>
@@ -238,7 +250,21 @@ export default function RegisterPage() {
 
           <div>
             <label htmlFor="password" className="label">Password</label>
-            <input id="password" type="password" className="input-field" {...register("password")} />
+            <div className="relative">
+              <input id="password" type={showPassword ? "text" : "password"} className="input-field pr-11" {...register("password")} />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-text-muted transition-colors hover:text-text"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" /></svg>
+                ) : (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                )}
+              </button>
+            </div>
             {errors.password && <p className="error-text">{errors.password.message}</p>}
           </div>
 

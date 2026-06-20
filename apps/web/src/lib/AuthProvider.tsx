@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback, type ReactNode } from "react";
+import { useState, useEffect, useCallback, useRef, type ReactNode } from "react";
 import { AuthContext, type User, loginRequest, registerRequest, verifyOtpRequest, fetchMe, logoutRequest, hasToken } from "./auth";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const initRef = useRef(false);
 
   const refreshUser = useCallback(async () => {
     if (!hasToken()) {
@@ -24,6 +25,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    if (initRef.current) return;
+    initRef.current = true;
     refreshUser();
   }, [refreshUser]);
 

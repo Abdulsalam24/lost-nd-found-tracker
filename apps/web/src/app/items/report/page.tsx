@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +11,7 @@ import { uploadImage } from "@/lib/upload";
 import { ImageUpload } from "@/components/items/ImageUpload";
 import { ITEM_CATEGORIES, CAMPUS_LOCATIONS } from "@/lib/constants";
 import Link from "next/link";
+import { Suspense } from "react";
 
 const schema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -22,15 +23,63 @@ const schema = z.object({
 });
 
 type FormData = z.infer<typeof schema>;
+type ReportType = "LOST" | "FOUND";
 
-const DRAFT_KEY = "report-found-draft";
+const TAB_CONFIG = {
+  LOST: {
+    title: "Report Lost Item",
+    subtitle: "Fill in the details about the item you lost on campus.",
+    placeholder: { title: "e.g., Blue Samsung Phone", description: "Describe the item in detail..." },
+    locationLabel: "Last Known Location",
+    dateLabel: "Date Lost",
+    serialPlaceholder: "If applicable",
+    draftKey: "report-lost-draft",
+  },
+  FOUND: {
+    title: "Report Found Item",
+    subtitle: "Help someone get their item back by reporting what you found.",
+    placeholder: { title: "e.g., Black Wallet with ID", description: "Describe the item you found..." },
+    locationLabel: "Where Found",
+    dateLabel: "Date Found",
+    serialPlaceholder: "If visible",
+    draftKey: "report-found-draft",
+  },
+};
 
-export default function ReportFoundPage() {
+export default function ReportPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <ReportForm />
+    </Suspense>
+  );
+}
+
+function ReportForm() {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
   const [error, setError] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const initialType = (searchParams.get("type")?.toUpperCase() === "FOUND" ? "FOUND" : "LOST") as ReportType;
+  const [type, setType] = useState<ReportType>(initialType);
+  const config = TAB_CONFIG[type];
+
+  const savedDraft = typeof window !== "undefined"
+    ? (() => { try { return JSON.parse(sessionStorage.getItem(config.draftKey) || "{}"); } catch { return {}; } })()
+    : {};
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: savedDraft,
+  });
 
   useEffect(() => {
     if (!error) return;
@@ -38,19 +87,16 @@ export default function ReportFoundPage() {
     return () => clearTimeout(t);
   }, [error]);
 
-  const savedDraft = typeof window !== "undefined"
-    ? (() => { try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "{}"); } catch { return {}; } })()
-    : {};
-
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: savedDraft,
-  });
+  const switchType = (newType: ReportType) => {
+    if (newType === type) return;
+    // Save current draft
+    sessionStorage.setItem(config.draftKey, JSON.stringify(getValues()));
+    setType(newType);
+    setImageFile(null);
+    // Load draft for new type
+    const draft = (() => { try { return JSON.parse(sessionStorage.getItem(TAB_CONFIG[newType].draftKey) || "{}"); } catch { return {}; } })();
+    reset(draft);
+  };
 
   const handleFileSelect = useCallback((file: File) => {
     setImageFile(file);
@@ -58,8 +104,8 @@ export default function ReportFoundPage() {
 
   const onSubmit = async (data: FormData) => {
     if (!user) {
-      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(getValues()));
-      router.push(`/auth/login?redirect=${pathname}`);
+      sessionStorage.setItem(config.draftKey, JSON.stringify(getValues()));
+      router.push(`/auth/login?redirect=${pathname}?type=${type}`);
       return;
     }
 
@@ -70,14 +116,14 @@ export default function ReportFoundPage() {
     }
     try {
       const url = await uploadImage(imageFile);
-
-      const payload = { ...data, type: "FOUND" as const, image_url: url };
+      const payload = { ...data, type, image_url: url };
       const item = await api.post<{ id: string }>("/items", payload);
 
-      sessionStorage.removeItem(DRAFT_KEY);
+      sessionStorage.removeItem(config.draftKey);
       router.push(`/items/${item.id}`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to submit report");
+    } catch (err: any) {
+      const msg = err?.response?.data?.message ?? err?.message ?? "Failed to submit report";
+      setError(msg);
     }
   };
 
@@ -86,7 +132,7 @@ export default function ReportFoundPage() {
       <div className="mx-auto max-w-2xl px-4 py-8">
         <Link
           href="/items"
-          className="inline-flex items-center gap-1 text-xs text-ink-muted hover:text-coral transition-colors"
+          className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -95,10 +141,28 @@ export default function ReportFoundPage() {
         </Link>
 
         <div className="mt-6 card p-6 sm:p-8">
-          <h1 className="section-title">Report Found Item</h1>
-          <p className="section-subtitle mt-1">
-            Help someone get their item back by reporting what you found.
-          </p>
+          {/* Tabs */}
+          <div className="flex rounded-xl bg-bg-elevated p-1">
+            {(["LOST", "FOUND"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => switchType(t)}
+                className={`flex-1 rounded-lg py-2.5 text-xs font-semibold transition-all ${
+                  type === t
+                    ? t === "LOST"
+                      ? "bg-red-500/15 text-red-400 shadow-sm"
+                      : "bg-emerald-500/15 text-emerald-400 shadow-sm"
+                    : "text-text-muted hover:text-text"
+                }`}
+              >
+                {t === "LOST" ? "I Lost Something" : "I Found Something"}
+              </button>
+            ))}
+          </div>
+
+          <h1 className="mt-6 section-title">{config.title}</h1>
+          <p className="section-subtitle mt-1">{config.subtitle}</p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-5" noValidate>
             <div>
@@ -107,12 +171,11 @@ export default function ReportFoundPage() {
                 id="title"
                 type="text"
                 className="input-field"
-                placeholder="e.g., Black Wallet with ID"
+                placeholder={config.placeholder.title}
                 {...register("title")}
                 aria-invalid={errors.title ? "true" : undefined}
-                aria-describedby={errors.title ? "title-error" : undefined}
               />
-              {errors.title && <p id="title-error" className="error-text">{errors.title.message}</p>}
+              {errors.title && <p className="error-text">{errors.title.message}</p>}
             </div>
 
             <div>
@@ -121,62 +184,42 @@ export default function ReportFoundPage() {
                 id="description"
                 rows={4}
                 className="input-field"
-                placeholder="Describe the item you found..."
+                placeholder={config.placeholder.description}
                 {...register("description")}
                 aria-invalid={errors.description ? "true" : undefined}
-                aria-describedby={errors.description ? "desc-error" : undefined}
               />
-              {errors.description && <p id="desc-error" className="error-text">{errors.description.message}</p>}
+              {errors.description && <p className="error-text">{errors.description.message}</p>}
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="category" className="label">Category</label>
-                <select
-                  id="category"
-                  className="input-field"
-                  {...register("category")}
-                  aria-invalid={errors.category ? "true" : undefined}
-                  aria-describedby={errors.category ? "cat-error" : undefined}
-                >
+                <select id="category" className="input-field" {...register("category")}>
                   <option value="">Select category</option>
                   {ITEM_CATEGORIES.map((cat) => (
                     <option key={cat.value} value={cat.value}>{cat.label}</option>
                   ))}
                 </select>
-                {errors.category && <p id="cat-error" className="error-text">{errors.category.message}</p>}
+                {errors.category && <p className="error-text">{errors.category.message}</p>}
               </div>
 
               <div>
-                <label htmlFor="location_name" className="label">Where Found</label>
-                <select
-                  id="location_name"
-                  className="input-field"
-                  {...register("location_name")}
-                  aria-invalid={errors.location_name ? "true" : undefined}
-                  aria-describedby={errors.location_name ? "loc-error" : undefined}
-                >
+                <label htmlFor="location_name" className="label">{config.locationLabel}</label>
+                <select id="location_name" className="input-field" {...register("location_name")}>
                   <option value="">Select location</option>
                   {CAMPUS_LOCATIONS.map((loc) => (
                     <option key={loc.id} value={loc.name}>{loc.name}</option>
                   ))}
                 </select>
-                {errors.location_name && <p id="loc-error" className="error-text">{errors.location_name.message}</p>}
+                {errors.location_name && <p className="error-text">{errors.location_name.message}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label htmlFor="date_of_event" className="label">Date Found</label>
-                <input
-                  id="date_of_event"
-                  type="date"
-                  className="input-field"
-                  {...register("date_of_event")}
-                  aria-invalid={errors.date_of_event ? "true" : undefined}
-                  aria-describedby={errors.date_of_event ? "date-error" : undefined}
-                />
-                {errors.date_of_event && <p id="date-error" className="error-text">{errors.date_of_event.message}</p>}
+                <label htmlFor="date_of_event" className="label">{config.dateLabel}</label>
+                <input id="date_of_event" type="date" className="input-field" {...register("date_of_event")} />
+                {errors.date_of_event && <p className="error-text">{errors.date_of_event.message}</p>}
               </div>
 
               <div>
@@ -185,7 +228,7 @@ export default function ReportFoundPage() {
                   id="serial_number"
                   type="text"
                   className="input-field"
-                  placeholder="If visible"
+                  placeholder={config.serialPlaceholder}
                   {...register("serial_number")}
                 />
               </div>
@@ -196,11 +239,7 @@ export default function ReportFoundPage() {
               <ImageUpload onFileSelect={handleFileSelect} />
             </div>
 
-            <button
-              type="submit"
-              className="btn-primary w-full"
-              disabled={isSubmitting}
-            >
+            <button type="submit" className="btn-primary w-full" disabled={isSubmitting}>
               {isSubmitting ? "Submitting..." : "Submit Report"}
             </button>
           </form>
@@ -208,8 +247,8 @@ export default function ReportFoundPage() {
       </div>
 
       {error && (
-        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 animate-slide-up">
-          <div className="flex items-center gap-3 rounded-xl border border-red-800/50 bg-red-950/90 px-4 py-3 shadow-lg backdrop-blur-sm">
+        <div className="fixed top-20 right-4 z-50 animate-fade-in">
+          <div className="flex items-center gap-3 rounded-xl border border-red-800/50 bg-red-950/90 px-4 py-3 shadow-lg backdrop-blur-sm max-w-sm">
             <svg className="h-5 w-5 flex-shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>

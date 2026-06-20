@@ -6,6 +6,14 @@ import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { SkeletonProfileForm } from "@/components/ui/Skeleton";
 
+const BADGE_LABELS: Record<string, string> = {
+  FIRST_RETURN: "First Return",
+  GHOST_HUNTER: "Ghost Hunter",
+  TRIVIA_CHAMP: "Trivia Champ",
+  SERIAL_FINDER: "Serial Finder",
+  CAMPUS_HERO: "Campus Hero",
+};
+
 export default function ProfilePage() {
   const { user, loading, refreshUser } = useAuth();
   const router = useRouter();
@@ -56,6 +64,15 @@ export default function ProfilePage() {
       setSaving(false);
     }
   };
+
+  const hasChanges = user ? (
+    form.name !== (user.name ?? "") ||
+    form.faculty !== (user.faculty ?? "") ||
+    form.phone !== (user.phone ?? "") ||
+    form.bank_name !== (user.bank_name ?? "") ||
+    form.account_number !== (user.account_number ?? "") ||
+    form.account_name !== (user.account_name ?? "")
+  ) : false;
 
   if (loading || !user) {
     return (
@@ -187,7 +204,7 @@ export default function ProfilePage() {
           {user.badges && user.badges.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
               {user.badges.map((b) => (
-                <span key={b.type} className="badge-accent">{b.name}</span>
+                <span key={b.badge_type} className="badge-accent">{BADGE_LABELS[b.badge_type] ?? b.badge_type}</span>
               ))}
             </div>
           )}
@@ -197,7 +214,7 @@ export default function ProfilePage() {
         {success && <p className="text-xs font-medium text-emerald-600">Profile updated successfully!</p>}
 
         <div className="flex justify-end">
-          <button type="submit" className="btn-primary" disabled={saving}>
+          <button type="submit" className="btn-primary" disabled={saving || !hasChanges}>
             {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>

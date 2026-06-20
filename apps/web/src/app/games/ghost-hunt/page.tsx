@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,6 +32,7 @@ const RULES = [
 ];
 
 export default function GhostHuntPage() {
+  const { user, loading: authLoading } = useAuth();
   const [data, setData] = useState<GhostHuntData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -46,11 +48,15 @@ export default function GhostHuntPage() {
   });
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     api.get<GhostHuntData>("/games/ghost-hunt/current")
       .then(setData)
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   const onSubmit = async (formData: FormData) => {
     setError("");
@@ -62,7 +68,42 @@ export default function GhostHuntPage() {
     }
   };
 
-  if (loading) return <LoadingSpinner size="lg" />;
+  if (loading || authLoading) return <LoadingSpinner size="lg" />;
+
+  if (!user) {
+    return (
+      <div className="min-h-screen">
+        <div className="mx-auto max-w-2xl px-4 py-8">
+          <Link href="/games" className="flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Games
+          </Link>
+          <h1 className="mt-6 section-title">Ghost Hunt</h1>
+          <p className="section-subtitle mt-1">Find the hidden item on campus!</p>
+
+          <div className="mt-6 card p-5 space-y-3">
+            <h3 className="text-xs font-bold text-text">How to Play</h3>
+            {RULES.map((rule) => (
+              <div key={rule.icon} className="flex items-start gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/10 text-xs font-bold text-accent">
+                  {rule.icon}
+                </span>
+                <p className="text-xs text-text-secondary">{rule.text}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 text-center">
+            <Link href="/auth/login?redirect=/games/ghost-hunt" className="btn-primary inline-flex text-xs">
+              Sign in to play
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">

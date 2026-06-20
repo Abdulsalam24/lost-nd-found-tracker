@@ -54,7 +54,7 @@ export function Footer() {
 
   return (
     <footer className="relative z-10 border-t border-border bg-bg/80 backdrop-blur-sm">
-      <div className="mx-auto max-w-7xl px-5 py-12 md:px-10">
+      <div className="mx-auto max-w-7xl px-5 py-12 pb-[90px] md:px-10">
         <div className="flex flex-col gap-8 sm:flex-row sm:justify-between">
           <div className="flex flex-col gap-3">
             <span className="text-lg font-bold text-text">Lost & Found</span>

@@ -8,6 +8,7 @@ interface ItemCardProps {
   category: string;
   status?: string;
   location_id?: string;
+  location?: { id: string; name: string } | null;
   date_of_event?: string;
   image_url?: string;
   reporter?: { id: string; name: string } | null;
@@ -19,12 +20,14 @@ export function ItemCard({
   title,
   type,
   category,
-  location_id,
+  location,
   date_of_event,
   image_url,
   reporter,
   compact = false,
 }: ItemCardProps) {
+  const locationName = location?.name;
+
   return (
     <Link href={`/items/${id}`} className="group overflow-hidden rounded-2xl border border-border-card bg-bg-card transition-all hover:shadow-xl hover:shadow-black/20">
       <div className="relative aspect-[4/3] overflow-hidden bg-bg-elevated">
@@ -57,14 +60,14 @@ export function ItemCard({
         </h3>
         <div className="mt-1.5 flex items-center gap-2 text-xs text-text-muted">
           <span>{category ?? "_"}</span>
-          {location_id && (
+          {locationName && (
             <>
               <span className="text-text-ghost">&middot;</span>
-              <span className="truncate">{location_id}</span>
+              <span className="truncate">{locationName}</span>
             </>
           )}
         </div>
-        {!compact && reporter?.name && (
+        {reporter?.name && (
           <p className="mt-1 text-[11px] text-text-ghost">by {reporter.name}</p>
         )}
       </div>

@@ -29,10 +29,10 @@ export function HeroSection({ totalItems }: HeroSectionProps) {
         </p>
 
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <Link href="/items/report-lost" className="btn-primary px-8 py-3">
+          <Link href="/items/report" className="btn-primary px-8 py-3">
             Report Lost Item
           </Link>
-          <Link href="/items/report-found" className="btn-secondary px-8 py-3">
+          <Link href="/items/report?type=found" className="btn-secondary px-8 py-3">
             Report Found Item
           </Link>
         </div>

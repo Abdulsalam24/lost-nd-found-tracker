@@ -16,7 +16,7 @@ export default function ItemsPage() {
             <h1 className="text-3xl font-bold tracking-tight text-text sm:text-4xl">Browse Items</h1>
             <p className="mt-2 text-sm text-text-secondary">Find lost items or report what you found on campus.</p>
           </div>
-          <Link href="/items/report-lost" className="btn-primary shrink-0 gap-1.5 text-xs">
+          <Link href="/items/report" className="btn-primary shrink-0 gap-1.5 text-xs">
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>

@@ -55,12 +55,12 @@ export default async function StatsPage() {
 
   return (
       <div className="min-h-screen">
-        <div className="mx-auto max-w-7xl px-4 py-8">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
           <h1 className="section-title">Campus Statistics</h1>
           <p className="section-subtitle">Lost and found data at a glance</p>
 
           {/* Stat cards */}
-          <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="card p-5">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/10">
@@ -121,7 +121,7 @@ export default async function StatsPage() {
           {/* Quick summary */}
           <div className="mt-6 card p-5">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-6">
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                 <div className="flex items-center gap-2">
                   <span className="h-3 w-3 rounded-full bg-red-400" />
                   <span className="text-xs text-text-secondary">{stats.total_lost ?? 0} lost</span>

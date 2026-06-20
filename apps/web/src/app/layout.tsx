@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/global/Navbar";
-import { Footer } from "@/components/global/Footer";
-import { GridBackground } from "@/components/global/GridBackground";
+
 import { AuthProvider } from "@/lib/AuthProvider";
 import { ThemeProvider } from "@/lib/ThemeProvider";
 import "./globals.css";
@@ -9,6 +8,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "UniLorin Lost & Found",
   description: "Campus Lost & Found Item Tracker for University of Ilorin",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -17,10 +19,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-screen flex-col">
         <ThemeProvider>
           <AuthProvider>
-            <GridBackground />
             <Navbar />
-            <main className="relative z-10 flex-1 pb-20 md:pb-0 pt-20">{children}</main>
-            <Footer />
+            <main className="relative z-10 flex-1 pb-20 md:pb-0">{children}</main>
           </AuthProvider>
         </ThemeProvider>
       </body>

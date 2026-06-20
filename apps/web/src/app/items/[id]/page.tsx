@@ -15,6 +15,7 @@ interface ItemDetail {
   title: string;
   description: string;
   location_id: string;
+  location?: { id: string; name: string } | null;
   date_of_event: string;
   serial_number?: string;
   status: string;
@@ -32,8 +33,10 @@ interface MatchingItem {
   category: string;
   status: string;
   location_id: string;
+  location?: { id: string; name: string } | null;
   date_of_event: string;
   image_url?: string;
+  reporter?: { id: string; name: string } | null;
 }
 
 async function getItem(id: string): Promise<ItemDetail | null> {
@@ -87,13 +90,14 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
   if (!item) notFound();
 
   const timelineEvents = buildTimeline(item);
+  const locationName = item.location?.name ?? "_";
 
   return (
     <div className="min-h-screen">
-      <div className="mx-auto max-w-6xl px-4 py-8">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
         <Link
           href="/items"
-          className="inline-flex items-center gap-1 text-xs text-ink-muted hover:text-coral transition-colors"
+          className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -101,8 +105,10 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
           Back to items
         </Link>
 
-        <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-6">
+        <div className="mt-4 grid grid-cols-1 gap-6 sm:mt-6 lg:grid-cols-3 lg:gap-8">
+          {/* Main content */}
+          <div className="lg:col-span-2 space-y-5 sm:space-y-6">
+            {/* Image */}
             <div className="card overflow-hidden">
               {item.image_url ? (
                 <img
@@ -112,40 +118,49 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
                   style={{ maxHeight: 420 }}
                 />
               ) : (
-                <div className="flex h-64 items-center justify-center bg-cream-200">
-                  <svg className="h-16 w-16 text-cream-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <div className="flex h-48 items-center justify-center bg-bg-elevated sm:h-64">
+                  <svg className="h-12 w-12 text-text-ghost sm:h-16 sm:w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
               )}
             </div>
 
-            <div className="card p-6">
+            {/* Details */}
+            <div className="card p-4 sm:p-6">
               <div className="flex flex-wrap items-center gap-2">
-                <span className={`badge-${item.type === "LOST" ? "red" : "accent"}`}>
+                <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
+                  item.type === "LOST"
+                    ? "bg-red-500/15 text-red-400 border border-red-500/20"
+                    : "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"
+                }`}>
                   {item.type ?? "_"}
                 </span>
                 <CategoryBadge category={item.category} />
                 <StatusBadge status={item.status} />
               </div>
 
-              <h1 className="mt-4 text-2xl font-bold text-ink">{item.title ?? "_"}</h1>
+              <h1 className="mt-4 text-xl font-bold text-text sm:text-2xl">{item.title ?? "_"}</h1>
 
-              <dl className="mt-5 grid grid-cols-2 gap-4 text-xs">
+              {item.reporter?.name && (
+                <p className="mt-1 text-xs text-text-muted">Reported by <span className="font-medium text-text-secondary">{item.reporter.name}</span></p>
+              )}
+
+              <dl className="mt-5 grid grid-cols-2 gap-4 text-xs sm:grid-cols-3">
                 <div>
-                  <dt className="font-semibold text-ink-faint uppercase tracking-wider text-xs">Location</dt>
-                  <dd className="mt-1 text-ink">{item.location_id ?? "_"}</dd>
+                  <dt className="font-semibold text-text-ghost uppercase tracking-wider">Location</dt>
+                  <dd className="mt-1 text-text">{locationName}</dd>
                 </div>
                 <div>
-                  <dt className="font-semibold text-ink-faint uppercase tracking-wider text-xs">Date</dt>
-                  <dd className="mt-1 text-ink">
+                  <dt className="font-semibold text-text-ghost uppercase tracking-wider">Date</dt>
+                  <dd className="mt-1 text-text">
                     {item.date_of_event ? new Date(item.date_of_event).toLocaleDateString() : "_"}
                   </dd>
                 </div>
                 {item.serial_number && (
                   <div>
-                    <dt className="font-semibold text-ink-faint uppercase tracking-wider text-xs">Serial Number</dt>
-                    <dd className="mt-1 font-mono text-ink">{item.serial_number}</dd>
+                    <dt className="font-semibold text-text-ghost uppercase tracking-wider">Serial Number</dt>
+                    <dd className="mt-1 font-mono text-text">{item.serial_number}</dd>
                   </div>
                 )}
               </dl>
@@ -153,15 +168,16 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
               <div className="divider" />
 
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-faint">Description</h3>
-                <p className="mt-2 text-ink-muted whitespace-pre-wrap leading-relaxed">{item.description ?? "_"}</p>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-text-ghost">Description</h3>
+                <p className="mt-2 text-xs text-text-secondary whitespace-pre-wrap leading-relaxed">{item.description ?? "_"}</p>
               </div>
             </div>
 
+            {/* Matches */}
             {matches.length > 0 && (
               <section>
-                <h2 className="text-lg font-bold text-ink mb-4">Potential Matches</h2>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <h2 className="text-lg font-bold text-text mb-4">Potential Matches</h2>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   {matches.map((m) => (
                     <ItemCard key={m.id} {...m} />
                   ))}
@@ -170,9 +186,10 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
             )}
           </div>
 
-          <aside className="space-y-6">
-            <div className="card p-6">
-              <h2 className="text-lg font-bold text-ink">Status Timeline</h2>
+          {/* Sidebar */}
+          <aside className="space-y-5 sm:space-y-6">
+            <div className="card p-4 sm:p-6">
+              <h2 className="text-base font-bold text-text sm:text-lg">Status Timeline</h2>
               <div className="mt-4">
                 <Timeline events={timelineEvents} />
               </div>
@@ -181,8 +198,8 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
             <ItemActions itemId={item.id} itemStatus={item.status} reportedBy={item.reporter_id} itemTitle={item.title} reporterPhone={item.reporter?.phone} />
 
             {item.type === "LOST" && item.status === "ACTIVE" && (
-              <div className="card p-6">
-                <h2 className="text-lg font-bold text-text">Spotted This Item?</h2>
+              <div className="card p-4 sm:p-6">
+                <h2 className="text-base font-bold text-text sm:text-lg">Spotted This Item?</h2>
                 <p className="mt-1 text-xs text-text-muted">Help the owner by reporting where you saw it.</p>
                 <SightingForm itemId={item.id} reporterId={item.reporter_id} />
               </div>

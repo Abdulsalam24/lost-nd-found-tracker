@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const PROTECTED_PATHS = [
-  "/items/report-lost",
-  "/items/report-found",
+  "/items/report",
   "/claims",
   "/admin",
   "/chat",
@@ -50,8 +49,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/items/report-lost",
-    "/items/report-found",
+    "/items/report",
     "/claims/:path*",
     "/admin/:path*",
     "/chat/:path*",

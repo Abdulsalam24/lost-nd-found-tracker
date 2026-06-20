@@ -42,11 +42,6 @@ export function SearchFilters() {
   const currentType = searchParams.get("type") ?? "";
   const currentCategory = searchParams.get("category") ?? "";
 
-  const allPills = [
-    ...TYPE_OPTIONS.map((t) => ({ key: "type", ...t })),
-    ...ITEM_CATEGORIES.map((c) => ({ key: "category", value: c.value, label: c.label })),
-  ];
-
   return (
     <div className="space-y-4">
       {/* Search bar */}
@@ -81,32 +76,43 @@ export function SearchFilters() {
         )}
       </div>
 
-      {/* Scrollable filter pills */}
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-        {allPills.map((pill) => {
-          const isActive =
-            pill.key === "type"
-              ? currentType === pill.value
-              : currentCategory === pill.value;
-
+      {/* Type tabs */}
+      <div className="flex gap-1.5">
+        {TYPE_OPTIONS.map((t) => {
+          const active = currentType === t.value;
           return (
             <button
-              key={`${pill.key}-${pill.value}`}
+              key={t.value}
               type="button"
-              onClick={() => {
-                if (pill.key === "type") {
-                  updateParam("type", pill.value);
-                } else {
-                  updateParam("category", isActive ? "" : pill.value);
-                }
-              }}
-              className={`flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-medium transition-all ${
-                isActive
-                  ? "border-accent bg-accent-dark text-white"
-                  : "border-border bg-bg-card text-text-secondary hover:border-border-light hover:text-text"
+              onClick={() => updateParam("type", t.value)}
+              className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+                active
+                  ? "bg-accent text-bg"
+                  : "bg-bg-card border border-border text-text-secondary hover:border-border-light hover:text-text"
               }`}
             >
-              {pill.label}
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Category pills */}
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+        {ITEM_CATEGORIES.map((cat) => {
+          const active = currentCategory === cat.value;
+          return (
+            <button
+              key={cat.value}
+              type="button"
+              onClick={() => updateParam("category", active ? "" : cat.value)}
+              className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[11px] font-medium transition-all ${
+                active
+                  ? "border-accent/50 bg-accent/10 text-accent"
+                  : "border-border bg-bg-card text-text-muted hover:border-border-light hover:text-text"
+              }`}
+            >
+              {cat.label}
             </button>
           );
         })}
