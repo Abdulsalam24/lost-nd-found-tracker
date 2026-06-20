@@ -18,30 +18,29 @@ export class ChatService {
   ) {}
 
   async findOrCreateConversation(
-    itemReportId: string,
+    itemReportId: string | null | undefined,
     initiatorId: string,
     recipientId: string,
   ): Promise<Conversation> {
+    const whereConditions = itemReportId
+      ? [
+          { item_report_id: itemReportId, initiator_id: initiatorId, recipient_id: recipientId },
+          { item_report_id: itemReportId, initiator_id: recipientId, recipient_id: initiatorId },
+        ]
+      : [
+          { item_report_id: null as any, initiator_id: initiatorId, recipient_id: recipientId },
+          { item_report_id: null as any, initiator_id: recipientId, recipient_id: initiatorId },
+        ];
+
     const existing = await this.conversationRepo.findOne({
-      where: [
-        {
-          item_report_id: itemReportId,
-          initiator_id: initiatorId,
-          recipient_id: recipientId,
-        },
-        {
-          item_report_id: itemReportId,
-          initiator_id: recipientId,
-          recipient_id: initiatorId,
-        },
-      ],
+      where: whereConditions,
       relations: ['initiator', 'recipient', 'item_report'],
     });
 
     if (existing) return existing;
 
     const conversation = this.conversationRepo.create({
-      item_report_id: itemReportId,
+      item_report_id: itemReportId ?? null,
       initiator_id: initiatorId,
       recipient_id: recipientId,
     });

@@ -7,12 +7,14 @@ import { Claim } from '../claims/entities/claim.entity';
 import { User } from '../users/entities/user.entity';
 import { AuditModule } from '../audit/audit.module';
 import { GhostHuntModule } from '../games/ghost-hunt/ghost-hunt.module';
+import { TriviaModule } from '../games/trivia/trivia.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ItemReport, Claim, User]),
     AuditModule,
     GhostHuntModule,
+    TriviaModule,
   ],
   controllers: [AdminController],
   providers: [AdminService],

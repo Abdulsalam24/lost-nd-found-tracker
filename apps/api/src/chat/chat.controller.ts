@@ -28,8 +28,9 @@ export class ChatController {
       dto.recipient_id,
     );
 
-    // Send the first message
-    await this.chatService.sendMessage(conv.id, user.id, dto.message);
+    if (dto.message) {
+      await this.chatService.sendMessage(conv.id, user.id, dto.message);
+    }
 
     return conv;
   }

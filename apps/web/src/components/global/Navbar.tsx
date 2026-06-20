@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { useTheme } from "@/lib/ThemeProvider";
+import { api } from "@/lib/api";
 
 const NAV_LINKS = [
   {
@@ -61,10 +62,27 @@ export function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [profileOpen, setProfileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const profileRef = useRef<HTMLDivElement>(null);
   const mobileProfileRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchUnread = () => {
+      api.get<{ count: number }>("/chat/unread")
+        .then((res) => setUnreadCount(res.count ?? 0))
+        .catch(() => {});
+    };
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 15000);
+    window.addEventListener("chat:read", fetchUnread);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("chat:read", fetchUnread);
+    };
+  }, [user]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -145,13 +163,18 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+                  className={`relative rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
                     isActive(link.href)
                       ? "bg-bg-hover text-text"
                       : "text-text-muted hover:bg-bg-hover hover:text-text"
                   }`}
                 >
                   {link.label}
+                  {link.href === "/chat" && unreadCount > 0 && (
+                    <span className='absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white'>
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
               ))}
             <button

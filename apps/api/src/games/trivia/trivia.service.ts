@@ -510,6 +510,17 @@ export class TriviaService implements OnModuleInit {
     }));
   }
 
+  async createQuestion(data: { question_text: string; options: string[]; correct_answer: string }): Promise<TriviaQuestion> {
+    const question = this.questionRepo.create({
+      question_text: data.question_text,
+      options: data.options,
+      correct_answer: data.correct_answer,
+      week_of: '2024-01-01',
+      type: TriviaType.STATIC,
+    });
+    return this.questionRepo.save(question);
+  }
+
   async generateWeeklyQuestions(): Promise<void> {
     // No-op — questions are now served randomly from the pool
     this.logger.log('Trivia uses random pool now, no weekly generation needed');

@@ -17,12 +17,12 @@ export class Conversation {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
-  item_report_id!: string;
+  @Column({ nullable: true })
+  item_report_id!: string | null;
 
-  @ManyToOne(() => ItemReport)
+  @ManyToOne(() => ItemReport, { nullable: true })
   @JoinColumn({ name: 'item_report_id' })
-  item_report!: ItemReport;
+  item_report!: ItemReport | null;
 
   @Column()
   initiator_id!: string;

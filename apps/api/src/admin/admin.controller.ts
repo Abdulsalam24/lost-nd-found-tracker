@@ -17,6 +17,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole, ItemStatus } from '@lostfound/shared';
 import { GhostHuntService } from '../games/ghost-hunt/ghost-hunt.service';
 import { CreateGhostHuntDto } from '../games/ghost-hunt/dto/create-ghost-hunt.dto';
+import { TriviaService } from '../games/trivia/trivia.service';
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -25,6 +26,7 @@ export class AdminController {
   constructor(
     private adminService: AdminService,
     private ghostHuntService: GhostHuntService,
+    private triviaService: TriviaService,
   ) {}
 
   @Get('dashboard')
@@ -32,14 +34,33 @@ export class AdminController {
     return this.adminService.getDashboard();
   }
 
+  @Get('users')
+  async getAllUsers(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+  ) {
+    return this.adminService.getAllUsers(
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 20,
+      search,
+    );
+  }
+
   @Get('items')
   async getAllItems(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
+    @Query('search') search?: string,
+    @Query('category') category?: string,
+    @Query('status') status?: string,
   ) {
     return this.adminService.getAllItems(
       page ? parseInt(page, 10) : 1,
       limit ? parseInt(limit, 10) : 20,
+      search,
+      category,
+      status,
     );
   }
 
@@ -84,5 +105,10 @@ export class AdminController {
   @Post('games/ghost-hunt')
   async createGhostHunt(@Body() dto: CreateGhostHuntDto) {
     return this.ghostHuntService.create(dto);
+  }
+
+  @Post('games/trivia')
+  async createTriviaQuestion(@Body() body: { question_text: string; options: string[]; correct_answer: string }) {
+    return this.triviaService.createQuestion(body);
   }
 }

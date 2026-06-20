@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Navbar } from "@/components/global/Navbar";
+import { LayoutShell } from "@/components/global/LayoutShell";
 
 import { AuthProvider } from "@/lib/AuthProvider";
 import { ThemeProvider } from "@/lib/ThemeProvider";
@@ -19,8 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-screen flex-col">
         <ThemeProvider>
           <AuthProvider>
-            <Navbar />
-            <main className="relative z-10 flex-1 pb-20 md:pb-0">{children}</main>
+            <LayoutShell>{children}</LayoutShell>
           </AuthProvider>
         </ThemeProvider>
       </body>

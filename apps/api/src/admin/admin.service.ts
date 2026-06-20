@@ -42,21 +42,44 @@ export class AdminService {
     };
   }
 
-  async getAllItems(page = 1, limit = 20) {
-    const [data, total] = await this.itemsRepo.findAndCount({
-      relations: ['reporter', 'location', 'claims'],
-      order: { created_at: 'DESC' },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+  async getAllUsers(page = 1, limit = 20, search?: string) {
+    const qb = this.usersRepo.createQueryBuilder('user')
+      .select([
+        'user.id', 'user.name', 'user.email', 'user.faculty',
+        'user.role', 'user.phone', 'user.is_verified', 'user.created_at',
+      ])
+      .orderBy('user.created_at', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit);
 
-    return {
-      data,
-      total,
-      page,
-      limit,
-      total_pages: Math.ceil(total / limit),
-    };
+    if (search) {
+      qb.where('user.name ILIKE :search OR user.email ILIKE :search', { search: `%${search}%` });
+    }
+
+    const [data, total] = await qb.getManyAndCount();
+    return { data, total, page, limit, total_pages: Math.ceil(total / limit) };
+  }
+
+  async getAllItems(page = 1, limit = 20, search?: string, category?: string, status?: string) {
+    const qb = this.itemsRepo.createQueryBuilder('item')
+      .leftJoinAndSelect('item.reporter', 'reporter')
+      .leftJoinAndSelect('item.location', 'location')
+      .orderBy('item.created_at', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    if (search) {
+      qb.andWhere('item.title ILIKE :search', { search: `%${search}%` });
+    }
+    if (category) {
+      qb.andWhere('item.category = :category', { category });
+    }
+    if (status) {
+      qb.andWhere('item.status = :status', { status });
+    }
+
+    const [data, total] = await qb.getManyAndCount();
+    return { data, total, page, limit, total_pages: Math.ceil(total / limit) };
   }
 
   async updateItemStatus(id: string, status: ItemStatus) {
