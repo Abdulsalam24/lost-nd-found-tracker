@@ -38,6 +38,10 @@ apiInstance.interceptors.response.use(
       localStorage.removeItem("token");
       document.cookie = "access_token=; path=/; max-age=0";
     }
+    const apiMessage = err?.response?.data?.message;
+    if (apiMessage) {
+      return Promise.reject(new Error(Array.isArray(apiMessage) ? apiMessage[0] : apiMessage));
+    }
     return Promise.reject(err);
   },
 );

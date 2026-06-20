@@ -36,8 +36,7 @@ export default function LoginPage() {
       const dest = me.role === "admin" ? "/admin" : "/items";
       router.push(dest);
     } catch (err) {
-      const msg = (err as any)?.response?.data?.message;
-      setError(msg ?? "Login failed");
+      setError(err instanceof Error ? err.message : "Login failed");
     }
   };
 
