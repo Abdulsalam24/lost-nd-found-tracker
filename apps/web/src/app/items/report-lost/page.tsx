@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { uploadImage } from "@/lib/supabase";
 import { ImageUpload } from "@/components/ImageUpload";
 import { ITEM_CATEGORIES, CAMPUS_LOCATIONS } from "@/lib/constants";
 import Link from "next/link";
@@ -68,9 +69,7 @@ export default function ReportLostPage() {
       return;
     }
     try {
-      const formData = new FormData();
-      formData.append("file", imageFile);
-      const { url } = await api.upload<{ url: string }>("/items/upload", formData);
+      const url = await uploadImage(imageFile);
 
       const payload = { ...data, type: "LOST" as const, image_url: url };
       const item = await api.post<{ id: string }>("/items", payload);

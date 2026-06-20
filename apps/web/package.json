@@ -10,6 +10,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
     "@lostfound/shared": "*",
+    "@supabase/supabase-js": "^2.108.2",
     "autoprefixer": "^10.4.17",
     "axios": "^1.18.0",
     "chart.js": "^4.5.1",
