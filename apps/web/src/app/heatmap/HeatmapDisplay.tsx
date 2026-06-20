@@ -101,7 +101,7 @@ export function HeatmapDisplay({ data }: { data: HeatmapEntry[] }) {
         max: 1.0,
         gradient: {
           0.2: "#064e3b",
-          0.4: "#059669",
+          0.4: "#004629",
           0.6: "#fbbf24",
           0.8: "#f97316",
           1.0: "#ef4444",
@@ -116,7 +116,7 @@ export function HeatmapDisplay({ data }: { data: HeatmapEntry[] }) {
 
       const marker = L.circleMarker(coords, {
         radius: 6,
-        fillColor: "#34d399",
+        fillColor: "#004629",
         color: "#065f46",
         weight: 2,
         opacity: 0.9,
@@ -126,7 +126,7 @@ export function HeatmapDisplay({ data }: { data: HeatmapEntry[] }) {
       marker.bindPopup(
         `<div style="text-align:center;font-family:system-ui;">
           <strong style="font-size:13px;">${entry.location_name}</strong><br/>
-          <span style="color:#059669;font-weight:600;font-size:14px;">${entry.count}</span>
+          <span style="color:#004629;font-weight:600;font-size:14px;">${entry.count}</span>
           <span style="color:#666;font-size:12px;"> item${entry.count !== 1 ? "s" : ""}</span>
         </div>`,
       );
