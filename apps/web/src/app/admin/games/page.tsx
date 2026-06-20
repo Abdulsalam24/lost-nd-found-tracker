@@ -72,15 +72,15 @@ export default function AdminGamesPage() {
 
       <section className="card p-6">
         <h2 className="text-lg font-bold text-ink">Create Ghost Hunt</h2>
-        <p className="mt-1 text-sm text-ink-muted">Set up a new weekly ghost hunt challenge.</p>
+        <p className="mt-1 text-xs text-ink-muted">Set up a new weekly ghost hunt challenge.</p>
 
         {ghostSuccess && (
-          <div className="mt-3 rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-700" role="alert">
+          <div className="mt-3 rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-700" role="alert">
             Ghost hunt created successfully!
           </div>
         )}
         {ghostError && (
-          <div className="mt-3 rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-600" role="alert">{ghostError}</div>
+          <div className="mt-3 rounded-lg bg-red-50 border border-red-200 p-3 text-xs text-red-600" role="alert">{ghostError}</div>
         )}
 
         <form onSubmit={ghostForm.handleSubmit(onGhostSubmit)} className="mt-4 space-y-4" noValidate>
@@ -102,15 +102,15 @@ export default function AdminGamesPage() {
 
       <section className="card p-6">
         <h2 className="text-lg font-bold text-ink">Add Trivia Question</h2>
-        <p className="mt-1 text-sm text-ink-muted">Add a static trivia question to the pool.</p>
+        <p className="mt-1 text-xs text-ink-muted">Add a static trivia question to the pool.</p>
 
         {triviaSuccess && (
-          <div className="mt-3 rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-700" role="alert">
+          <div className="mt-3 rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-700" role="alert">
             Question added successfully!
           </div>
         )}
         {triviaError && (
-          <div className="mt-3 rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-600" role="alert">{triviaError}</div>
+          <div className="mt-3 rounded-lg bg-red-50 border border-red-200 p-3 text-xs text-red-600" role="alert">{triviaError}</div>
         )}
 
         <form onSubmit={triviaForm.handleSubmit(onTriviaSubmit)} className="mt-4 space-y-4" noValidate>
@@ -144,7 +144,7 @@ export default function AdminGamesPage() {
 
       <section className="card p-6">
         <h2 className="text-lg font-bold text-ink">Detective Game</h2>
-        <p className="mt-1 text-sm text-ink-muted">
+        <p className="mt-1 text-xs text-ink-muted">
           The detective game automatically generates weekly rankings from item data. No manual setup needed.
         </p>
         <div className="mt-4 flex items-center gap-2">

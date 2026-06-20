@@ -86,7 +86,7 @@ export default function ReportLostPage() {
       <div className="mx-auto max-w-2xl px-4 py-8">
         <Link
           href="/items"
-          className="inline-flex items-center gap-1 text-sm text-ink-muted hover:text-coral transition-colors"
+          className="inline-flex items-center gap-1 text-xs text-ink-muted hover:text-coral transition-colors"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -213,7 +213,7 @@ export default function ReportLostPage() {
             <svg className="h-5 w-5 flex-shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="text-sm font-medium text-red-200">{error}</p>
+            <p className="text-xs font-medium text-red-200">{error}</p>
             <button type="button" onClick={() => setError("")} className="ml-2 text-red-400 hover:text-red-300">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

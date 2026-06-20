@@ -16,7 +16,7 @@ export default function Error({
           </svg>
         </div>
         <h2 className="text-lg font-semibold text-text">Something went wrong</h2>
-        <p className="mt-2 text-sm text-text-muted">
+        <p className="mt-2 text-xs text-text-muted">
           {error.message || "An unexpected error occurred."}
         </p>
         <button

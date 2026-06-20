@@ -67,7 +67,7 @@ export default function GhostHuntPage() {
   return (
     <div className="min-h-screen bg-cream">
       <div className="mx-auto max-w-2xl px-4 py-8">
-        <Link href="/games" className="flex items-center gap-1 text-sm text-text-muted hover:text-accent transition-colors">
+        <Link href="/games" className="flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -100,13 +100,13 @@ export default function GhostHuntPage() {
         {/* Rules */}
         {showRules && (
           <div className="mt-4 card p-5 space-y-3">
-            <h3 className="text-sm font-bold text-text">How Ghost Hunt Works</h3>
+            <h3 className="text-xs font-bold text-text">How Ghost Hunt Works</h3>
             {RULES.map((rule) => (
               <div key={rule.icon} className="flex items-start gap-3">
                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/10 text-xs font-bold text-accent">
                   {rule.icon}
                 </span>
-                <p className="text-sm text-text-secondary">{rule.text}</p>
+                <p className="text-xs text-text-secondary">{rule.text}</p>
               </div>
             ))}
           </div>
@@ -120,7 +120,7 @@ export default function GhostHuntPage() {
               </svg>
             </div>
             <p className="mt-3 font-semibold text-text">No Active Hunt</p>
-            <p className="mt-1 text-sm text-text-muted">Check back soon — a new ghost hunt starts every week!</p>
+            <p className="mt-1 text-xs text-text-muted">Check back soon — a new ghost hunt starts every week!</p>
           </div>
         ) : (
           <>
@@ -136,7 +136,7 @@ export default function GhostHuntPage() {
             </div>
 
             {error && (
-              <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400" role="alert">{error}</div>
+              <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400" role="alert">{error}</div>
             )}
 
             {success ? (
@@ -147,7 +147,7 @@ export default function GhostHuntPage() {
                   </svg>
                 </div>
                 <p className="mt-3 text-xl font-bold text-text">You found it!</p>
-                <p className="mt-1 text-sm text-text-muted">Congratulations, you claimed the ghost item! Points have been added to your account.</p>
+                <p className="mt-1 text-xs text-text-muted">Congratulations, you claimed the ghost item! Points have been added to your account.</p>
               </div>
             ) : data.claimed ? (
               <div className="mt-6 card p-8 text-center">
@@ -156,7 +156,7 @@ export default function GhostHuntPage() {
                 </div>
                 <p className="mt-3 text-lg font-bold text-text">Already Claimed!</p>
                 {data.winner && (
-                  <p className="mt-1 text-sm text-text-muted">
+                  <p className="mt-1 text-xs text-text-muted">
                     Won by <span className="font-semibold text-accent">{data.winner.name ?? "_"}</span> on{" "}
                     {data.winner.claimed_at ? new Date(data.winner.claimed_at).toLocaleDateString() : "_"}
                   </p>

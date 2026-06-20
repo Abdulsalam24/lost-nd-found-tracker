@@ -93,7 +93,7 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
       <div className="mx-auto max-w-6xl px-4 py-8">
         <Link
           href="/items"
-          className="inline-flex items-center gap-1 text-sm text-ink-muted hover:text-coral transition-colors"
+          className="inline-flex items-center gap-1 text-xs text-ink-muted hover:text-coral transition-colors"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -131,7 +131,7 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
 
               <h1 className="mt-4 text-2xl font-bold text-ink">{item.title ?? "_"}</h1>
 
-              <dl className="mt-5 grid grid-cols-2 gap-4 text-sm">
+              <dl className="mt-5 grid grid-cols-2 gap-4 text-xs">
                 <div>
                   <dt className="font-semibold text-ink-faint uppercase tracking-wider text-xs">Location</dt>
                   <dd className="mt-1 text-ink">{item.location_id ?? "_"}</dd>
@@ -183,7 +183,7 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
             {item.type === "LOST" && item.status === "ACTIVE" && (
               <div className="card p-6">
                 <h2 className="text-lg font-bold text-text">Spotted This Item?</h2>
-                <p className="mt-1 text-sm text-text-muted">Help the owner by reporting where you saw it.</p>
+                <p className="mt-1 text-xs text-text-muted">Help the owner by reporting where you saw it.</p>
                 <SightingForm itemId={item.id} reporterId={item.reporter_id} />
               </div>
             )}

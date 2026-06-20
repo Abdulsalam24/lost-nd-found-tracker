@@ -124,7 +124,7 @@ export default function ProfilePage() {
         {/* Bank Details */}
         <div className="card p-6">
           <h2 className="text-lg font-bold text-ink">Bank Details</h2>
-          <p className="mt-1 text-sm text-ink-muted">
+          <p className="mt-1 text-xs text-ink-muted">
             Used for receiving refunds or rewards. Your details are kept private.
           </p>
           <div className="divider" />
@@ -193,8 +193,8 @@ export default function ProfilePage() {
           )}
         </div>
 
-        {error && <p className="error-text text-sm">{error}</p>}
-        {success && <p className="text-sm font-medium text-emerald-600">Profile updated successfully!</p>}
+        {error && <p className="error-text text-xs">{error}</p>}
+        {success && <p className="text-xs font-medium text-emerald-600">Profile updated successfully!</p>}
 
         <div className="flex justify-end">
           <button type="submit" className="btn-primary" disabled={saving}>

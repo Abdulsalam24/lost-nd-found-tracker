@@ -74,7 +74,7 @@ export default async function GamesPage() {
                 <h2 className="text-lg font-bold text-text">Trivia Leaderboard</h2>
                 <p className="mt-1 text-xs text-text-muted">Top players across all trivia challenges</p>
               </div>
-              <Link href="/games/trivia" className="text-sm font-medium text-accent hover:underline">
+              <Link href="/games/trivia" className="text-xs font-medium text-accent hover:underline">
                 Play now
               </Link>
             </div>
@@ -122,7 +122,7 @@ export default async function GamesPage() {
                       ) : rank === 3 ? (
                         <span className="flex h-9 w-9 shrink-0 items-center justify-center text-xl">🥉</span>
                       ) : (
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bg-elevated text-sm font-bold text-text-muted">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bg-elevated text-xs font-bold text-text-muted">
                           {rank}
                         </span>
                       )}
@@ -134,7 +134,7 @@ export default async function GamesPage() {
                           <p className="text-[10px] text-text-ghost">Anonymous player</p>
                         )}
                       </div>
-                      <span className={`text-sm font-bold ${rank <= 3 ? "text-accent" : "text-text-muted"}`}>
+                      <span className={`text-xs font-bold ${rank <= 3 ? "text-accent" : "text-text-muted"}`}>
                         {entry.total_points} pts
                       </span>
                     </div>
@@ -146,7 +146,7 @@ export default async function GamesPage() {
         )}
 
         <div className="mt-8 text-center">
-          <Link href="/games/hall-of-fame" className="text-sm font-semibold text-accent hover:underline">
+          <Link href="/games/hall-of-fame" className="text-xs font-semibold text-accent hover:underline">
             View Hall of Fame &rarr;
           </Link>
         </div>

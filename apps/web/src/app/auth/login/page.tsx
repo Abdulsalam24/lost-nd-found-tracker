@@ -59,10 +59,10 @@ function LoginForm() {
     <div className="flex min-h-screen items-center justify-center bg-cream px-4 py-12">
       <div className="card w-full max-w-md rounded-2xl p-6 sm:p-8">
         <h1 className="text-2xl font-bold text-ink">Welcome Back</h1>
-        <p className="mt-1 text-sm text-ink-muted">Sign in to your UniLorin Lost & Found account</p>
+        <p className="mt-1 text-xs text-ink-muted">Sign in to your UniLorin Lost & Found account</p>
 
         {error && (
-          <div className="mt-4 rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-600" role="alert">
+          <div className="mt-4 rounded-lg bg-red-50 border border-red-200 p-3 text-xs text-red-600" role="alert">
             {error}
           </div>
         )}
@@ -85,7 +85,7 @@ function LoginForm() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-ink-muted">
+        <p className="mt-6 text-center text-xs text-ink-muted">
           Don&apos;t have an account?{" "}
           <Link href="/auth/register" className="font-semibold text-coral hover:underline">
             Register

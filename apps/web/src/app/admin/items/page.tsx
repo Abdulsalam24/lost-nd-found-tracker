@@ -119,7 +119,7 @@ export default function AdminItemsPage() {
       ) : items.length > 0 ? (
         <>
         <div className="mt-6 card overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs">
             <thead>
               <tr className="table-header">
                 <th scope="col" className="px-4 py-3 text-left font-semibold text-ink-faint">Image</th>
@@ -193,18 +193,18 @@ export default function AdminItemsPage() {
           <div className="mt-4 flex items-center justify-center gap-2">
             <button
               type="button"
-              className="btn-secondary text-sm"
+              className="btn-secondary text-xs"
               disabled={page <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
             >
               Previous
             </button>
-            <span className="text-sm text-text-secondary">
+            <span className="text-xs text-text-secondary">
               Page {page} of {totalPages}
             </span>
             <button
               type="button"
-              className="btn-secondary text-sm"
+              className="btn-secondary text-xs"
               disabled={page >= totalPages}
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             >
@@ -228,7 +228,7 @@ export default function AdminItemsPage() {
               </span>
               <div>
                 <h3 className="text-base font-semibold text-text">Delete Item</h3>
-                <p className="mt-1 text-sm text-text-secondary">
+                <p className="mt-1 text-xs text-text-secondary">
                   Are you sure you want to delete <strong className="text-text">{deleteTarget.title}</strong>? This action cannot be undone.
                 </p>
               </div>
@@ -236,7 +236,7 @@ export default function AdminItemsPage() {
             <div className="mt-6 flex gap-3 justify-end">
               <button
                 type="button"
-                className="btn-secondary text-sm"
+                className="btn-secondary text-xs"
                 onClick={() => setDeleteTarget(null)}
                 disabled={deleting}
               >
@@ -244,7 +244,7 @@ export default function AdminItemsPage() {
               </button>
               <button
                 type="button"
-                className="btn-danger text-sm"
+                className="btn-danger text-xs"
                 onClick={confirmDelete}
                 disabled={deleting}
               >

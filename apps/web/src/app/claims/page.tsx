@@ -85,10 +85,10 @@ export default function MyClaimsPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
             <p className="mt-4 text-text-muted">No claims yet.</p>
-            <p className="mt-1 text-sm text-text-ghost">
+            <p className="mt-1 text-xs text-text-ghost">
               Found something that belongs to you? Claim it from the item page.
             </p>
-            <Link href="/items" className="btn-primary mt-6 inline-flex text-sm">Browse Items</Link>
+            <Link href="/items" className="btn-primary mt-6 inline-flex text-xs">Browse Items</Link>
           </div>
         ) : (
           <div className="mt-6 space-y-3">

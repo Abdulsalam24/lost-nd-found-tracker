@@ -59,10 +59,10 @@ export default async function ItemsPage({
             <p className="section-subtitle">Find lost items or report what you found on campus</p>
           </div>
           <div className="flex gap-3">
-            <Link href="/items/report-lost" className="btn-primary text-sm">
+            <Link href="/items/report-lost" className="btn-primary text-xs">
               Report Lost
             </Link>
-            <Link href="/items/report-found" className="btn-secondary text-sm">
+            <Link href="/items/report-found" className="btn-secondary text-xs">
               Report Found
             </Link>
           </div>
@@ -97,7 +97,7 @@ export default async function ItemsPage({
               title="No items found"
               message="Try adjusting your filters or report a new item."
               action={
-                <Link href="/items/report-lost" className="btn-primary text-sm">
+                <Link href="/items/report-lost" className="btn-primary text-xs">
                   Report an Item
                 </Link>
               }

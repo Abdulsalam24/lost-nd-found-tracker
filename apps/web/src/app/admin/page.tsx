@@ -101,7 +101,7 @@ export default function AdminDashboard() {
       <div className="mt-8">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-text">Recent Items</h2>
-          <Link href="/admin/items" className="text-sm font-medium text-accent hover:underline">
+          <Link href="/admin/items" className="text-xs font-medium text-accent hover:underline">
             View all
           </Link>
         </div>
@@ -122,7 +122,7 @@ export default function AdminDashboard() {
                   {item.type}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-text truncate">{item.title ?? "_"}</p>
+                  <p className="text-xs font-semibold text-text truncate">{item.title ?? "_"}</p>
                   <p className="text-xs text-text-muted">
                     by {item.reporter?.name ?? "_"} {item.location?.name ? `at ${item.location.name}` : ""}
                   </p>
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
             ))}
           </div>
         ) : (
-          <p className="mt-4 text-sm text-text-muted">No items yet.</p>
+          <p className="mt-4 text-xs text-text-muted">No items yet.</p>
         )}
       </div>
     </div>

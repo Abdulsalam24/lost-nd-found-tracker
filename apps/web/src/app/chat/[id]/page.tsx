@@ -161,11 +161,11 @@ export default function ConversationPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </Link>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/15 text-sm font-bold text-accent">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/15 text-xs font-bold text-accent">
           {otherInitial}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-text">{otherName}</p>
+          <p className="truncate text-xs font-semibold text-text">{otherName}</p>
           {conversation?.item_report && (
             <Link
               href={`/items/${conversation.item_report.id}`}
@@ -197,7 +197,7 @@ export default function ConversationPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </div>
-            <p className="text-sm text-text-muted">No messages yet</p>
+            <p className="text-xs text-text-muted">No messages yet</p>
             <p className="text-xs text-text-ghost">Send a message to start the conversation</p>
           </div>
         ) : (
@@ -280,7 +280,7 @@ export default function ConversationPage() {
           ref={inputRef}
           type="text"
           placeholder="Type a message..."
-          className="flex-1 bg-transparent px-3 py-2 text-sm text-text placeholder:text-text-ghost outline-none disabled:opacity-60"
+          className="flex-1 bg-transparent px-3 py-2 text-xs text-text placeholder:text-text-ghost outline-none disabled:opacity-60"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           disabled={sending}

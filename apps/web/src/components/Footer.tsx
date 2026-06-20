@@ -58,7 +58,7 @@ export function Footer() {
         <div className="flex flex-col gap-8 sm:flex-row sm:justify-between">
           <div className="flex flex-col gap-3">
             <span className="text-lg font-bold text-text">Lost & Found</span>
-            <p className="text-sm text-text-muted">University of Ilorin Campus</p>
+            <p className="text-xs text-text-muted">University of Ilorin Campus</p>
           </div>
 
           <nav aria-label="Footer navigation">
@@ -70,7 +70,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-text-secondary transition-colors hover:text-accent"
+                    className="text-xs text-text-secondary transition-colors hover:text-accent"
                   >
                     {link.label}
                   </Link>
@@ -88,7 +88,7 @@ export function Footer() {
               <button
                 type="button"
                 onClick={() => setFeedbackOpen(true)}
-                className="flex items-center gap-2 rounded-xl border border-border-light bg-bg-card/60 px-4 py-2.5 text-sm text-text-secondary transition-all hover:border-accent/30 hover:text-text"
+                className="flex items-center gap-2 rounded-xl border border-border-light bg-bg-card/60 px-4 py-2.5 text-xs text-text-secondary transition-all hover:border-accent/30 hover:text-text"
               >
                 <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -97,7 +97,7 @@ export function Footer() {
               </button>
             ) : submitted ? (
               <div className="rounded-xl border border-accent/20 bg-accent/5 p-4">
-                <p className="text-sm font-medium text-accent">Thanks for your feedback!</p>
+                <p className="text-xs font-medium text-accent">Thanks for your feedback!</p>
                 <p className="mt-1 text-xs text-text-muted">We&apos;ll review it shortly.</p>
                 <button
                   type="button"

@@ -77,7 +77,7 @@ function ChatList() {
         {itemFilter && (
           <Link
             href="/chat"
-            className="text-sm font-medium text-coral hover:underline"
+            className="text-xs font-medium text-coral hover:underline"
           >
             View all
           </Link>
@@ -95,7 +95,7 @@ function ChatList() {
             <p className="mt-4 text-ink-muted">
               {itemFilter ? "No messages about this item yet." : "No conversations yet."}
             </p>
-            <p className="mt-1 text-sm text-ink-faint">
+            <p className="mt-1 text-xs text-ink-faint">
               {itemFilter ? "You'll see messages here when someone reaches out." : "Start a conversation from any item page."}
             </p>
           </div>
@@ -107,7 +107,7 @@ function ChatList() {
                 href={`/chat/${conv.id}`}
                 className="card-hover flex items-center gap-4 p-4 transition-all"
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cream-200 text-sm font-bold text-ink">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cream-200 text-xs font-bold text-ink">
                   {(conv.other_user?.name ?? "?").charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -125,7 +125,7 @@ function ChatList() {
                     Re: {conv.item_report?.title ?? "_"}
                   </p>
                   {conv.last_message && (
-                    <p className="mt-0.5 truncate text-sm text-ink-muted">
+                    <p className="mt-0.5 truncate text-xs text-ink-muted">
                       {conv.last_message.sender_id === user.id ? "You: " : ""}
                       {conv.last_message.content}
                     </p>

@@ -37,7 +37,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
     <nav aria-label="Pagination" className="mt-8 flex items-center justify-center gap-1">
       <Link
         href={buildHref(Math.max(1, currentPage - 1))}
-        className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+        className={`rounded-xl px-4 py-2 text-xs font-medium transition-colors ${
           currentPage <= 1
             ? "pointer-events-none text-text-ghost"
             : "border border-border-light bg-bg-card text-text hover:bg-bg-hover"
@@ -57,7 +57,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
           <Link
             key={page}
             href={buildHref(page)}
-            className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+            className={`rounded-xl px-3 py-2 text-xs font-medium transition-colors ${
               page === currentPage
                 ? "bg-accent text-bg"
                 : "border border-border-light bg-bg-card text-text hover:bg-bg-hover"
@@ -71,7 +71,7 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
 
       <Link
         href={buildHref(Math.min(totalPages, currentPage + 1))}
-        className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+        className={`rounded-xl px-4 py-2 text-xs font-medium transition-colors ${
           currentPage >= totalPages
             ? "pointer-events-none text-text-ghost"
             : "border border-border-light bg-bg-card text-text hover:bg-bg-hover"

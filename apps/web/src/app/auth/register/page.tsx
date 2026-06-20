@@ -142,12 +142,12 @@ export default function RegisterPage() {
             </svg>
           </div>
           <h1 className="mt-4 text-2xl font-bold text-ink">Verify Your Email</h1>
-          <p className="mt-2 text-sm text-ink-muted">
+          <p className="mt-2 text-xs text-ink-muted">
             We sent a 6-digit code to <span className="font-semibold text-ink">{email}</span>
           </p>
 
           {error && (
-            <div className="mt-4 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400" role="alert">
+            <div className="mt-4 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400" role="alert">
               {error}
             </div>
           )}
@@ -179,7 +179,7 @@ export default function RegisterPage() {
             {verifying ? "Verifying..." : "Verify & Continue"}
           </button>
 
-          <p className="mt-4 text-sm text-ink-muted">
+          <p className="mt-4 text-xs text-ink-muted">
             Didn&apos;t receive the code?{" "}
             {resendCooldown > 0 ? (
               <span className="text-ink-faint">Resend in {resendCooldown}s</span>
@@ -197,7 +197,7 @@ export default function RegisterPage() {
 
           <button
             type="button"
-            className="mt-3 text-sm text-ink-faint hover:text-ink-muted"
+            className="mt-3 text-xs text-ink-faint hover:text-ink-muted"
             onClick={() => {
               setStep("form");
               setOtp(Array(OTP_LENGTH).fill(""));
@@ -215,10 +215,10 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center bg-cream px-4 py-12">
       <div className="card w-full max-w-md rounded-2xl p-6 sm:p-8">
         <h1 className="text-2xl font-bold text-ink">Create Account</h1>
-        <p className="mt-1 text-sm text-ink-muted">Join the UniLorin Lost & Found community</p>
+        <p className="mt-1 text-xs text-ink-muted">Join the UniLorin Lost & Found community</p>
 
         {error && (
-          <div className="mt-4 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400" role="alert">
+          <div className="mt-4 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400" role="alert">
             {error}
           </div>
         )}
@@ -258,7 +258,7 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-ink-muted">
+        <p className="mt-6 text-center text-xs text-ink-muted">
           Already have an account?{" "}
           <Link href="/auth/login" className="font-semibold text-coral hover:underline">
             Login

@@ -49,7 +49,7 @@ export function SearchFilters() {
             key={opt.value}
             type="button"
             onClick={() => updateParam("type", opt.value)}
-            className={`flex-1 rounded-full px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-all ${
+            className={`flex-1 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-all ${
               currentType === opt.value
                 ? "bg-accent text-bg"
                 : "text-text-muted hover:text-text"

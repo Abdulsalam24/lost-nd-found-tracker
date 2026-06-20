@@ -124,18 +124,18 @@ export default async function StatsPage() {
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
                   <span className="h-3 w-3 rounded-full bg-red-400" />
-                  <span className="text-sm text-text-secondary">{stats.total_lost ?? 0} lost</span>
+                  <span className="text-xs text-text-secondary">{stats.total_lost ?? 0} lost</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="h-3 w-3 rounded-full bg-emerald-400" />
-                  <span className="text-sm text-text-secondary">{stats.total_found ?? 0} found</span>
+                  <span className="text-xs text-text-secondary">{stats.total_found ?? 0} found</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="h-3 w-3 rounded-full bg-yellow-400" />
-                  <span className="text-sm text-text-secondary">{activeItems} active</span>
+                  <span className="text-xs text-text-secondary">{activeItems} active</span>
                 </div>
               </div>
-              <span className="text-sm text-text-ghost">{stats.total_claims ?? 0} claims submitted</span>
+              <span className="text-xs text-text-ghost">{stats.total_claims ?? 0} claims submitted</span>
             </div>
           </div>
 

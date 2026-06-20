@@ -105,8 +105,8 @@ export default function TriviaPage() {
             </svg>
           </div>
           <h1 className="mt-4 text-xl font-bold text-text">No Questions This Week</h1>
-          <p className="mt-2 text-sm text-text-muted">Check back soon for new trivia challenges!</p>
-          <Link href="/games" className="btn-primary mt-6 inline-flex text-sm">Back to Games</Link>
+          <p className="mt-2 text-xs text-text-muted">Check back soon for new trivia challenges!</p>
+          <Link href="/games" className="btn-primary mt-6 inline-flex text-xs">Back to Games</Link>
         </div>
       </div>
     );
@@ -155,12 +155,12 @@ export default function TriviaPage() {
             <div className="mt-6 flex justify-center gap-3">
               <button
                 type="button"
-                className="rounded-xl border border-border-light bg-bg-elevated px-5 py-2.5 text-sm font-medium text-text transition-colors hover:bg-bg-hover"
+                className="rounded-xl border border-border-light bg-bg-elevated px-5 py-2.5 text-xs font-medium text-text transition-colors hover:bg-bg-hover"
                 onClick={() => { setShowSummary(false); setCurrentIndex(0); }}
               >
                 Review Answers
               </button>
-              <Link href="/games" className="btn-primary text-sm">Back to Games</Link>
+              <Link href="/games" className="btn-primary text-xs">Back to Games</Link>
             </div>
           </div>
 
@@ -176,7 +176,7 @@ export default function TriviaPage() {
       <div className="mx-auto max-w-2xl px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <Link href="/games" className="flex items-center gap-1 text-sm text-text-muted hover:text-accent transition-colors">
+          <Link href="/games" className="flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
@@ -186,7 +186,7 @@ export default function TriviaPage() {
             <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            <span className="text-sm font-bold text-accent">{totalScore} pts</span>
+            <span className="text-xs font-bold text-accent">{totalScore} pts</span>
           </div>
         </div>
 
@@ -228,7 +228,7 @@ export default function TriviaPage() {
         </div>
 
         {error && (
-          <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400" role="alert">{error}</div>
+          <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400" role="alert">{error}</div>
         )}
 
         {/* Question card */}
@@ -256,7 +256,7 @@ export default function TriviaPage() {
                     type="button"
                     disabled={isDisabled}
                     onClick={() => submitAnswer(currentQuestion.id, option)}
-                    className={`group flex w-full items-center gap-4 rounded-xl border-2 px-4 py-3.5 text-left text-sm font-medium transition-all ${
+                    className={`group flex w-full items-center gap-4 rounded-xl border-2 px-4 py-3.5 text-left text-xs font-medium transition-all ${
                       isCorrect
                         ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
                         : isWrong
@@ -303,14 +303,14 @@ export default function TriviaPage() {
                   : "bg-red-500/10 border border-red-500/20"
               }`}>
                 {answered.alreadyAnswered ? (
-                  <span className="text-sm font-semibold text-yellow-400">You already answered this one — skipped!</span>
+                  <span className="text-xs font-semibold text-yellow-400">You already answered this one — skipped!</span>
                 ) : answered.result.is_correct ? (
                   <>
                     <span className="text-lg">+{answered.result.points_earned}</span>
-                    <span className="text-sm font-semibold text-emerald-400">Correct! Points earned.</span>
+                    <span className="text-xs font-semibold text-emerald-400">Correct! Points earned.</span>
                   </>
                 ) : (
-                  <span className="text-sm font-semibold text-red-400">Incorrect. Better luck next time!</span>
+                  <span className="text-xs font-semibold text-red-400">Incorrect. Better luck next time!</span>
                 )}
               </div>
             )}
@@ -322,7 +322,7 @@ export default function TriviaPage() {
               type="button"
               onClick={goBack}
               disabled={currentIndex === 0}
-              className="flex items-center gap-1 text-sm font-medium text-text-muted transition-colors hover:text-text disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex items-center gap-1 text-xs font-medium text-text-muted transition-colors hover:text-text disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -333,7 +333,7 @@ export default function TriviaPage() {
               type="button"
               onClick={goNext}
               disabled={!answered}
-              className={`flex items-center gap-1 rounded-xl px-5 py-2 text-sm font-medium transition-all ${
+              className={`flex items-center gap-1 rounded-xl px-5 py-2 text-xs font-medium transition-all ${
                 answered
                   ? "bg-accent text-bg hover:bg-accent-light"
                   : "bg-bg-elevated text-text-ghost cursor-not-allowed"
@@ -355,7 +355,7 @@ export default function TriviaPage() {
       {toast && (
         <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 animate-slide-up">
           <div className="flex items-center gap-3 rounded-xl border border-yellow-500/30 bg-yellow-950/90 px-4 py-3 shadow-lg backdrop-blur-sm">
-            <span className="text-sm font-medium text-yellow-200">{toast}</span>
+            <span className="text-xs font-medium text-yellow-200">{toast}</span>
           </div>
         </div>
       )}
@@ -417,7 +417,7 @@ function Leaderboard({ entries }: { entries: LeaderboardEntry[] }) {
                 ) : rank === 3 ? (
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center text-xl">🥉</span>
                 ) : (
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bg-elevated text-sm font-bold text-text-muted">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bg-elevated text-xs font-bold text-text-muted">
                     {rank}
                   </span>
                 )}
@@ -429,7 +429,7 @@ function Leaderboard({ entries }: { entries: LeaderboardEntry[] }) {
                     <p className="text-[10px] text-text-ghost">Anonymous player</p>
                   )}
                 </div>
-                <span className={`text-sm font-bold ${rank <= 3 ? "text-accent" : "text-text-muted"}`}>
+                <span className={`text-xs font-bold ${rank <= 3 ? "text-accent" : "text-text-muted"}`}>
                   {entry.total_points} pts
                 </span>
               </div>

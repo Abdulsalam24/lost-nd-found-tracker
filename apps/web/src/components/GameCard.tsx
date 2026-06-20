@@ -21,11 +21,11 @@ export function GameCard({ title, description, href, icon }: GameCardProps) {
         <h3 className="text-lg font-semibold text-text">
           {title ?? "_"}
         </h3>
-        <p className="mt-1 flex-1 text-sm text-text-muted">
+        <p className="mt-1 flex-1 text-xs text-text-muted">
           {description ?? "_"}
         </p>
         <div className="mt-4">
-          <span className="text-sm font-semibold text-accent group-hover:text-accent-light transition-colors">
+          <span className="text-xs font-semibold text-accent group-hover:text-accent-light transition-colors">
             Play Now &rarr;
           </span>
         </div>

@@ -82,7 +82,7 @@ export default function AdminClaimsPage() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <Link
                       href={`/items/${claim.item_report_id}`}
-                      className="text-sm font-semibold text-accent hover:underline"
+                      className="text-xs font-semibold text-accent hover:underline"
                     >
                       {claim.item_title ?? "View Item"}
                     </Link>
@@ -99,7 +99,7 @@ export default function AdminClaimsPage() {
                   <p className="mt-1 text-xs text-text-muted">
                     Claimed by <span className="font-medium text-text-secondary">{claim.claimant_name ?? claim.claimant_id?.slice(0, 8) ?? "_"}</span>
                   </p>
-                  <p className="mt-2 text-sm text-text-secondary">{claim.evidence_description ?? "_"}</p>
+                  <p className="mt-2 text-xs text-text-secondary">{claim.evidence_description ?? "_"}</p>
                   {claim.evidence_image_url && (
                     <img src={claim.evidence_image_url} alt="Evidence" className="mt-2 h-20 rounded-lg object-cover" />
                   )}

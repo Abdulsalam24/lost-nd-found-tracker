@@ -19,7 +19,7 @@ export function Timeline({ events }: { events: TimelineEvent[] }) {
           />
 
           <p
-            className={`text-sm font-semibold ${
+            className={`text-xs font-semibold ${
               event.active ? "text-coral" : "text-ink-ghost"
             }`}
           >

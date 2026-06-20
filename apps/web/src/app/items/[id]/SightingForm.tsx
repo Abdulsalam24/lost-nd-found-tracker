@@ -59,12 +59,12 @@ export function SightingForm({ itemId, reporterId }: { itemId: string; reporterI
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4" noValidate>
       {success && (
-        <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-400" role="alert">
+        <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-400" role="alert">
           Sighting reported successfully!
         </div>
       )}
       {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400" role="alert">
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-400" role="alert">
           {error}
         </div>
       )}
@@ -107,7 +107,7 @@ export function SightingForm({ itemId, reporterId }: { itemId: string; reporterI
         </div>
       </div>
 
-      <button type="submit" className="btn-primary text-sm" disabled={isSubmitting}>
+      <button type="submit" className="btn-primary text-xs" disabled={isSubmitting}>
         {isSubmitting ? "Submitting..." : "Report Sighting"}
       </button>
     </form>

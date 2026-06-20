@@ -47,8 +47,8 @@ export default async function LeaderboardPage() {
                         {idx + 1}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-sm font-medium text-ink">{entry.faculty ?? "_"}</td>
-                    <td className="px-4 py-3 text-sm font-bold text-coral">{entry.count ?? "_"}</td>
+                    <td className="px-4 py-3 text-xs font-medium text-ink">{entry.faculty ?? "_"}</td>
+                    <td className="px-4 py-3 text-xs font-bold text-coral">{entry.count ?? "_"}</td>
                     <td className="hidden px-4 py-3 sm:table-cell">
                       <div className="h-2 w-full max-w-[200px] rounded-full bg-cream-200">
                         <div

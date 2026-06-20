@@ -40,67 +40,68 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* Hero */}
-      <section className="relative flex min-h-screen flex-col items-center px-4 pt-28 pb-8">
-        {/* Counter pill */}
-        <div className="mb-6 flex items-center gap-2 rounded-full border border-border-light bg-bg-card/80 px-5 py-2 backdrop-blur-sm">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
-          </span>
-          <span className="text-sm text-text-secondary">
-            {stats.total_items ?? 0} items reported on campus
-          </span>
-        </div>
+      <section className="relative overflow-hidden">
+        {/* Top content */}
+        <div className="flex flex-col items-center px-4 pt-28 sm:pt-32">
+          {/* Counter pill */}
+          <div className="mb-6 flex items-center gap-2 rounded-full border border-border-light bg-bg-card/80 px-5 py-2 backdrop-blur-sm">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+            </span>
+            <span className="text-xs text-text-secondary">
+              {stats.total_items ?? 0} items reported on campus
+            </span>
+          </div>
 
-        {/* Main heading */}
-        <h1 className="max-w-3xl text-center text-4xl font-bold leading-tight text-text sm:text-5xl lg:text-6xl">
-          Finding what you&apos;ve lost...
-        </h1>
+          {/* Main heading */}
+          <h1 className="max-w-4xl text-center text-4xl font-bold leading-[1.1] tracking-tight text-text sm:text-5xl lg:text-6xl">
+            Find what you&apos;ve lost, return what you&apos;ve found
+          </h1>
 
-        {/* Subtitle */}
-        <p className="mt-4 text-center text-sm tracking-[0.3em] uppercase text-text-ghost">
-          &mdash; Campus &mdash; Community &mdash; Recovery &mdash;
-        </p>
+          {/* Subtitle */}
+          <p className="mt-5 text-center text-xs tracking-[0.3em] uppercase text-text-ghost">
+            &mdash; Campus &mdash; Community &mdash; Recovery &mdash;
+          </p>
 
-        {/* Scanning animation */}
-        <ScanningHero items={items} />
-
-        {/* CTA buttons */}
-        <div className="relative z-20 mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+          {/* CTA buttons */}
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link href="/items/report-lost" className="btn-primary px-8 py-3">
             Report Lost Item
           </Link>
           <Link href="/items/report-found" className="btn-secondary px-8 py-3">
             Report Found Item
           </Link>
+          </div>
         </div>
+
+        {/* Floating item cards */}
+        {/* <ScanningHero items={items} /> */}
       </section>
 
       {/* Stats */}
-      <section className="relative z-10 mx-auto max-w-5xl px-4 py-20">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          <div className="card rounded-2xl p-8 text-center">
-            <p className="text-4xl font-bold text-text">{stats.total_items ?? "_"}</p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Total Reported</p>
+      <section className="relative z-10 mx-auto max-w-4xl px-4 py-12">
+        <div className="card flex flex-col items-center divide-y divide-border sm:flex-row sm:divide-x sm:divide-y-0 rounded-2xl">
+          <div className="flex-1 px-6 py-5 text-center">
+            <p className="text-3xl font-bold text-text">{stats.total_items ?? "_"}</p>
+            <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-text-muted">Reported</p>
           </div>
-          <div className="card rounded-2xl p-8 text-center">
-            <p className="text-4xl font-bold text-text">{stats.total_recovered ?? "_"}</p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Recovered</p>
+          <div className="flex-1 px-6 py-5 text-center">
+            <p className="text-3xl font-bold text-text">{stats.total_recovered ?? "_"}</p>
+            <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-text-muted">Recovered</p>
           </div>
-          <div className="card rounded-2xl p-8 text-center">
-            <p className="text-4xl font-bold text-accent">{`${stats.recovery_rate ?? 0}%`}</p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Recovery Rate</p>
+          <div className="flex-1 px-6 py-5 text-center">
+            <p className="text-3xl font-bold text-accent">{`${stats.recovery_rate ?? 0}%`}</p>
+            <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-text-muted">Recovery Rate</p>
           </div>
         </div>
       </section>
-
-      <div className="mx-auto max-w-7xl border-t border-border" />
 
       {/* Recently Found Items */}
       <section className="relative z-10 mx-auto max-w-7xl px-4 py-20">
         <div className="flex items-center justify-between">
           <h2 className="section-title">Recently Found</h2>
-          <Link href="/items?type=FOUND" className="text-sm font-semibold text-accent hover:text-accent-light transition-colors">
+          <Link href="/items?type=FOUND" className="text-xs font-semibold text-accent hover:text-accent-light transition-colors">
             View all
           </Link>
         </div>
@@ -131,7 +132,7 @@ export default function HomePage() {
                     </span>
                     <span className="badge-gray text-[10px]">{item.category ?? "_"}</span>
                   </div>
-                  <h3 className="text-sm font-semibold text-text transition-colors group-hover:text-accent line-clamp-1">
+                  <h3 className="text-xs font-semibold text-text transition-colors group-hover:text-accent line-clamp-1">
                     {item.title ?? "_"}
                   </h3>
                   <p className="mt-1 flex items-center gap-1 text-xs text-text-muted">
@@ -206,9 +207,9 @@ function GameTeaser({ title, description, href, icon }: { title: string; descrip
       </div>
       <div className="flex flex-1 flex-col p-5">
         <h3 className="text-lg font-semibold text-text">{title}</h3>
-        <p className="mt-1 flex-1 text-sm text-text-muted">{description}</p>
+        <p className="mt-1 flex-1 text-xs text-text-muted">{description}</p>
         <div className="mt-4">
-          <span className="text-sm font-semibold text-accent group-hover:text-accent-light transition-colors">
+          <span className="text-xs font-semibold text-accent group-hover:text-accent-light transition-colors">
             Play Now &rarr;
           </span>
         </div>

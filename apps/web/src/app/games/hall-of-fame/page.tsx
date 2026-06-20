@@ -54,7 +54,7 @@ export default async function HallOfFamePage() {
             </h2>
             {detective.length > 0 ? (
               <div className="mt-4 card overflow-hidden">
-                <table className="w-full text-sm">
+                <table className="w-full text-xs">
                   <thead>
                     <tr className="table-header">
                       <th scope="col" className="px-4 py-2 text-left font-semibold text-ink-faint">#</th>
@@ -93,7 +93,7 @@ export default async function HallOfFamePage() {
             </h2>
             {trivia.length > 0 ? (
               <div className="mt-4 card overflow-hidden">
-                <table className="w-full text-sm">
+                <table className="w-full text-xs">
                   <thead>
                     <tr className="table-header">
                       <th scope="col" className="px-4 py-2 text-left font-semibold text-ink-faint">#</th>

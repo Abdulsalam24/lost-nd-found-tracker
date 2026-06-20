@@ -91,7 +91,7 @@ export default function AdminAuditPage() {
       ) : audit.data.length > 0 ? (
         <>
           <div className="mt-6 card overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-xs">
               <thead>
                 <tr className="table-header">
                   <th scope="col" className="px-4 py-3 text-left font-semibold text-ink-faint">Action</th>
@@ -133,7 +133,7 @@ export default function AdminAuditPage() {
             >
               Previous
             </button>
-            <span className="flex items-center text-sm text-ink-muted">
+            <span className="flex items-center text-xs text-ink-muted">
               Page {audit.page} of {audit.total_pages}
             </span>
             <button

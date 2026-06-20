@@ -85,8 +85,8 @@ export default function ClaimDetailPage() {
       <div className="min-h-screen bg-cream">
         <div className="mx-auto max-w-2xl px-4 py-16 text-center">
           <h1 className="text-xl font-bold text-text">Claim not found</h1>
-          <p className="mt-2 text-sm text-text-muted">{error || "This claim doesn't exist or you don't have access."}</p>
-          <Link href="/items" className="btn-primary mt-6 inline-flex text-sm">Browse Items</Link>
+          <p className="mt-2 text-xs text-text-muted">{error || "This claim doesn't exist or you don't have access."}</p>
+          <Link href="/items" className="btn-primary mt-6 inline-flex text-xs">Browse Items</Link>
         </div>
       </div>
     );
@@ -99,7 +99,7 @@ export default function ClaimDetailPage() {
       <div className="mx-auto max-w-2xl px-4 py-8">
         <Link
           href={`/items/${claim.item_report_id}`}
-          className="inline-flex items-center gap-1 text-sm text-text-muted hover:text-accent transition-colors"
+          className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -118,7 +118,7 @@ export default function ClaimDetailPage() {
           <dl className="mt-6 space-y-5">
             <div>
               <dt className="text-xs font-semibold uppercase tracking-wider text-text-ghost">Evidence Provided</dt>
-              <dd className="mt-2 rounded-lg bg-bg-elevated border border-border-light p-4 text-sm text-text-secondary whitespace-pre-wrap">
+              <dd className="mt-2 rounded-lg bg-bg-elevated border border-border-light p-4 text-xs text-text-secondary whitespace-pre-wrap">
                 {claim.evidence_description ?? "_"}
               </dd>
             </div>
@@ -138,7 +138,7 @@ export default function ClaimDetailPage() {
 
             <div>
               <dt className="text-xs font-semibold uppercase tracking-wider text-text-ghost">Submitted</dt>
-              <dd className="mt-1 text-sm text-text">
+              <dd className="mt-1 text-xs text-text">
                 {claim.created_at ? new Date(claim.created_at).toLocaleString() : "_"}
               </dd>
             </div>
@@ -146,7 +146,7 @@ export default function ClaimDetailPage() {
             {claim.admin_notes && (
               <div>
                 <dt className="text-xs font-semibold uppercase tracking-wider text-text-ghost">Admin Notes</dt>
-                <dd className="mt-2 rounded-lg bg-bg-elevated border border-border-light p-4 text-sm text-text-secondary">
+                <dd className="mt-2 rounded-lg bg-bg-elevated border border-border-light p-4 text-xs text-text-secondary">
                   {claim.admin_notes}
                 </dd>
               </div>

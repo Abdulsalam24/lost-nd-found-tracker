@@ -168,7 +168,7 @@ export function StatsCharts({ categoryStats, monthlyStats, recoveryRate }: Stats
             <canvas ref={pieRef} aria-label="Doughnut chart showing items by category" role="img" />
           </div>
         ) : (
-          <p className="py-8 text-center text-sm text-text-ghost">No category data yet</p>
+          <p className="py-8 text-center text-xs text-text-ghost">No category data yet</p>
         )}
       </div>
 
@@ -178,7 +178,7 @@ export function StatsCharts({ categoryStats, monthlyStats, recoveryRate }: Stats
         {monthlyStats.length > 0 ? (
           <canvas ref={barRef} aria-label="Bar chart showing items reported per month" role="img" />
         ) : (
-          <p className="py-8 text-center text-sm text-text-ghost">No monthly data yet</p>
+          <p className="py-8 text-center text-xs text-text-ghost">No monthly data yet</p>
         )}
       </div>
 

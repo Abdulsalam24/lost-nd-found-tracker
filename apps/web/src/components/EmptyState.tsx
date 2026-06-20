@@ -24,7 +24,7 @@ export function EmptyState({
         />
       </svg>
       <h3 className="text-lg font-bold text-text">{title}</h3>
-      <p className="mt-1 text-sm text-text-muted">{message}</p>
+      <p className="mt-1 text-xs text-text-muted">{message}</p>
       {action && <div className="mt-6">{action}</div>}
     </div>
   );

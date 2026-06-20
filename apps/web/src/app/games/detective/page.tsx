@@ -87,7 +87,7 @@ export default function DetectivePage() {
   return (
     <div className="min-h-screen bg-cream">
       <div className="mx-auto max-w-2xl px-4 py-8">
-        <Link href="/games" className="flex items-center gap-1 text-sm text-text-muted hover:text-accent transition-colors">
+        <Link href="/games" className="flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -119,13 +119,13 @@ export default function DetectivePage() {
         {/* Rules */}
         {showRules && (
           <div className="mt-4 card p-5 space-y-3">
-            <h3 className="text-sm font-bold text-text">How Detective Game Works</h3>
+            <h3 className="text-xs font-bold text-text">How Detective Game Works</h3>
             {RULES.map((rule) => (
               <div key={rule.icon} className="flex items-start gap-3">
                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/10 text-xs font-bold text-accent">
                   {rule.icon}
                 </span>
-                <p className="text-sm text-text-secondary">{rule.text}</p>
+                <p className="text-xs text-text-secondary">{rule.text}</p>
               </div>
             ))}
           </div>
@@ -139,7 +139,7 @@ export default function DetectivePage() {
               </svg>
             </div>
             <p className="mt-3 font-semibold text-text">Not Enough Data</p>
-            <p className="mt-1 text-sm text-text-muted">Check back when more items have been reported this week!</p>
+            <p className="mt-1 text-xs text-text-muted">Check back when more items have been reported this week!</p>
           </div>
         ) : (
           <>
@@ -150,7 +150,7 @@ export default function DetectivePage() {
               </div>
 
               {error && (
-                <div className="mx-5 mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400" role="alert">{error}</div>
+                <div className="mx-5 mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400" role="alert">{error}</div>
               )}
 
               {success ? (
@@ -161,7 +161,7 @@ export default function DetectivePage() {
                     </svg>
                   </div>
                   <p className="mt-3 text-lg font-bold text-text">Guess Submitted!</p>
-                  <p className="mt-1 text-sm text-text-muted">Results will be revealed at the end of the week.</p>
+                  <p className="mt-1 text-xs text-text-muted">Results will be revealed at the end of the week.</p>
                 </div>
               ) : (
                 <>
@@ -174,7 +174,7 @@ export default function DetectivePage() {
                         onDragStart={() => handleDragStart(idx)}
                         onDragOver={(e) => handleDragOver(e, idx)}
                         onDragEnd={handleDragEnd}
-                        className={`flex cursor-grab items-center gap-3 rounded-xl border-2 p-3 text-sm transition-all ${
+                        className={`flex cursor-grab items-center gap-3 rounded-xl border-2 p-3 text-xs transition-all ${
                           dragIdx === idx
                             ? "border-accent/40 bg-accent/5 shadow-sm"
                             : "border-border-light bg-bg-card hover:border-border hover:bg-bg-elevated"

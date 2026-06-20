@@ -67,7 +67,7 @@ export function ItemCard({
           <CategoryBadge category={category} />
         </div>
 
-        <h3 className="text-sm font-semibold text-text transition-colors group-hover:text-accent line-clamp-1">
+        <h3 className="text-xs font-semibold text-text transition-colors group-hover:text-accent line-clamp-1">
           {title ?? "_"}
         </h3>
 
