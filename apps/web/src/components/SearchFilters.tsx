@@ -1,14 +1,14 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { ITEM_CATEGORIES, ITEM_STATUSES } from "@/lib/constants";
 import { api } from "@/lib/api";
 
 const TYPE_OPTIONS = [
-  { value: "", label: "All" },
-  { value: "LOST", label: "Lost" },
-  { value: "FOUND", label: "Found" },
+  { value: "", label: "All", icon: "M4 6h16M4 10h16M4 14h16M4 18h16" },
+  { value: "LOST", label: "Lost", icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
+  { value: "FOUND", label: "Found", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
 ];
 
 interface LocationOption {
@@ -20,6 +20,8 @@ export function SearchFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [locations, setLocations] = useState<LocationOption[]>([]);
+  const [searchValue, setSearchValue] = useState(searchParams.get("q") ?? "");
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
     api.get<LocationOption[]>("/items/locations").then(setLocations).catch(() => {});
@@ -39,116 +41,134 @@ export function SearchFilters() {
     [router, searchParams]
   );
 
+  const handleSearch = useCallback(
+    (value: string) => {
+      setSearchValue(value);
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => updateParam("q", value), 400);
+    },
+    [updateParam]
+  );
+
+  const clearFilters = useCallback(() => {
+    setSearchValue("");
+    router.push("/items");
+  }, [router]);
+
   const currentType = searchParams.get("type") ?? "";
+  const currentCategory = searchParams.get("category") ?? "";
+  const currentStatus = searchParams.get("status") ?? "";
+  const currentLocation = searchParams.get("location") ?? "";
+  const hasFilters = currentType || currentCategory || currentStatus || currentLocation || searchValue;
 
   return (
-    <div className="card p-4">
-      <div className="mb-4 flex items-center gap-1 rounded-full bg-bg-elevated p-1">
-        {TYPE_OPTIONS.map((opt) => (
-          <button
-            key={opt.value}
-            type="button"
-            onClick={() => updateParam("type", opt.value)}
-            className={`flex-1 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-all ${
-              currentType === opt.value
-                ? "bg-accent text-bg"
-                : "text-text-muted hover:text-text"
-            }`}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <div>
-          <label htmlFor="filter-category" className="label">
-            Category
-          </label>
-          <select
-            id="filter-category"
-            className="input-field"
-            value={searchParams.get("category") ?? ""}
-            onChange={(e) => updateParam("category", e.target.value)}
-          >
-            <option value="">All Categories</option>
-            {ITEM_CATEGORIES.map((cat) => (
-              <option key={cat.value} value={cat.value}>
-                {cat.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label htmlFor="filter-status" className="label">
-            Status
-          </label>
-          <select
-            id="filter-status"
-            className="input-field"
-            value={searchParams.get("status") ?? ""}
-            onChange={(e) => updateParam("status", e.target.value)}
-          >
-            <option value="">All Statuses</option>
-            {ITEM_STATUSES.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label htmlFor="filter-location" className="label">
-            Location
-          </label>
-          <select
-            id="filter-location"
-            className="input-field"
-            value={searchParams.get("location") ?? ""}
-            onChange={(e) => updateParam("location", e.target.value)}
-          >
-            <option value="">All Locations</option>
-            {locations.map((loc) => (
-              <option key={loc.id} value={loc.id}>
-                {loc.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="relative mt-3">
-        <label htmlFor="filter-search" className="sr-only">
-          Search
-        </label>
+    <div className="space-y-3">
+      {/* Search bar */}
+      <div className="relative">
         <svg
-          className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint"
+          className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-text-ghost"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
           aria-hidden="true"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
         <input
-          id="filter-search"
           type="search"
-          className="input-field pl-10"
-          placeholder="Search by title or description..."
-          defaultValue={searchParams.get("q") ?? ""}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              updateParam("q", (e.target as HTMLInputElement).value);
-            }
-          }}
+          className="w-full rounded-xl border border-white/[0.08] bg-black/30 py-3 pl-11 pr-4 text-sm text-text placeholder:text-text-ghost backdrop-blur-2xl backdrop-saturate-150 outline-none transition-all focus:border-accent/40 focus:ring-1 focus:ring-accent/20"
+          placeholder="Search items..."
+          value={searchValue}
+          onChange={(e) => handleSearch(e.target.value)}
         />
+        {searchValue && (
+          <button
+            type="button"
+            onClick={() => handleSearch("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-text-ghost transition-colors hover:text-text"
+            aria-label="Clear search"
+          >
+            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* Type tabs + filters row */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        {/* Type toggle */}
+        <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-black/20 p-1 backdrop-blur-xl">
+          {TYPE_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => updateParam("type", opt.value)}
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-all ${
+                currentType === opt.value
+                  ? "bg-accent text-bg shadow-sm"
+                  : "text-text-muted hover:text-text"
+              }`}
+            >
+              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={opt.icon} />
+              </svg>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Dropdown filters */}
+        <div className="flex items-center gap-2">
+          <select
+            className="rounded-lg border border-white/[0.06] bg-black/20 px-3 py-1.5 text-[11px] text-text backdrop-blur-xl outline-none transition-all focus:border-accent/40 [&>option]:bg-bg-elevated [&>option]:text-text"
+            value={currentCategory}
+            onChange={(e) => updateParam("category", e.target.value)}
+            aria-label="Category"
+          >
+            <option value="">Category</option>
+            {ITEM_CATEGORIES.map((cat) => (
+              <option key={cat.value} value={cat.value}>{cat.label}</option>
+            ))}
+          </select>
+
+          <select
+            className="rounded-lg border border-white/[0.06] bg-black/20 px-3 py-1.5 text-[11px] text-text backdrop-blur-xl outline-none transition-all focus:border-accent/40 [&>option]:bg-bg-elevated [&>option]:text-text"
+            value={currentStatus}
+            onChange={(e) => updateParam("status", e.target.value)}
+            aria-label="Status"
+          >
+            <option value="">Status</option>
+            {ITEM_STATUSES.map((s) => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
+          </select>
+
+          <select
+            className="hidden rounded-lg border border-white/[0.06] bg-black/20 px-3 py-1.5 text-[11px] text-text backdrop-blur-xl outline-none transition-all focus:border-accent/40 sm:block [&>option]:bg-bg-elevated [&>option]:text-text"
+            value={currentLocation}
+            onChange={(e) => updateParam("location", e.target.value)}
+            aria-label="Location"
+          >
+            <option value="">Location</option>
+            {locations.map((loc) => (
+              <option key={loc.id} value={loc.id}>{loc.name}</option>
+            ))}
+          </select>
+
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="flex items-center gap-1 rounded-lg border border-red-500/20 bg-red-500/5 px-2.5 py-1.5 text-[11px] font-medium text-red-400 transition-colors hover:bg-red-500/10"
+            >
+              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Clear
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
