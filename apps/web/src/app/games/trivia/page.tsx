@@ -28,11 +28,11 @@ interface LeaderboardEntry {
 const OPTION_LETTERS = ["A", "B", "C", "D"];
 
 const TRIVIA_RULES = [
-  { icon: "1", text: "Each week, 10 trivia questions about campus life are posted." },
-  { icon: "2", text: "Answer each question by selecting one of the four options." },
-  { icon: "3", text: "You earn points for each correct answer. No penalty for wrong answers." },
-  { icon: "4", text: "Once answered, you can't change your response — choose wisely!" },
-  { icon: "5", text: "Compete with other students on the weekly leaderboard." },
+  { icon: "1", text: "Each week, trivia questions about campus life are posted." },
+  { icon: "2", text: "Select one of the options for each question." },
+  { icon: "3", text: "Earn points for correct answers. No penalty for wrong ones." },
+  { icon: "4", text: "You can't change your answer once submitted." },
+  { icon: "5", text: "Compete on the weekly leaderboard." },
 ];
 
 export default function TriviaPage() {
@@ -47,6 +47,7 @@ export default function TriviaPage() {
   const [error, setError] = useState("");
   const [showSummary, setShowSummary] = useState(false);
   const [toast, setToast] = useState("");
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -67,11 +68,11 @@ export default function TriviaPage() {
 
   const currentQuestion = questions[currentIndex];
   const answered = currentQuestion ? answers[currentQuestion.id] : undefined;
-  const answeredCount = Object.keys(answers).length;
   const correctCount = Object.values(answers).filter((a) => a.result?.is_correct).length;
 
   const submitAnswer = async (questionId: string, answer: string) => {
-    if (submitting) return;
+    if (submitting || answered) return;
+    setSelectedOption(answer);
     setSubmitting(true);
     try {
       const result = await api.post<TriviaResult>("/games/trivia/answer", {
@@ -86,13 +87,14 @@ export default function TriviaPage() {
       const msg = err instanceof Error ? err.message : "Failed to submit answer";
       if (msg.toLowerCase().includes("already answered")) {
         setAnswers((prev) => ({ ...prev, [questionId]: { answer, result: { is_correct: false, points_earned: 0 }, alreadyAnswered: true } }));
-        setToast("You already answered this question before");
+        setToast("You already answered this question");
         setTimeout(() => setToast(""), 3000);
       } else {
         setError(msg);
       }
     } finally {
       setSubmitting(false);
+      setSelectedOption(null);
     }
   };
 
@@ -110,306 +112,302 @@ export default function TriviaPage() {
 
   if (loading || authLoading) return <LoadingSpinner size="lg" />;
 
+  // Not logged in
   if (!user) {
     return (
-      <div className="min-h-screen">
-        <div className="mx-auto max-w-2xl px-4 py-8">
-          <Link href="/games" className="flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+      <div className="mx-auto max-w-lg px-4 py-16">
+        <div className="text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent/10">
+            <svg className="h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
-            Games
+          </div>
+          <h1 className="mt-5 text-2xl font-bold text-text font-heading">Trivia Challenge</h1>
+          <p className="mt-2 text-sm text-text-muted">Test your campus knowledge and earn points</p>
+        </div>
+
+        <div className="mt-8 card p-5 space-y-3">
+          {TRIVIA_RULES.map((rule) => (
+            <div key={rule.icon} className="flex items-start gap-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/10 text-[11px] font-bold text-accent">
+                {rule.icon}
+              </span>
+              <p className="text-sm text-text-secondary">{rule.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link href="/auth/login?redirect=/games/trivia" className="btn-primary">
+            Sign in to play
           </Link>
-          <h1 className="mt-6 section-title">Trivia Challenge</h1>
-          <p className="section-subtitle mt-1">Test your campus knowledge</p>
-
-          <div className="mt-6 card p-5 space-y-3">
-            <h3 className="text-xs font-bold text-text">How to Play</h3>
-            {TRIVIA_RULES.map((rule) => (
-              <div key={rule.icon} className="flex items-start gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/10 text-xs font-bold text-accent">
-                  {rule.icon}
-                </span>
-                <p className="text-xs text-text-secondary">{rule.text}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 text-center">
-            <Link href="/auth/login?redirect=/games/trivia" className="btn-primary inline-flex text-xs">
-              Sign in to play
-            </Link>
-          </div>
         </div>
       </div>
     );
   }
 
+  // No questions
   if (questions.length === 0) {
     return (
-      <div className="min-h-screen">
-        <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
-            <svg className="h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-          </div>
-          <h1 className="mt-4 text-xl font-bold text-text">No Questions This Week</h1>
-          <p className="mt-2 text-xs text-text-muted">Check back soon for new trivia challenges!</p>
-          <Link href="/games" className="btn-primary mt-6 inline-flex text-xs">Back to Games</Link>
+      <div className="mx-auto max-w-lg px-4 py-20 text-center">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent/10">
+          <svg className="h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
         </div>
+        <h1 className="mt-5 text-xl font-bold text-text">No Questions This Week</h1>
+        <p className="mt-2 text-sm text-text-muted">Check back soon for new trivia challenges!</p>
+        <Link href="/games" className="btn-primary mt-6 inline-flex">Back to Games</Link>
       </div>
     );
   }
 
-  // Summary screen
+  // Summary
   if (showSummary) {
     const percentage = questions.length > 0 ? Math.round((correctCount / questions.length) * 100) : 0;
     return (
-      <div className="min-h-screen">
-        <div className="mx-auto max-w-2xl px-4 py-12">
-          <div className="card p-8 text-center">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-accent/10">
-              {percentage >= 70 ? (
-                <svg className="h-10 w-10 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              ) : (
-                <svg className="h-10 w-10 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              )}
-            </div>
-            <h1 className="mt-4 text-2xl font-bold text-text">
-              {percentage >= 70 ? "Great Job!" : percentage >= 40 ? "Not Bad!" : "Keep Trying!"}
-            </h1>
-            <p className="mt-2 text-text-muted">You completed the trivia challenge</p>
+      <div className="mx-auto max-w-lg px-4 py-12">
+        <div className="card p-8 text-center">
+          <div className={`mx-auto flex h-20 w-20 items-center justify-center rounded-full ${
+            percentage >= 70 ? "bg-emerald-500/10" : percentage >= 40 ? "bg-amber-500/10" : "bg-red-500/10"
+          }`}>
+            <span className="text-4xl">
+              {percentage >= 70 ? "🎉" : percentage >= 40 ? "💪" : "📚"}
+            </span>
+          </div>
+          <h1 className="mt-5 text-2xl font-bold text-text font-heading">
+            {percentage >= 70 ? "Excellent!" : percentage >= 40 ? "Good effort!" : "Keep learning!"}
+          </h1>
+          <p className="mt-1 text-sm text-text-muted">You completed the trivia challenge</p>
 
-            <div className="mt-6 flex items-center justify-center gap-8">
-              <div>
-                <p className="text-3xl font-bold text-accent">{totalScore}</p>
-                <p className="text-xs text-text-muted">Points Earned</p>
-              </div>
-              <div className="h-10 w-px bg-border" />
-              <div>
-                <p className="text-3xl font-bold text-text">{correctCount}/{questions.length}</p>
-                <p className="text-xs text-text-muted">Correct</p>
-              </div>
-              <div className="h-10 w-px bg-border" />
-              <div>
-                <p className="text-3xl font-bold text-text">{percentage}%</p>
-                <p className="text-xs text-text-muted">Accuracy</p>
-              </div>
+          <div className="mt-8 grid grid-cols-3 gap-4">
+            <div className="rounded-xl bg-bg-elevated p-4">
+              <p className="text-2xl font-bold text-accent">{totalScore}</p>
+              <p className="mt-0.5 text-[11px] text-text-muted">Points</p>
             </div>
-
-            <div className="mt-6 flex justify-center gap-3">
-              <button
-                type="button"
-                className="rounded-xl border border-border-light bg-bg-elevated px-5 py-2.5 text-xs font-medium text-text transition-colors hover:bg-bg-hover"
-                onClick={() => { setShowSummary(false); setCurrentIndex(0); }}
-              >
-                Review Answers
-              </button>
-              <Link href="/games" className="btn-primary text-xs">Back to Games</Link>
+            <div className="rounded-xl bg-bg-elevated p-4">
+              <p className="text-2xl font-bold text-text">{correctCount}/{questions.length}</p>
+              <p className="mt-0.5 text-[11px] text-text-muted">Correct</p>
+            </div>
+            <div className="rounded-xl bg-bg-elevated p-4">
+              <p className={`text-2xl font-bold ${percentage >= 70 ? "text-emerald-500" : percentage >= 40 ? "text-amber-500" : "text-red-500"}`}>{percentage}%</p>
+              <p className="mt-0.5 text-[11px] text-text-muted">Accuracy</p>
             </div>
           </div>
 
-          {/* Leaderboard in summary */}
-          {leaderboard.length > 0 && <TriviaLeaderboard entries={leaderboard} />}
+          <div className="mt-6">
+            <Link href="/games" className="btn-primary text-xs">Back to Games</Link>
+          </div>
         </div>
+
+        {leaderboard.length > 0 && <TriviaLeaderboard entries={leaderboard} />}
       </div>
     );
   }
 
+  // Main quiz
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto max-w-2xl px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <Link href="/games" className="flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Games
-          </Link>
-          <div className="flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5">
-            <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            <span className="text-xs font-bold text-accent">{totalScore} pts</span>
-          </div>
+    <div className="mx-auto max-w-2xl px-4 py-8">
+      {/* Top bar */}
+      <div className="flex items-center justify-between">
+        <Link href="/games" className="flex items-center gap-1.5 text-sm text-text-muted hover:text-text transition-colors">
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </Link>
+        <div className="flex items-center gap-1.5 rounded-full bg-accent/10 px-4 py-1.5">
+          <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span className="text-sm font-bold text-accent">{totalScore} pts</span>
         </div>
+      </div>
 
-        {/* Progress bar */}
-        <div className="mt-6">
-          <div className="flex items-center justify-between text-xs text-text-muted mb-2">
-            <span>Question {currentIndex + 1} of {questions.length}</span>
-            <span>{correctCount} correct</span>
-          </div>
-          <div className="h-2 rounded-full bg-bg-elevated overflow-hidden">
-            <div
-              className="h-full rounded-full bg-accent transition-all duration-500 ease-out"
-              style={{ width: `${((currentIndex + (answered ? 1 : 0)) / questions.length) * 100}%` }}
-            />
-          </div>
-          {/* Question dots */}
-          <div className="mt-3 flex gap-1.5 justify-center flex-wrap">
-            {questions.map((q, i) => {
-              const a = answers[q.id];
+      {/* Progress */}
+      <div className="mt-8">
+        <div className="flex items-center justify-between text-sm mb-2">
+          <span className="text-text-muted">
+            Question <span className="font-semibold text-text">{currentIndex + 1}</span> of {questions.length}
+          </span>
+          <span className="text-text-muted">
+            <span className="font-semibold text-emerald-500">{correctCount}</span> correct
+          </span>
+        </div>
+        <div className="h-1.5 rounded-full bg-bg-elevated overflow-hidden">
+          <div
+            className="h-full rounded-full bg-accent transition-all duration-500 ease-out"
+            style={{ width: `${((currentIndex + (answered ? 1 : 0)) / questions.length) * 100}%` }}
+          />
+        </div>
+        {/* Question dots */}
+        <div className="mt-3 flex gap-1.5 justify-center flex-wrap">
+          {questions.map((q, i) => {
+            const a = answers[q.id];
+            return (
+              <button
+                key={q.id}
+                type="button"
+                onClick={() => setCurrentIndex(i)}
+                className={`h-2 w-2 rounded-full transition-all ${
+                  i === currentIndex
+                    ? "scale-150 bg-accent"
+                    : a?.result?.is_correct
+                    ? "bg-emerald-500"
+                    : a?.result && !a.result.is_correct
+                    ? "bg-red-500"
+                    : "bg-bg-elevated"
+                }`}
+                aria-label={`Go to question ${i + 1}`}
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      {error && (
+        <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-500" role="alert">{error}</div>
+      )}
+
+      {/* Question card */}
+      <div className="mt-8 card overflow-hidden">
+        <div className="p-6 sm:p-8">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-accent">
+            Question {currentIndex + 1}
+          </p>
+          <h2 className="mt-2 text-lg font-bold text-text leading-relaxed sm:text-xl">
+            {currentQuestion.question_text ?? "_"}
+          </h2>
+
+          <div className="mt-7 space-y-3">
+            {currentQuestion.options.map((option, i) => {
+              const isSelected = answered?.answer === option;
+              const isCorrect = answered?.result?.is_correct && isSelected;
+              const isWrong = answered?.result && !answered.result.is_correct && isSelected;
+              const isActualCorrect = answered?.result && !answered.result.is_correct && currentQuestion.correct_answer === option;
+              const isDisabled = !!answered || submitting;
+              const isLoading = submitting && selectedOption === option;
+
               return (
                 <button
-                  key={q.id}
+                  key={option}
                   type="button"
-                  onClick={() => setCurrentIndex(i)}
-                  className={`h-2.5 w-2.5 rounded-full transition-all ${
-                    i === currentIndex
-                      ? "scale-125 bg-accent"
-                      : a?.result?.is_correct
-                      ? "bg-emerald-400"
-                      : a?.result && !a.result.is_correct
-                      ? "bg-red-400"
-                      : "bg-bg-elevated"
+                  disabled={isDisabled}
+                  onClick={() => submitAnswer(currentQuestion.id, option)}
+                  className={`group flex w-full items-center gap-4 rounded-xl border-2 px-5 py-4 text-left transition-all ${
+                    isCorrect || isActualCorrect
+                      ? "border-emerald-500/50 bg-emerald-500/10"
+                      : isWrong
+                      ? "border-red-500/50 bg-red-500/10"
+                      : isDisabled
+                      ? "border-border bg-bg-elevated/30 cursor-default"
+                      : "border-border-light bg-bg-card hover:border-accent/40 hover:bg-accent/5 active:scale-[0.99]"
                   }`}
-                  aria-label={`Go to question ${i + 1}`}
-                />
+                >
+                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold transition-colors ${
+                    isCorrect || isActualCorrect
+                      ? "bg-emerald-500/20 text-emerald-500"
+                      : isWrong
+                      ? "bg-red-500/20 text-red-500"
+                      : isDisabled
+                      ? "bg-bg-elevated text-text-ghost"
+                      : "bg-bg-elevated text-text-muted group-hover:bg-accent/10 group-hover:text-accent"
+                  }`}>
+                    {OPTION_LETTERS[i]}
+                  </span>
+                  <span className={`flex-1 text-sm font-medium ${
+                    isCorrect || isActualCorrect ? "text-emerald-500" : isWrong ? "text-red-500" : isDisabled ? "text-text-ghost" : "text-text"
+                  }`}>
+                    {option}
+                  </span>
+                  {isLoading && (
+                    <div className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+                  )}
+                  {isCorrect && (
+                    <svg className="h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                  {isWrong && (
+                    <svg className="h-5 w-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  )}
+                  {isActualCorrect && !isCorrect && (
+                    <span className="shrink-0 text-[10px] font-semibold text-emerald-500 uppercase tracking-wider">Correct</span>
+                  )}
+                </button>
               );
             })}
           </div>
-        </div>
 
-        {error && (
-          <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400" role="alert">{error}</div>
-        )}
-
-        {/* Question card */}
-        <div className="mt-6 card overflow-hidden">
-          <div className="border-b border-border bg-bg-elevated/50 px-6 py-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-              Question {currentIndex + 1}
-            </span>
-          </div>
-          <div className="p-6">
-            <h2 className="text-lg font-bold text-text leading-relaxed">
-              {currentQuestion.question_text ?? "_"}
-            </h2>
-
-            <div className="mt-6 space-y-3">
-              {currentQuestion.options.map((option, i) => {
-                const isSelected = answered?.answer === option;
-                const isCorrect = answered?.result?.is_correct && isSelected;
-                const isWrong = answered?.result && !answered.result.is_correct && isSelected;
-                const isDisabled = !!answered || submitting;
-
-                return (
-                  <button
-                    key={option}
-                    type="button"
-                    disabled={isDisabled}
-                    onClick={() => submitAnswer(currentQuestion.id, option)}
-                    className={`group flex w-full items-center gap-4 rounded-xl border-2 px-4 py-3.5 text-left text-xs font-medium transition-all ${
-                      isCorrect
-                        ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
-                        : isWrong
-                        ? "border-red-500/40 bg-red-500/10 text-red-400"
-                        : isDisabled
-                        ? "border-border bg-bg-elevated/30 text-text-ghost cursor-not-allowed"
-                        : "border-border-light bg-bg-card text-text hover:border-accent/40 hover:bg-accent/5"
-                    }`}
-                  >
-                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold transition-colors ${
-                      isCorrect
-                        ? "bg-emerald-500/20 text-emerald-400"
-                        : isWrong
-                        ? "bg-red-500/20 text-red-400"
-                        : isDisabled
-                        ? "bg-bg-elevated text-text-ghost"
-                        : "bg-bg-elevated text-text-muted group-hover:bg-accent/10 group-hover:text-accent"
-                    }`}>
-                      {OPTION_LETTERS[i]}
-                    </span>
-                    <span className="flex-1">{option}</span>
-                    {isCorrect && (
-                      <svg className="h-5 w-5 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                    {isWrong && (
-                      <svg className="h-5 w-5 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    )}
-                  </button>
-                );
-              })}
+          {/* Feedback */}
+          {answered?.result && (
+            <div className={`mt-6 flex items-center gap-3 rounded-xl px-5 py-3.5 ${
+              answered.alreadyAnswered
+                ? "bg-amber-500/10 border border-amber-500/20"
+                : answered.result.is_correct
+                ? "bg-emerald-500/10 border border-emerald-500/20"
+                : "bg-red-500/10 border border-red-500/20"
+            }`}>
+              {answered.alreadyAnswered ? (
+                <span className="text-sm font-medium text-amber-500">Already answered — skipped</span>
+              ) : answered.result.is_correct ? (
+                <span className="text-sm font-medium text-emerald-500">
+                  Correct! <span className="font-bold">+{answered.result.points_earned} points</span>
+                </span>
+              ) : (
+                <span className="text-sm font-medium text-red-500">Wrong answer — better luck next time!</span>
+              )}
             </div>
-
-            {/* Result feedback */}
-            {answered?.result && (
-              <div className={`mt-5 flex items-center gap-3 rounded-xl px-4 py-3 ${
-                answered.alreadyAnswered
-                  ? "bg-yellow-500/10 border border-yellow-500/20"
-                  : answered.result.is_correct
-                  ? "bg-emerald-500/10 border border-emerald-500/20"
-                  : "bg-red-500/10 border border-red-500/20"
-              }`}>
-                {answered.alreadyAnswered ? (
-                  <span className="text-xs font-semibold text-yellow-400">You already answered this one — skipped!</span>
-                ) : answered.result.is_correct ? (
-                  <>
-                    <span className="text-lg">+{answered.result.points_earned}</span>
-                    <span className="text-xs font-semibold text-emerald-400">Correct! Points earned.</span>
-                  </>
-                ) : (
-                  <span className="text-xs font-semibold text-red-400">Incorrect. Better luck next time!</span>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Navigation */}
-          <div className="flex items-center justify-between border-t border-border px-6 py-4">
-            <button
-              type="button"
-              onClick={goBack}
-              disabled={currentIndex === 0}
-              className="flex items-center gap-1 text-xs font-medium text-text-muted transition-colors hover:text-text disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Previous
-            </button>
-            <button
-              type="button"
-              onClick={goNext}
-              disabled={!answered}
-              className={`flex items-center gap-1 rounded-xl px-5 py-2 text-xs font-medium transition-all ${
-                answered
-                  ? "bg-accent text-bg hover:bg-accent-light"
-                  : "bg-bg-elevated text-text-ghost cursor-not-allowed"
-              }`}
-            >
-              {currentIndex === questions.length - 1 ? "See Results" : "Next"}
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
+          )}
         </div>
 
-        {/* Leaderboard below questions */}
-        {leaderboard.length > 0 && <TriviaLeaderboard entries={leaderboard} />}
+        {/* Nav */}
+        <div className="flex items-center justify-between border-t border-border px-6 py-4 sm:px-8">
+          <button
+            type="button"
+            onClick={goBack}
+            disabled={currentIndex === 0}
+            className="flex items-center gap-1.5 text-sm font-medium text-text-muted transition-colors hover:text-text disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Previous
+          </button>
+          <button
+            type="button"
+            onClick={goNext}
+            disabled={!answered}
+            className={`flex items-center gap-1.5 rounded-xl px-6 py-2.5 text-sm font-semibold transition-all ${
+              answered
+                ? "bg-accent text-white hover:bg-accent-light"
+                : "bg-bg-elevated text-text-ghost cursor-not-allowed"
+            }`}
+          >
+            {currentIndex === questions.length - 1 ? "See Results" : "Next"}
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
+
+      {/* Leaderboard */}
+      {leaderboard.length > 0 && <TriviaLeaderboard entries={leaderboard} />}
 
       {/* Toast */}
       {toast && (
         <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 animate-slide-up">
-          <div className="flex items-center gap-3 rounded-xl border border-yellow-500/30 bg-yellow-950/90 px-4 py-3 shadow-lg backdrop-blur-sm">
-            <span className="text-xs font-medium text-yellow-200">{toast}</span>
+          <div className="flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-5 py-3 shadow-lg backdrop-blur-sm">
+            <svg className="h-4 w-4 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <span className="text-sm font-medium text-amber-500">{toast}</span>
           </div>
         </div>
       )}
     </div>
   );
 }
-

@@ -110,7 +110,7 @@ export default function RegisterPage() {
     setError("");
     try {
       await verifyOtp(email, code);
-      router.push("/items");
+      window.location.href = "/items";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Invalid OTP");
       setOtp(Array(OTP_LENGTH).fill(""));

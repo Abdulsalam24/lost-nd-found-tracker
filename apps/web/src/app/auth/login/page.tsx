@@ -50,11 +50,8 @@ function LoginForm() {
     setError("");
     try {
       const me = await login(data.email, data.password);
-      if (me.role === "admin") {
-        router.push(redirect ?? "/admin");
-      } else {
-        router.push(redirect ?? "/items");
-      }
+      const dest = redirect ?? (me.role === "admin" ? "/admin" : "/items");
+      window.location.href = dest;
     } catch (err) {
       const msg = (err as any)?.response?.data?.message;
       setError(msg ?? "Login failed");
