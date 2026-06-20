@@ -76,7 +76,7 @@ export function SearchFilters() {
         </svg>
         <input
           type="search"
-          className="w-full rounded-xl border border-white/[0.08] bg-black/30 py-3 pl-11 pr-4 text-sm text-text placeholder:text-text-ghost backdrop-blur-2xl backdrop-saturate-150 outline-none transition-all focus:border-accent/40 focus:ring-1 focus:ring-accent/20"
+          className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-3 pl-11 pr-4 text-sm text-text placeholder:text-text-ghost backdrop-blur-2xl backdrop-saturate-150 outline-none transition-all focus:border-accent/40 focus:ring-1 focus:ring-accent/20"
           placeholder="Search items..."
           value={searchValue}
           onChange={(e) => handleSearch(e.target.value)}
@@ -98,7 +98,7 @@ export function SearchFilters() {
       {/* Type tabs + filters row */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         {/* Type toggle */}
-        <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-black/20 p-1 backdrop-blur-xl">
+        <div className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.03] p-1 backdrop-blur-xl">
           {TYPE_OPTIONS.map((opt) => (
             <button
               key={opt.value}
@@ -121,7 +121,7 @@ export function SearchFilters() {
         {/* Dropdown filters */}
         <div className="flex items-center gap-2">
           <select
-            className="rounded-lg border border-white/[0.06] bg-black/20 px-3 py-1.5 text-[11px] text-text backdrop-blur-xl outline-none transition-all focus:border-accent/40 [&>option]:bg-bg-elevated [&>option]:text-text"
+            className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-[11px] text-text backdrop-blur-xl outline-none transition-all focus:border-accent/40 [&>option]:bg-bg-elevated [&>option]:text-text"
             value={currentCategory}
             onChange={(e) => updateParam("category", e.target.value)}
             aria-label="Category"
@@ -133,7 +133,7 @@ export function SearchFilters() {
           </select>
 
           <select
-            className="rounded-lg border border-white/[0.06] bg-black/20 px-3 py-1.5 text-[11px] text-text backdrop-blur-xl outline-none transition-all focus:border-accent/40 [&>option]:bg-bg-elevated [&>option]:text-text"
+            className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-[11px] text-text backdrop-blur-xl outline-none transition-all focus:border-accent/40 [&>option]:bg-bg-elevated [&>option]:text-text"
             value={currentStatus}
             onChange={(e) => updateParam("status", e.target.value)}
             aria-label="Status"
@@ -145,7 +145,7 @@ export function SearchFilters() {
           </select>
 
           <select
-            className="hidden rounded-lg border border-white/[0.06] bg-black/20 px-3 py-1.5 text-[11px] text-text backdrop-blur-xl outline-none transition-all focus:border-accent/40 sm:block [&>option]:bg-bg-elevated [&>option]:text-text"
+            className="hidden rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-[11px] text-text backdrop-blur-xl outline-none transition-all focus:border-accent/40 sm:block [&>option]:bg-bg-elevated [&>option]:text-text"
             value={currentLocation}
             onChange={(e) => updateParam("location", e.target.value)}
             aria-label="Location"
