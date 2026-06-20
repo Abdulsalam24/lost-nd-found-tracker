@@ -41,7 +41,7 @@ export default function HomePage() {
     <div className="relative">
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="flex flex-col items-center px-4 pt-28 sm:pt-32">
+        <div className="flex flex-col items-center px-4 pt-8 sm:pt-32">
           <div className="mb-6 flex items-center gap-2 rounded-full border border-border-light bg-bg-card/80 px-5 py-2 backdrop-blur-sm">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
@@ -73,7 +73,7 @@ export default function HomePage() {
 
       {/* Stats */}
       <section className="relative z-10 mx-auto max-w-lg px-4 py-6 sm:max-w-3xl sm:py-10">
-        <div className="card flex items-center divide-x divide-border rounded-xl sm:rounded-2xl">
+        <div className="flex items-center divide-x divide-white/[0.06] rounded-xl border border-white/[0.08] bg-black/30 backdrop-blur-2xl backdrop-saturate-150 sm:rounded-2xl">
           <div className="flex-1 py-3 text-center sm:py-5">
             <p className="text-lg font-bold text-text sm:text-3xl">{stats.total_items ?? "_"}</p>
             <p className="mt-0.5 text-[8px] font-semibold uppercase tracking-wider text-text-muted sm:mt-1 sm:text-[10px]">Reported</p>
