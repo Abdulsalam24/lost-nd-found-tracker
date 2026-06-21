@@ -22,14 +22,7 @@ const NAV_LINKS = [
     outline: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z",
     filled: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z",
   },
-  {
-    href: "/chat",
-    label: "Messages",
-    outline:
-      "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
-    filled:
-      "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
-  },
+  null as any, // placeholder — swapped dynamically based on auth state
   {
     href: "/heatmap",
     label: "Map",
@@ -48,6 +41,20 @@ const NAV_LINKS = [
   },
 ];
 
+const MESSAGES_LINK = {
+  href: "/chat",
+  label: "Messages",
+  outline: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
+  filled: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
+};
+
+const STATS_LINK = {
+  href: "/stats",
+  label: "Stats",
+  outline: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+  filled: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+};
+
 export function Navbar() {
   const { user, logout, loading } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -57,6 +64,8 @@ export function Navbar() {
   const mobileProfileRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
+
+  const navLinks = NAV_LINKS.map((link) => link ?? (user ? MESSAGES_LINK : STATS_LINK));
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -111,7 +120,7 @@ export function Navbar() {
           </Link>
 
           <div className='hidden items-center gap-6 md:flex'>
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -426,7 +435,7 @@ export function Navbar() {
         >
           <div className='overflow-x-auto scrollbar-none rounded-full border border-border/40 bg-bg shadow-xl shadow-black/10 dark:border-white/10 dark:bg-[rgba(30,38,30,0.85)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_0.5px_0_rgba(255,255,255,0.1)] dark:backdrop-blur-xl'>
             <div className='flex items-center justify-between gap-0.5 px-1.5 py-1.5'>
-              {NAV_LINKS.map((link) => {
+              {navLinks.map((link) => {
                 const active = isActive(link.href);
                 return (
                   <Link
