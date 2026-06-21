@@ -2,7 +2,10 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ItemReport } from '../items/entities/item-report.entity';
+import { ImageAsset } from '../items/entities/image-asset.entity';
 import { Claim } from '../claims/entities/claim.entity';
+import { Sighting } from '../sightings/entities/sighting.entity';
+import { Conversation } from '../chat/entities/conversation.entity';
 import { User } from '../users/entities/user.entity';
 import { AuditService } from '../audit/audit.service';
 import { ItemStatus, ClaimStatus } from '@lostfound/shared';
@@ -12,8 +15,14 @@ export class AdminService {
   constructor(
     @InjectRepository(ItemReport)
     private itemsRepo: Repository<ItemReport>,
+    @InjectRepository(ImageAsset)
+    private imageRepo: Repository<ImageAsset>,
     @InjectRepository(Claim)
     private claimsRepo: Repository<Claim>,
+    @InjectRepository(Sighting)
+    private sightingsRepo: Repository<Sighting>,
+    @InjectRepository(Conversation)
+    private conversationsRepo: Repository<Conversation>,
     @InjectRepository(User)
     private usersRepo: Repository<User>,
     private auditService: AuditService,
@@ -97,6 +106,12 @@ export class AdminService {
   async deleteItem(id: string) {
     const item = await this.itemsRepo.findOne({ where: { id } });
     if (!item) throw new NotFoundException('Item not found');
+
+    // Delete related records first to avoid FK constraints
+    await this.claimsRepo.delete({ item_report_id: id });
+    await this.sightingsRepo.delete({ item_report_id: id });
+    await this.imageRepo.delete({ item_report_id: id });
+    await this.conversationsRepo.update({ item_report_id: id }, { item_report_id: null as any });
     await this.itemsRepo.remove(item);
   }
 

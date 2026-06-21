@@ -42,6 +42,13 @@ export default function AdminItemsPage() {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [toast, setToast] = useState("");
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(""), 4000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -88,7 +95,7 @@ export default function AdminItemsPage() {
       );
       setStatusTarget(null);
     } catch {
-      alert("Failed to update status");
+      setToast("Failed to update status");
     } finally {
       setUpdatingStatus(false);
     }
@@ -102,7 +109,7 @@ export default function AdminItemsPage() {
       setItems((prev) => prev.filter((item) => item.id !== deleteTarget.id));
       setDeleteTarget(null);
     } catch {
-      alert("Failed to delete item");
+      setToast("Failed to delete item");
     } finally {
       setDeleting(false);
     }
@@ -377,6 +384,16 @@ export default function AdminItemsPage() {
                 {updatingStatus ? "Updating..." : "Confirm"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {toast && (
+        <div className="fixed top-20 right-4 z-50 animate-fade-in">
+          <div className="flex items-center gap-3 rounded-xl border border-red-800/50 bg-red-950/90 px-4 py-3 shadow-lg backdrop-blur-sm max-w-sm">
+            <p className="text-xs font-medium text-red-200">{toast}</p>
+            <button type="button" onClick={() => setToast("")} className="ml-auto text-red-400 hover:text-red-300">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
           </div>
         </div>
       )}

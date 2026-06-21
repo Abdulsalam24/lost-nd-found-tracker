@@ -20,6 +20,13 @@ export default function AdminFeedbackPage() {
   const [filter, setFilter] = useState<"all" | "pending" | "reviewed">("pending");
   const [confirmTarget, setConfirmTarget] = useState<FeedbackItem | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [toast, setToast] = useState("");
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(""), 4000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   const fetchFeedback = useCallback(() => {
     setLoading(true);
@@ -43,7 +50,7 @@ export default function AdminFeedbackPage() {
       );
       setConfirmTarget(null);
     } catch {
-      alert("Failed to mark as reviewed");
+      setToast("Failed to mark as reviewed");
     } finally {
       setActionLoading(false);
     }
@@ -173,6 +180,16 @@ export default function AdminFeedbackPage() {
                 {actionLoading ? "Processing..." : "Confirm"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {toast && (
+        <div className="fixed top-20 right-4 z-50 animate-fade-in">
+          <div className="flex items-center gap-3 rounded-xl border border-red-800/50 bg-red-950/90 px-4 py-3 shadow-lg backdrop-blur-sm max-w-sm">
+            <p className="text-xs font-medium text-red-200">{toast}</p>
+            <button type="button" onClick={() => setToast("")} className="ml-auto text-red-400 hover:text-red-300">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
           </div>
         </div>
       )}
