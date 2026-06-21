@@ -64,7 +64,7 @@ export default function AdminAuditPage() {
     <div>
       <div className="flex flex-wrap gap-3">
         <select
-          className="input-field w-auto !py-2 !text-xs"
+          className="input-field w-auto !py-2"
           value={filterAction}
           onChange={(e) => { setFilterAction(e.target.value); setPage(1); }}
           aria-label="Filter by action type"
@@ -76,7 +76,7 @@ export default function AdminAuditPage() {
         </select>
         <input
           type="date"
-          className="input-field w-auto !py-2 !text-xs"
+          className="input-field w-auto !py-2"
           value={filterDate}
           onChange={(e) => { setFilterDate(e.target.value); setPage(1); }}
           aria-label="Filter by date"

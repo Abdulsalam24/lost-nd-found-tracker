@@ -171,9 +171,47 @@ export class NotificationsService {
     const reporter = await this.usersRepo.findOne({ where: { id: item.reporter_id } });
     if (!reporter) return;
 
+    const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#0a0f0a;font-family:'Manrope','Sora',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0f0a;padding:40px 0;">
+    <tr><td align="center">
+      <table width="480" cellpadding="0" cellspacing="0" style="background:#141414;border:1px solid #1f2e1f;border-radius:16px;overflow:hidden;">
+        <tr>
+          <td style="background:linear-gradient(135deg,#0a1410 0%,#141414 100%);padding:32px 40px 24px;text-align:center;border-bottom:1px solid #1f2e1f;">
+            <div style="display:inline-block;background:#3f837815;border:1px solid #3f837830;border-radius:12px;padding:8px 16px;margin-bottom:16px;">
+              <span style="color:#3f8378;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">New Sighting</span>
+            </div>
+            <h1 style="margin:0;color:#f0fdf4;font-size:22px;font-weight:700;font-family:'Sora','Manrope',Helvetica,Arial,sans-serif;">Someone spotted your item</h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px 40px;">
+            <p style="margin:0 0 8px;color:#9ca3af;font-size:14px;line-height:1.6;">Hi <strong style="color:#f0fdf4;">${reporter.name}</strong>,</p>
+            <p style="margin:0 0 20px;color:#9ca3af;font-size:14px;line-height:1.6;">Someone has reported a sighting of your item <strong style="color:#f0fdf4;">${item.title}</strong>.</p>
+            <div style="background:#0a1410;border:1px solid #1f2e1f;border-radius:10px;padding:16px 20px;margin:0 0 28px;">
+              <p style="margin:0;color:#9ca3af;font-size:13px;line-height:1.6;"><strong style="color:#3f8378;">Sighting details:</strong><br>${sighting.description}</p>
+            </div>
+            <p style="margin:0 0 24px;color:#6b7280;font-size:12px;text-align:center;line-height:1.5;">Log in to the Lost & Found app to view more details and respond.</p>
+            <div style="height:1px;background:#1f2e1f;margin:0 0 24px;"></div>
+            <p style="margin:0;color:#4b5563;font-size:11px;text-align:center;line-height:1.5;">
+              This is an automated message from<br>
+              <strong style="color:#6b7280;">UniLorin Lost & Found</strong>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
     await this.createAndSend(reporter, 'NEW_SIGHTING', {
       subject: `New sighting for "${item.title}"`,
       body: `Someone spotted your item: ${sighting.description}`,
+      html,
       item_id: item.id,
       sighting_id: sighting.id,
     });
@@ -183,11 +221,104 @@ export class NotificationsService {
     const claimant = await this.usersRepo.findOne({ where: { id: claim.claimant_id } });
     if (!claimant) return;
 
+    const isApproved = claim.status.toUpperCase() === 'APPROVED';
+    const statusLabel = claim.status.toLowerCase();
+    const badgeText = isApproved ? 'Approved' : 'Rejected';
+    const heading = isApproved
+      ? 'Your claim has been approved'
+      : 'Your claim has been rejected';
+    const messageBody = isApproved
+      ? 'Great news! Your claim has been <strong style="color:#3f8378;">approved</strong>. Please contact the admin office to arrange collection of your item.'
+      : 'Unfortunately, your claim has been <strong style="color:#ef4444;">rejected</strong>. If you believe this was a mistake, please reach out to the admin office for further assistance.';
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#0a0f0a;font-family:'Manrope','Sora',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0f0a;padding:40px 0;">
+    <tr><td align="center">
+      <table width="480" cellpadding="0" cellspacing="0" style="background:#141414;border:1px solid #1f2e1f;border-radius:16px;overflow:hidden;">
+        <tr>
+          <td style="background:linear-gradient(135deg,#0a1410 0%,#141414 100%);padding:32px 40px 24px;text-align:center;border-bottom:1px solid #1f2e1f;">
+            <div style="display:inline-block;background:${isApproved ? '#3f837815' : '#ef444415'};border:1px solid ${isApproved ? '#3f837830' : '#ef444430'};border-radius:12px;padding:8px 16px;margin-bottom:16px;">
+              <span style="color:${isApproved ? '#3f8378' : '#ef4444'};font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Claim ${badgeText}</span>
+            </div>
+            <h1 style="margin:0;color:#f0fdf4;font-size:22px;font-weight:700;font-family:'Sora','Manrope',Helvetica,Arial,sans-serif;">${heading}</h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px 40px;">
+            <p style="margin:0 0 8px;color:#9ca3af;font-size:14px;line-height:1.6;">Hi <strong style="color:#f0fdf4;">${claimant.name}</strong>,</p>
+            <p style="margin:0 0 28px;color:#9ca3af;font-size:14px;line-height:1.6;">${messageBody}</p>
+            <p style="margin:0 0 24px;color:#6b7280;font-size:12px;text-align:center;line-height:1.5;">Log in to the Lost & Found app to view your claim details.</p>
+            <div style="height:1px;background:#1f2e1f;margin:0 0 24px;"></div>
+            <p style="margin:0;color:#4b5563;font-size:11px;text-align:center;line-height:1.5;">
+              This is an automated message from<br>
+              <strong style="color:#6b7280;">UniLorin Lost & Found</strong>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
     await this.createAndSend(claimant, 'CLAIM_REVIEWED', {
-      subject: `Your claim has been ${claim.status.toLowerCase()}`,
-      body: `Your claim for item has been ${claim.status.toLowerCase()}.`,
+      subject: `Your claim has been ${statusLabel}`,
+      body: `Your claim has been ${statusLabel}.`,
+      html,
       claim_id: claim.id,
       status: claim.status,
+    });
+  }
+
+  async notifyNewMessage(
+    recipient: User,
+    senderName: string,
+    itemTitle: string,
+    conversationId: string,
+  ): Promise<void> {
+    const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#0a0f0a;font-family:'Manrope','Sora',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0f0a;padding:40px 0;">
+    <tr><td align="center">
+      <table width="480" cellpadding="0" cellspacing="0" style="background:#141414;border:1px solid #1f2e1f;border-radius:16px;overflow:hidden;">
+        <tr>
+          <td style="background:linear-gradient(135deg,#0a1410 0%,#141414 100%);padding:32px 40px 24px;text-align:center;border-bottom:1px solid #1f2e1f;">
+            <div style="display:inline-block;background:#3f837815;border:1px solid #3f837830;border-radius:12px;padding:8px 16px;margin-bottom:16px;">
+              <span style="color:#3f8378;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">New Message</span>
+            </div>
+            <h1 style="margin:0;color:#f0fdf4;font-size:22px;font-weight:700;font-family:'Sora','Manrope',Helvetica,Arial,sans-serif;">You have a new message</h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px 40px;">
+            <p style="margin:0 0 8px;color:#9ca3af;font-size:14px;line-height:1.6;">Hi <strong style="color:#f0fdf4;">${recipient.name}</strong>,</p>
+            <p style="margin:0 0 20px;color:#9ca3af;font-size:14px;line-height:1.6;"><strong style="color:#f0fdf4;">${senderName}</strong> sent you a message about <strong style="color:#f0fdf4;">${itemTitle}</strong>.</p>
+            <p style="margin:0 0 24px;color:#9ca3af;font-size:14px;line-height:1.6;">Open the app to reply.</p>
+            <div style="height:1px;background:#1f2e1f;margin:0 0 24px;"></div>
+            <p style="margin:0;color:#4b5563;font-size:11px;text-align:center;line-height:1.5;">
+              This is an automated message from<br>
+              <strong style="color:#6b7280;">UniLorin Lost & Found</strong>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+    await this.createAndSend(recipient, 'NEW_MESSAGE', {
+      subject: `New message about ${itemTitle}`,
+      body: `${senderName} sent you a message about ${itemTitle}. Open the app to reply.`,
+      html,
+      conversation_id: conversationId,
     });
   }
 

@@ -31,6 +31,7 @@ export default function ReportLostPage() {
   const { user } = useAuth();
   const [error, setError] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isOtherLocation, setIsOtherLocation] = useState(false);
 
   useEffect(() => {
     if (!error) return;
@@ -46,6 +47,7 @@ export default function ReportLostPage() {
     register,
     handleSubmit,
     getValues,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -149,18 +151,47 @@ export default function ReportLostPage() {
 
               <div>
                 <label htmlFor="location_name" className="label">Last Known Location</label>
-                <select
-                  id="location_name"
-                  className="input-field"
-                  {...register("location_name")}
-                  aria-invalid={errors.location_name ? "true" : undefined}
-                  aria-describedby={errors.location_name ? "loc-error" : undefined}
-                >
-                  <option value="">Select location</option>
-                  {CAMPUS_LOCATIONS.map((loc) => (
-                    <option key={loc.id} value={loc.name}>{loc.name}</option>
-                  ))}
-                </select>
+                {isOtherLocation ? (
+                  <div className="flex gap-2">
+                    <input
+                      id="location_name"
+                      type="text"
+                      className="input-field flex-1"
+                      placeholder="Enter location"
+                      {...register("location_name")}
+                      aria-invalid={errors.location_name ? "true" : undefined}
+                      aria-describedby={errors.location_name ? "loc-error" : undefined}
+                    />
+                    <button
+                      type="button"
+                      className="text-xs text-ink-muted hover:text-coral transition-colors whitespace-nowrap"
+                      onClick={() => setIsOtherLocation(false)}
+                    >
+                      Back
+                    </button>
+                  </div>
+                ) : (
+                  <select
+                    id="location_name"
+                    className="input-field"
+                    {...register("location_name", {
+                      onChange: (e) => {
+                        if (e.target.value === "__other__") {
+                          setIsOtherLocation(true);
+                          setValue("location_name", "");
+                        }
+                      },
+                    })}
+                    aria-invalid={errors.location_name ? "true" : undefined}
+                    aria-describedby={errors.location_name ? "loc-error" : undefined}
+                  >
+                    <option value="">Select location</option>
+                    {CAMPUS_LOCATIONS.map((loc) => (
+                      <option key={loc.id} value={loc.name}>{loc.name}</option>
+                    ))}
+                    <option value="__other__">Other</option>
+                  </select>
+                )}
                 {errors.location_name && <p id="loc-error" className="error-text">{errors.location_name.message}</p>}
               </div>
             </div>
@@ -172,6 +203,7 @@ export default function ReportLostPage() {
                   id="date_of_event"
                   type="date"
                   className="input-field"
+                  max={new Date().toISOString().split("T")[0]}
                   {...register("date_of_event")}
                   aria-invalid={errors.date_of_event ? "true" : undefined}
                   aria-describedby={errors.date_of_event ? "date-error" : undefined}

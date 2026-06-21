@@ -93,7 +93,7 @@ export default function AdminUsersPage() {
       <div>
         <input
           type="text"
-          className="input-field max-w-sm !py-2 !text-sm"
+          className="input-field max-w-sm !py-2"
           placeholder="Search by name or email..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}

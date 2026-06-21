@@ -104,8 +104,13 @@ export class StorageService {
     return this.imageRepo.save(asset);
   }
 
-  getPublicUrl(key: string): string {
+  getPublicUrl(key: string, req?: { headers: Record<string, any>; protocol: string; get: (name: string) => string | undefined }): string {
     if (this.useLocal) {
+      if (req) {
+        const protocol = req.headers['x-forwarded-proto'] ?? req.protocol;
+        const host = req.headers['x-forwarded-host'] ?? req.get('host');
+        return `${protocol}://${host}/uploads/${key}`;
+      }
       const apiUrl = this.configService.get<string>('API_URL', 'http://localhost:3002');
       return `${apiUrl}/uploads/${key}`;
     }

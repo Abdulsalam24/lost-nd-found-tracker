@@ -123,13 +123,13 @@ export default function AdminItemsPage() {
       <div className="flex flex-wrap items-center gap-3">
         <input
           type="text"
-          className="input-field w-auto min-w-[200px] !py-2 !text-sm"
+          className="input-field w-auto min-w-[200px] !py-2"
           placeholder="Search items..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <select
-          className="input-field w-auto !py-2 !text-xs"
+          className="input-field w-auto !py-2"
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
           aria-label="Filter by category"
@@ -140,7 +140,7 @@ export default function AdminItemsPage() {
           ))}
         </select>
         <select
-          className="input-field w-auto !py-2 !text-xs"
+          className="input-field w-auto !py-2"
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
           aria-label="Filter by status"

@@ -86,7 +86,7 @@ export function CommentSection({ itemId, reporterId }: { itemId: string; reporte
             <div className="flex-1">
               <textarea
                 rows={2}
-                className="input-field text-xs"
+                className="input-field"
                 placeholder="Have info about this item? Leave a comment..."
                 {...register("description")}
                 aria-invalid={errors.description ? "true" : undefined}

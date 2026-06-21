@@ -258,7 +258,7 @@ export default function AdminChatPage() {
           ref={inputRef}
           type="text"
           placeholder={`Message ${otherName}...`}
-          className="flex-1 rounded-xl border border-border bg-bg-elevated px-4 py-2.5 text-sm text-text placeholder:text-text-ghost outline-none transition-all focus:border-accent/40"
+          className="flex-1 rounded-xl border border-border bg-bg-elevated px-4 py-2.5 text-base text-text placeholder:text-text-ghost outline-none transition-all focus:border-accent/40"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           disabled={sending}

@@ -11,6 +11,7 @@ import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ChatService } from './chat.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @WebSocketGateway({
   cors: {
@@ -32,6 +33,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private jwtService: JwtService,
     private configService: ConfigService,
     private chatService: ChatService,
+    private notificationsService: NotificationsService,
   ) {}
 
   async handleConnection(client: Socket) {
@@ -130,6 +132,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         conversationId: data.conversationId,
         message: payload,
       });
+
+      const recipientUser =
+        conv.initiator_id === userId ? conv.recipient : conv.initiator;
+      const senderName = message.sender?.name ?? 'Someone';
+      const itemTitle = conv.item_report?.title ?? 'a conversation';
+
+      if (recipientUser) {
+        this.notificationsService
+          .notifyNewMessage(recipientUser, senderName, itemTitle, data.conversationId)
+          .catch(() => {});
+      }
     } catch {
       client.emit('error', { message: 'Failed to send message' });
     }

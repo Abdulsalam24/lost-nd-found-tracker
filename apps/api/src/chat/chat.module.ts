@@ -7,10 +7,12 @@ import { ChatService } from './chat.service';
 import { ChatGateway } from './chat.gateway';
 import { Conversation } from './entities/conversation.entity';
 import { Message } from './entities/message.entity';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Conversation, Message]),
+    NotificationsModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

@@ -7,12 +7,14 @@ import {
   Body,
   Param,
   Query,
+  Req,
   UseGuards,
   UseInterceptors,
   UploadedFile,
   ParseUUIDPipe,
   BadRequestException,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
@@ -71,12 +73,14 @@ export class ItemsController {
   )
   async uploadImage(
     @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
   ) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
-    const apiBase = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? `http://localhost:${process.env.PORT ?? 3002}`;
-    const url = `${apiBase}/uploads/${file.filename}`;
+    const protocol = req.headers['x-forwarded-proto'] ?? req.protocol;
+    const host = req.headers['x-forwarded-host'] ?? req.get('host');
+    const url = `${protocol}://${host}/uploads/${file.filename}`;
     return { url };
   }
 

@@ -61,6 +61,7 @@ function ReportForm() {
   const { user } = useAuth();
   const [error, setError] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isOtherLocation, setIsOtherLocation] = useState(false);
 
   const initialType = (searchParams.get("type")?.toUpperCase() === "FOUND" ? "FOUND" : "LOST") as ReportType;
   const [type, setType] = useState<ReportType>(initialType);
@@ -74,6 +75,7 @@ function ReportForm() {
     register,
     handleSubmit,
     getValues,
+    setValue,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
@@ -205,12 +207,45 @@ function ReportForm() {
 
               <div>
                 <label htmlFor="location_name" className="label">{config.locationLabel}</label>
-                <select id="location_name" className="input-field" {...register("location_name")}>
-                  <option value="">Select location</option>
-                  {CAMPUS_LOCATIONS.map((loc) => (
-                    <option key={loc.id} value={loc.name}>{loc.name}</option>
-                  ))}
-                </select>
+                {isOtherLocation ? (
+                  <div className="flex gap-2">
+                    <input
+                      id="location_name"
+                      type="text"
+                      className="input-field flex-1"
+                      placeholder="Enter location"
+                      {...register("location_name")}
+                      aria-invalid={errors.location_name ? "true" : undefined}
+                    />
+                    <button
+                      type="button"
+                      className="text-xs text-text-muted hover:text-accent transition-colors whitespace-nowrap"
+                      onClick={() => setIsOtherLocation(false)}
+                    >
+                      Back
+                    </button>
+                  </div>
+                ) : (
+                  <select
+                    id="location_name"
+                    className="input-field"
+                    {...register("location_name", {
+                      onChange: (e) => {
+                        if (e.target.value === "__other__") {
+                          setIsOtherLocation(true);
+                          setValue("location_name", "");
+                        }
+                      },
+                    })}
+                    aria-invalid={errors.location_name ? "true" : undefined}
+                  >
+                    <option value="">Select location</option>
+                    {CAMPUS_LOCATIONS.map((loc) => (
+                      <option key={loc.id} value={loc.name}>{loc.name}</option>
+                    ))}
+                    <option value="__other__">Other</option>
+                  </select>
+                )}
                 {errors.location_name && <p className="error-text">{errors.location_name.message}</p>}
               </div>
             </div>
