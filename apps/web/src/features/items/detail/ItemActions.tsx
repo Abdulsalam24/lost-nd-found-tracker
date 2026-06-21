@@ -31,6 +31,7 @@ export function ItemActions({ itemId, itemStatus, reportedBy, itemTitle, reporte
   const [claimOpen, setClaimOpen] = useState(false);
   const [error, setError] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [startingChat, setStartingChat] = useState(false);
 
   const {
     register,
@@ -102,15 +103,30 @@ export function ItemActions({ itemId, itemStatus, reportedBy, itemTitle, reporte
           Claim This Item
         </button>
         <div className="flex gap-2">
-          <Link
-            href={`/chat?item=${itemId}`}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-border-light bg-bg-elevated px-4 py-2.5 text-xs font-medium text-text transition-colors hover:bg-bg-hover"
+          <button
+            type="button"
+            disabled={startingChat}
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-border-light bg-bg-elevated px-4 py-2.5 text-xs font-medium text-text transition-colors hover:bg-bg-hover disabled:opacity-50"
+            onClick={async () => {
+              setStartingChat(true);
+              try {
+                const conv = await api.post<{ id: string }>("/chat/conversations", {
+                  item_report_id: itemId,
+                  recipient_id: reportedBy,
+                });
+                router.push(`/chat/${conv.id}`);
+              } catch {
+                setError("Failed to start conversation");
+              } finally {
+                setStartingChat(false);
+              }
+            }}
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-            Message
-          </Link>
+            {startingChat ? "Opening..." : "Message"}
+          </button>
           {reporterPhone && (
             <a
               href={`https://wa.me/${reporterPhone.replace(/[^0-9]/g, "").replace(/^0/, "234")}?text=${encodeURIComponent(`Hi, I'm reaching out about "${itemTitle}" on UniLorin Lost & Found.`)}`}
